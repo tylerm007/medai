@@ -63,7 +63,14 @@
         
           <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
         
-          <o-table-column #patient_id attr="patient_id" title="patient_id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+          <o-table-column attr="patient_id" title="patient_id">
+    <o-table-cell-renderer-service attr="patient_id" 
+        service="Patient" entity="PatientType" columns="id;name"
+        parent-keys="id:patient_id"
+        value-column="name" keys="patient_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
         
           <o-table-column #morning attr="morning" title="morning" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
         
@@ -110,9 +117,23 @@
         
           <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
         
-          <o-table-column #drug_id attr="drug_id" title="drug_id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+          <o-table-column attr="drug_id" title="drug_id">
+    <o-table-cell-renderer-service attr="drug_id" 
+        service="Drug" entity="DrugType" columns="id;drug_name"
+        parent-keys="id:drug_id"
+        value-column="drug_name" keys="drug_id"
+        visible-columns="drug_name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
         
-          <o-table-column #patient_id attr="patient_id" title="patient_id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+          <o-table-column attr="patient_id" title="patient_id">
+    <o-table-cell-renderer-service attr="patient_id" 
+        service="Patient" entity="PatientType" columns="id;name"
+        parent-keys="id:patient_id"
+        value-column="name" keys="patient_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
         
           <o-table-column #dosage attr="dosage" title="dosage" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
         

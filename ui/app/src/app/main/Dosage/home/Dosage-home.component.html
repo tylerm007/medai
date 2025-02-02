@@ -24,7 +24,14 @@
             
             <o-table-column #drug_name attr="drug_name" title=" drug_name*" editable="no" required="no" content-align="left"></o-table-column>
             
-            <o-table-column #drug_id attr="drug_id" title="drug_id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+            <o-table-column attr="drug_id" title="drug_id">
+    <o-table-cell-renderer-service attr="drug_id" 
+        service="Drug" entity="DrugType" columns="id;drug_name"
+        parent-keys="id:drug_id"
+        value-column="drug_name" keys="drug_id"
+        visible-columns="drug_name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
             
             <o-table-column #drug_type attr="drug_type" title="drug_type" editable="no" required="no" content-align="left"></o-table-column>
             

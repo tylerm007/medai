@@ -21,13 +21,12 @@
   "FOOTER_RIGHTS": "Todos los derechos reservados",
     "Contraindication": "CONTRAINDICATION",
   "description": " description*",
-  "drug_id_1": "drug_id_1",
-  "drug_id_2": "drug_id_2",
   "id": "id",
+  "drug_id_1": "drug_id_1",
   "Drug": "DRUG",
+  "drug_id_2": "drug_id_2",
   "Dosage": "DOSAGE",
   "drug_name": " drug_name*",
-  "drug_id": "drug_id",
   "drug_type": "drug_type",
   "min_dose": "min_dose",
   "max_dose": "max_dose",
@@ -37,8 +36,8 @@
   "max_weight": "max_weight",
   "min_creatine": "min_creatine",
   "max_creatine": "max_creatine",
+  "drug_id": "drug_id",
   "Recommendation": "RECOMMENDATION",
-  "patient_id": "patient_id",
   "dosage": "dosage",
   "recommendation_date": "recommendation_date",
   "Patient": "PATIENT",
@@ -53,5 +52,6 @@
   "afternoon": "afternoon",
   "dinner": "dinner",
   "bedtime": "bedtime",
-  "reading_date": "reading_date"
+  "reading_date": "reading_date",
+  "patient_id": "patient_id"
 }
