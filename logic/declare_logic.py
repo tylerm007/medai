@@ -72,6 +72,7 @@ def declare_logic():
                 logic_row.log("early_row_event_all_classes - handle_all did stamping")     
     Rule.early_row_event_all_classes(early_row_event_all_classes=handle_all)
 
+    Rule.constraint(validate=models.Contraindication, as_condition=lambda row: row.drug_id_1 != row.drug_id_2, error_msg="Drug_1 and Drug_2 must be different")
     #als rules report
     from api.system import api_utils
     # api_utils.rules_report()

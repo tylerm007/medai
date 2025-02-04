@@ -9,8 +9,8 @@
 #    $ cd <your project>
 #    $ sh devops/docker-image/build_image.sh .
 
-projectname="ejaz"  # lower case, only
-repositoryname="apilogicserver"
+projectname="medai"  # lower case, only
+repositoryname="tylerm007"
 version="1.0.0"
 
 debug() {
