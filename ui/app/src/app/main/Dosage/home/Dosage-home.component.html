@@ -6,9 +6,9 @@
             entity="Dosage" 
             title="DOSAGE"
             keys="id"
-            columns="drug_name;drug_id;drug_type;min_dose;max_dose;min_age;max_age;min_weight;max_weight;min_creatine;max_creatine;id" 
+            columns="drug_name;drug_id;drug_type;min_dose;max_dose;dose_unit;min_age;max_age;min_weight;max_weight;min_creatine;max_creatine;id" 
             header-actions="R;D"
-            visible-columns="drug_name;drug_id;drug_type;min_dose;max_dose;min_age;max_age;min_weight;max_weight;min_creatine;max_creatine;id"  
+            visible-columns="drug_name;drug_id;drug_type;min_dose;max_dose;dose_unit;min_age;max_age;min_weight;max_weight;min_creatine;max_creatine;id"  
             sort-columns="drug_name" 
             query-rows="20" 
             quick-filter="yes"
@@ -38,6 +38,8 @@
             <o-table-column #min_dose attr="min_dose" title="min_dose" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
             
             <o-table-column #max_dose attr="max_dose" title="max_dose" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
+            <o-table-column #dose_unit attr="dose_unit" title="dose_unit" editable="no" required="no" content-align="left"></o-table-column>
             
             <o-table-column #min_age attr="min_age" title="min_age" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
             

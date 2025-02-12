@@ -6,9 +6,9 @@
             entity="Recommendation" 
             title="RECOMMENDATION"
             keys="id"
-            columns="id;drug_id;patient_id;dosage;recommendation_date" 
+            columns="id;drug_id;patient_id;dosage;dosage_unit;recommendation_date" 
             header-actions="R;D"
-            visible-columns="id;drug_id;patient_id;dosage;recommendation_date"  
+            visible-columns="id;drug_id;patient_id;dosage;dosage_unit;recommendation_date"  
             sort-columns="id" 
             query-rows="20" 
             quick-filter="yes"
@@ -43,6 +43,8 @@
 </o-table-column>
             
             <o-table-column #dosage attr="dosage" title="dosage" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
+            <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
             
             <o-date-input #recommendation_date attr="recommendation_date" type="timestamp" label="recommendation_date" editable="no" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
             

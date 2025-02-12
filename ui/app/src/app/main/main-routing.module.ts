@@ -21,6 +21,8 @@ export const routes: Routes = [
     
         { path: 'Patient', loadChildren: () => import('./Patient/Patient.module').then(m => m.PatientModule) },
     
+        { path: 'PatientMedication', loadChildren: () => import('./PatientMedication/PatientMedication.module').then(m => m.PatientMedicationModule) },
+    
         { path: 'Reading', loadChildren: () => import('./Reading/Reading.module').then(m => m.ReadingModule) },
     
         { path: 'Recommendation', loadChildren: () => import('./Recommendation/Recommendation.module').then(m => m.RecommendationModule) },

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ontimize-web-ngx-jee-seed": {
+    "medaiplus": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -93,8 +93,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "6mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -126,14 +126,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ontimize-web-ngx-jee-seed:build"
+            "browserTarget": "medaiplus:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ontimize-web-ngx-jee-seed:build:production"
+              "browserTarget": "medaiplus:build:production"
             },
             "development": {
-              "browserTarget": "ontimize-web-ngx-jee-seed:build:development"
+              "browserTarget": "medaiplus:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -141,7 +141,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ontimize-web-ngx-jee-seed:build"
+            "browserTarget": "medaiplus:build"
           }
         },
         "test": {
@@ -166,11 +166,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ontimize-web-ngx-jee-seed:serve"
+            "devServerTarget": "medaiplus:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ontimize-web-ngx-jee-seed:serve:production"
+              "devServerTarget": "medaiplus:serve:production"
             }
           }
         },

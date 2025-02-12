@@ -1,12 +1,12 @@
 about:
-  date: February 01, 2025 11:56:17
+  date: February 12, 2025 08:56:12
   recent_changes: works with modified safrs-react-admin
   version: 0.0.0
 api_root: '{http_type}://{swagger_host}:{port}/{api}'
 authentication: '{system-default}'
 info:
-  number_relationships: 6
-  number_tables: 6
+  number_relationships: 8
+  number_tables: 7
 info_toggle_checked: true
 resources:
   Contraindication:
@@ -45,6 +45,7 @@ resources:
     - name: drug_type
     - name: min_dose
     - name: max_dose
+    - name: dose_unit
     - name: min_age
     - name: max_age
     - name: min_weight
@@ -68,7 +69,11 @@ resources:
       required: true
       search: true
       sort: true
+    - name: dosage
+    - name: dosage_unit
     - name: drug_type
+    - name: manufacturer
+    - name: side_effects
     - name: id
       required: true
     tab_groups:
@@ -87,6 +92,11 @@ resources:
       - drug_id
       name: DosageList
       resource: Dosage
+    - direction: tomany
+      fks:
+      - drug_id
+      name: PatientMedicationList
+      resource: PatientMedication
     - direction: tomany
       fks:
       - drug_id
@@ -114,6 +124,11 @@ resources:
     - direction: tomany
       fks:
       - patient_id
+      name: PatientMedicationList
+      resource: PatientMedication
+    - direction: tomany
+      fks:
+      - patient_id
       name: ReadingList
       resource: Reading
     - direction: tomany
@@ -123,6 +138,32 @@ resources:
       resource: Recommendation
     type: Patient
     user_key: name
+  PatientMedication:
+    attributes:
+    - label: ' id*'
+      name: id
+      required: true
+      search: true
+      sort: true
+    - name: drug_id
+      required: true
+    - name: patient_id
+      required: true
+    - name: dosage
+    - name: dosage_unit
+    tab_groups:
+    - direction: toone
+      fks:
+      - drug_id
+      name: drug
+      resource: Drug
+    - direction: toone
+      fks:
+      - patient_id
+      name: patient
+      resource: Patient
+    type: PatientMedication
+    user_key: id
   Reading:
     attributes:
     - label: ' id*'
@@ -158,6 +199,7 @@ resources:
     - name: patient_id
       required: true
     - name: dosage
+    - name: dosage_unit
     - name: recommendation_date
       type: DATETIME
     tab_groups:

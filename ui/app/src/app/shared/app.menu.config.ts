@@ -8,6 +8,8 @@ import { DrugCardComponent } from './Drug-card/Drug-card.component';
 
 import { PatientCardComponent } from './Patient-card/Patient-card.component';
 
+import { PatientMedicationCardComponent } from './PatientMedication-card/PatientMedication-card.component';
+
 import { ReadingCardComponent } from './Reading-card/Reading-card.component';
 
 import { RecommendationCardComponent } from './Recommendation-card/Recommendation-card.component';
@@ -17,25 +19,25 @@ export const MENU_CONFIG: MenuRootItem[] = [
     { id: 'home', name: 'HOME', icon: 'home', route: '/main/home' },
     
     {
-    id: 'data', name: ' Main', icon: 'remove_red_eye', opened: true,
-    items: [
-        { id: 'Patient', name: 'Patient', icon: 'people', route: '/main/Patient' }
-    
-        ,{ id: 'Reading', name: 'Daily Readings', icon: 'view_list', route: '/main/Reading' }
-
-        ,{ id: 'Recommendation', name: 'Recommendations', icon: 'view_list', route: '/main/Recommendation' }
-    ]
-    },
-    {
-    id: 'other', name: ' System', icon: 'remove_red_eye', opened: true,
+    id: 'data', name: ' data', icon: 'remove_red_eye', opened: true,
     items: [
     
-        { id: 'Drug', name: 'Drug', icon: 'view_list', route: '/main/Drug' }
-        ,{ id: 'Dosage', name: 'Dosage', icon: 'view_list', route: '/main/Dosage' }
-        ,{ id: 'Contraindication', name: 'Contraindication', icon: 'view_list', route: '/main/Contraindication' }
+        { id: 'Contraindication', name: 'CONTRAINDICATION', icon: 'view_list', route: '/main/Contraindication' }
     
-        ] 
-    },
+        ,{ id: 'Dosage', name: 'DOSAGE', icon: 'view_list', route: '/main/Dosage' }
+    
+        ,{ id: 'Drug', name: 'DRUG', icon: 'view_list', route: '/main/Drug' }
+    
+        ,{ id: 'Patient', name: 'PATIENT', icon: 'view_list', route: '/main/Patient' }
+    
+        ,{ id: 'PatientMedication', name: 'PATIENTMEDICATION', icon: 'view_list', route: '/main/PatientMedication' }
+    
+        ,{ id: 'Reading', name: 'READING', icon: 'view_list', route: '/main/Reading' }
+    
+        ,{ id: 'Recommendation', name: 'RECOMMENDATION', icon: 'view_list', route: '/main/Recommendation' }
+    
+    ] 
+},
     
     { id: 'settings', name: 'Settings', icon: 'settings', route: '/main/settings'}
     ,{ id: 'about', name: 'About', icon: 'info', route: '/main/about'}
@@ -51,6 +53,8 @@ export const MENU_COMPONENTS = [
     ,DrugCardComponent
 
     ,PatientCardComponent
+
+    ,PatientMedicationCardComponent
 
     ,ReadingCardComponent
 

@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Numeric, String, text
+from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Numeric, String, Text, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -9,8 +9,8 @@ from sqlalchemy.ext.declarative import declarative_base
 # Alter this file per your database maintenance policy
 #    See https://apilogicserver.github.io/Docs/Project-Rebuild/#rebuilding
 #
-# Created:  February 01, 2025 11:56:17
-# Database: postgresql://postgres:postgres@127.0.0.1:5432/rightmetrics
+# Created:  February 12, 2025 08:56:12
+# Database: postgresql://postgres:postgres@127.0.0.1:5432/medai
 # Dialect:  postgresql
 #
 # mypy: ignore-errors
@@ -49,7 +49,11 @@ class Drug(Base):  # type: ignore
 
     id = Column(BigInteger, server_default=text("nextval('drug_id_seq'::regclass)"), primary_key=True)
     drug_name = Column(String(256), nullable=False)
+    dosage = Column(Numeric(10, 4))
+    dosage_unit = Column(String(10))
     drug_type = Column(String(256))
+    manufacturer = Column(String(256))
+    side_effects = Column(Text)
 
     # parent relationships (access parent)
 
@@ -57,6 +61,7 @@ class Drug(Base):  # type: ignore
     ContraindicationList : Mapped[List["Contraindication"]] = relationship(foreign_keys='[Contraindication.drug_id_1]', back_populates="drug")
     ContraindicationList1 : Mapped[List["Contraindication"]] = relationship(foreign_keys='[Contraindication.drug_id_2]', back_populates="drug1")
     DosageList : Mapped[List["Dosage"]] = relationship(back_populates="drug")
+    PatientMedicationList : Mapped[List["PatientMedication"]] = relationship(back_populates="drug")
     RecommendationList : Mapped[List["Recommendation"]] = relationship(back_populates="drug")
 
 
@@ -76,6 +81,7 @@ class Patient(Base):  # type: ignore
     # parent relationships (access parent)
 
     # child relationships (access children)
+    PatientMedicationList : Mapped[List["PatientMedication"]] = relationship(back_populates="patient")
     ReadingList : Mapped[List["Reading"]] = relationship(back_populates="patient")
     RecommendationList : Mapped[List["Recommendation"]] = relationship(back_populates="patient")
 
@@ -88,7 +94,7 @@ class Contraindication(Base):  # type: ignore
     id = Column(BigInteger, server_default=text("nextval('contraindication_id_seq'::regclass)"), primary_key=True)
     drug_id_1 = Column(ForeignKey('drug.id'), nullable=False)
     drug_id_2 = Column(ForeignKey('drug.id'), nullable=False)
-    description = Column(String(256))
+    description = Column(Text)
 
     # parent relationships (access parent)
     drug : Mapped["Drug"] = relationship(foreign_keys='[Contraindication.drug_id_1]', back_populates=("ContraindicationList"))
@@ -108,6 +114,7 @@ class Dosage(Base):  # type: ignore
     drug_type = Column(String(256))
     min_dose = Column(Numeric(10, 4))
     max_dose = Column(Numeric(10, 4))
+    dose_unit = Column(String(10))
     min_age = Column(Numeric(10, 4))
     max_age = Column(Numeric(10, 4))
     min_weight = Column(Numeric(10, 4))
@@ -117,6 +124,24 @@ class Dosage(Base):  # type: ignore
 
     # parent relationships (access parent)
     drug : Mapped["Drug"] = relationship(back_populates=("DosageList"))
+
+    # child relationships (access children)
+
+
+
+class PatientMedication(Base):  # type: ignore
+    __tablename__ = 'patient_medication'
+    _s_collection_name = 'PatientMedication'  # type: ignore
+
+    id = Column(BigInteger, server_default=text("nextval('patient_medication_id_seq'::regclass)"), primary_key=True)
+    patient_id = Column(ForeignKey('patient.id', ondelete='CASCADE'), nullable=False)
+    drug_id = Column(ForeignKey('drug.id'), nullable=False)
+    dosage = Column(Numeric(10, 4))
+    dosage_unit = Column(String(10))
+
+    # parent relationships (access parent)
+    drug : Mapped["Drug"] = relationship(back_populates=("PatientMedicationList"))
+    patient : Mapped["Patient"] = relationship(back_populates=("PatientMedicationList"))
 
     # child relationships (access children)
 
@@ -149,6 +174,7 @@ class Recommendation(Base):  # type: ignore
     patient_id = Column(ForeignKey('patient.id', ondelete='CASCADE'), nullable=False)
     drug_id = Column(ForeignKey('drug.id'), nullable=False)
     dosage = Column(Numeric(10, 4))
+    dosage_unit = Column(String(10))
     recommendation_date = Column(DateTime, server_default=text("now()"))
 
     # parent relationships (access parent)

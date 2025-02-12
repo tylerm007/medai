@@ -189,8 +189,7 @@ def admin_events(flask_app: Flask, args: Args, validation_error: ValidationError
         Enable CORS. Disable it if you don't need CORS or install Cors Library
         https://parzibyte.me/blog
         '''
-        response.headers[
-            "Access-Control-Allow-Origin"] = "*"  # <- You can change "*" for a domain for example "http://localhost"
+        response.headers["Access-Control-Allow-Origin"] = "*"  # <- You can change "*" for a domain for example "http://localhost"
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS, PUT, DELETE, PATCH"
         response.headers["Access-Control-Allow-Headers"] = \

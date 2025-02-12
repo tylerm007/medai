@@ -1,45 +1,71 @@
-# First, build image: sh devops/docker-image/build_image.sh .
-
-# ALERT - this is a pre-configured for the mysql classicmodels sample database
-# see https://apilogicserver.github.io/Docs/Database-Docker/#classicmodels-mysql-docker
-# you will need to alter APILOGICPROJECT_SQLALCHEMY_DATABASE_URI (2 lines) for your database & auth
-# and, in the case of demo (sqlite), comment them out
-
-# cd <project>  
-# sh ./devops/docker-compose-dev-local/docker-compose.sh
-# --> builds, runs at localhost:5656
-
-version: "3.5"
 
 services:
-
-    # TODO - alter this for your database
-    # Postgres example: https://github.com/ApiLogicServer/postgres-nw/blob/main/devops/docker-compose-dev-local/docker-compose-dev-local.yml
-    mysql-service:
-        image: apilogicserver/mysql8.0:latest
-        restart: always
-        environment:
-            - MYSQL_USER=root
-            - MYSQL_PASSWORD=p
-            - MYSQL_ROOT_PASSWORD=p
-        ports:
-            # <Port exposed> : <MySQL Port running inside container>
-            - '3306:3306'
-        expose:
-            # Opens port 3306 on the container
-            - '3306'
-
-    api-logic-server:
+    apilogicserver:
         image: tylerm007/medai:latest
+        # instead using a built image, uncomment the following to build the image dynamically
+        # build:
+        #     context: ../..
+        #     dockerfile: ./devops/docker-compose/Dockerfile.dockerfile
         environment:
           - APILOGICPROJECT_VERBOSE=true
-          - SECURITY_ENABLED=true
+          - APILOGICPROJECT_IS_DOCKER=true
+          - APILOGICPROJECT_SECURITY_ENABLED=true
           ## TODO: verify Database uri's here, 
-          - APILOGICPROJECT_SQLALCHEMY_DATABASE_URI=postgresql://postgres:p@postgresql-service/rightmetrics
-          - APILOGICPROJECT_SQLALCHEMY_DATABASE_URI_AUTHENTICATION=postgresql://postgres:p@postgresql-service/authdb
-          # - APILOGICPROJECT_SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:p@mysql-service:3306/rightmetrics
-          # - APILOGICPROJECT_SQLALCHEMY_DATABASE_URI_AUTHENTICATION=mysql+pymysql://root:p@mysql-service:3306/authdb
+          - APILOGICPROJECT_SQLALCHEMY_DATABASE_URI=postgresql://postgres:postgres@postgresql-service/medai
+          - APILOGICPROJECT_SQLALCHEMY_DATABASE_URI_AUTHENTICATION=postgresql://postgres:postgres@postgresql-service/authdb
         expose:
-          - 5656
+            - 5656
         ports:
           - 5656:5656
+        #volumes:
+            # relative path - thanks https://stackoverflow.com/questions/46907558/docker-compose-relative-paths-vs-docker-volume
+            # - /Users/val/dev/ApiLogicServer/ApiLogicServer-dev/org_git/docker-compose-nw-postgres:/app
+            #- ./../..:/app
+        # https://stackoverflow.com/questions/39460892/gunicorn-no-module-named-myproject
+        #command: /usr/local/bin/gunicorn --reload --workers 2 --worker-connections 2 --access-logfile=- --pythonpath /app -b :5000 api_logic_server_run:flask_app 
+        #working_dir: /app/ApiLogicProject 
+        depends_on:
+            - postgresql-service
+
+
+    postgresql-service:
+        image: postgres:10.5
+        restart: always
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        logging:
+          options:
+            max-size: 10m
+            max-file: "3"
+        ports:
+          - '5432:5432'
+        volumes: 
+          - ./postgres-data:/var/lib/postgresql/data
+          # copy the sql script to create tables
+          - ../medai.sql:/docker-entrypoint-initdb.d/media.sql
+          - ../auth-db/authdb_postgres.sql:/docker-entrypoint-initdb.d/authdb_postgres.sql
+  
+    media-front-end:
+        image: tylerm007/medai_frontend:latest
+        container_name: media-front-end
+        expose:
+          - 80
+        ports:
+          - 80:80
+        #volumes:
+        # local:path-in-container
+        #  - ../../ui/app/dist:/home/node  
+        #volumes:
+          # local:path-in-container
+          #- ../ui/app/nginx:/etc/nginx  
+          #- ./Users/tylerband/medai+/medai2/ui/app/dist:/usr/share/nginx/html
+        depends_on:
+          - apilogicserver
+        environment:
+          - NODE_ENV=production
+          - API_URL=http://apilogicserver:5656/ontimizeweb/services/rest
+
+networks:
+  docker-compose-dev-local_default:
+    driver: bridge

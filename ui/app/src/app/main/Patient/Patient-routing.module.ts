@@ -14,6 +14,13 @@ const routes: Routes = [
       }
     }
   },{
+    path: ':patient_id/PatientMedication', loadChildren: () => import('../PatientMedication/PatientMedication.module').then(m => m.PatientMedicationModule),
+    data: {
+        oPermission: {
+            permissionId: 'PatientMedication-detail-permissions'
+        }
+    }
+},{
     path: ':patient_id/Reading', loadChildren: () => import('../Reading/Reading.module').then(m => m.ReadingModule),
     data: {
         oPermission: {

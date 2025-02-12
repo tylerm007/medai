@@ -90,11 +90,13 @@ class Config:
     FLASK_APP = environ.get("FLASK_APP")
     FLASK_ENV = environ.get("FLASK_ENV")
     DEBUG = environ.get("DEBUG")
-
+            
+    running_at = Path(__file__)
+    project_abs_dir = running_at.parent.absolute()
 
     # Database
     db_path = str(project_path.joinpath('database/db.sqlite'))
-    SQLALCHEMY_DATABASE_URI : typing.Optional[str] = f"postgresql://postgres:postgres@127.0.0.1:5432/rightmetrics"
+    SQLALCHEMY_DATABASE_URI : typing.Optional[str] = f"postgresql://postgres:postgres@127.0.0.1:5432/medai"
     # override SQLALCHEMY_DATABASE_URI here as required
 
     BACKTIC_AS_QUOTE = False # use backtic as quote for table names for API Bridge
@@ -143,8 +145,10 @@ class Config:
         app_logger.info(f'config.py - security disabled')
 
     # Begin Multi-Database URLs (from ApiLogicServer add-db...)
-    auth_db_path = str(project_path.joinpath('database/authentication_db.sqlite'))
-    SQLALCHEMY_DATABASE_URI_AUTHENTICATION = f'sqlite:///{auth_db_path}'
+
+
+    #SQLALCHEMY_DATABASE_URI_AUTHENTICATION = 'sqlite:///../database/authentication_db.sqlite'
+    SQLALCHEMY_DATABASE_URI_AUTHENTICATION = 'postgresql://postgres:postgres@127.0.0.1:5432/authdb'
     app_logger.info(f'config.py - SQLALCHEMY_DATABASE_URI_AUTHENTICATION: {SQLALCHEMY_DATABASE_URI_AUTHENTICATION}\n')
 
     # as desired, use env variable: export SQLALCHEMY_DATABASE_URI='sqlite:////Users/val/dev/servers/docker_api_logic_project/database/db.sqliteXX'
