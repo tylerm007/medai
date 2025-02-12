@@ -1,6 +1,6 @@
--- drop database rightmetrics;
--- create database rightmetrics;
-
+-- drop database medai;
+-- create database medai;
+-- \c media;
 -- patient table
 create table patient (
 	id SERIAL8 PRIMARY KEY,
@@ -29,16 +29,29 @@ create table reading (
 create table drug (
 	id SERIAL8 PRIMARY KEY,
 	drug_name VARCHAR(256) NOT NULL,
-	drug_type VARCHAR(256)
-
+	dosage NUMERIC(10,4),
+	dosage_unit VARCHAR(10), -- default enum('mg', 'mcg', 'ml', 'unit'),
+	drug_type VARCHAR(256),
+	manufacturer VARCHAR(256), -- s/b lookup
+	side_effects TEXT
 );
 
+create table patient_medication (
+	id SERIAL8 PRIMARY KEY,
+	patient_id BIGINT NOT NULL,
+	drug_id BIGINT NOT NULL,
+	dosage NUMERIC(10,4),
+	dosage_unit VARCHAR(10), -- default enum('mg', 'mcg', 'ml', 'unit'),
+	FOREIGN KEY (drug_id) REFERENCES drug(id),
+	FOREIGN KEY (patient_id) REFERENCES patient(id) ON DELETE CASCADE
+);
 -- drug recommendation
 create table recommendation (
 	id SERIAL8 PRIMARY KEY,
 	patient_id BIGINT NOT NULL,
 	drug_id BIGINT NOT NULL,
 	dosage NUMERIC(10,4),
+	dosage_unit VARCHAR(10), -- default enum('mg', 'mcg', 'ml', 'unit'),
 	recommendation_date TIMESTAMP DEFAULT NOW(),
 	FOREIGN KEY (patient_id) REFERENCES patient(id) ON DELETE CASCADE,
 	FOREIGN KEY (drug_id) REFERENCES drug(id) 
@@ -53,6 +66,7 @@ create table dosage (
 	drug_type VARCHAR(256), -- parent copy
 	min_dose NUMERIC(10,4),
 	max_dose NUMERIC(10,4),
+	dose_unit VARCHAR(10), -- default enum('mg', 'mcg', 'ml', 'unit'),
 	min_age NUMERIC(10,4),
 	max_age NUMERIC(10,4),
 	min_weight NUMERIC(10,4),
@@ -66,7 +80,7 @@ create table contraindication (
 	id SERIAL8 PRIMARY KEY,
 	drug_id_1 BIGINT NOT NULL,
 	drug_id_2 BIGINT NOT NULL,
-	description VARCHAR(256),
+	description TEXT,
 	FOREIGN KEY (drug_id_1) REFERENCES drug(id),
 	FOREIGN KEY (drug_id_2) REFERENCES drug(id) 
 );
