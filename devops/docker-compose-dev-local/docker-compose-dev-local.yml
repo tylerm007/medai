@@ -2,6 +2,7 @@
 services:
     apilogicserver:
         image: tylerm007/medai:latest
+        container_name: medai_backend
         # instead using a built image, uncomment the following to build the image dynamically
         # build:
         #     context: ../..
@@ -22,7 +23,7 @@ services:
             # - /Users/val/dev/ApiLogicServer/ApiLogicServer-dev/org_git/docker-compose-nw-postgres:/app
             #- ./../..:/app
         # https://stackoverflow.com/questions/39460892/gunicorn-no-module-named-myproject
-        #command: /usr/local/bin/gunicorn --reload --workers 2 --worker-connections 2 --access-logfile=- --pythonpath /app -b :5000 api_logic_server_run:flask_app 
+        command: /usr/local/bin/gunicorn --reload --workers 2 --worker-connections 2 --access-logfile=- --pythonpath /app -b 0.0.0.0:5656 api_logic_server_run:flask_app 
         #working_dir: /app/ApiLogicProject 
         depends_on:
             - postgresql-service
@@ -48,7 +49,7 @@ services:
   
     media-front-end:
         image: tylerm007/medai_frontend:latest
-        container_name: media-front-end
+        container_name: medai_frontend
         expose:
           - 80
         ports:
@@ -65,7 +66,3 @@ services:
         environment:
           - NODE_ENV=production
           - API_URL=http://apilogicserver:5656/ontimizeweb/services/rest
-
-networks:
-  docker-compose-dev-local_default:
-    driver: bridge
