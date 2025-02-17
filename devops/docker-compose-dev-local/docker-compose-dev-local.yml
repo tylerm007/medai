@@ -15,7 +15,7 @@ services:
           - APILOGICPROJECT_SQLALCHEMY_DATABASE_URI=postgresql://postgres:postgres@postgresql-service/medai
           - APILOGICPROJECT_SQLALCHEMY_DATABASE_URI_AUTHENTICATION=postgresql://postgres:postgres@postgresql-service/authdb
         expose:
-            - 5656
+          - 5656
         ports:
           - 5656:5656
         #volumes:
@@ -23,7 +23,7 @@ services:
             # - /Users/val/dev/ApiLogicServer/ApiLogicServer-dev/org_git/docker-compose-nw-postgres:/app
             #- ./../..:/app
         # https://stackoverflow.com/questions/39460892/gunicorn-no-module-named-myproject
-        command: /usr/local/bin/gunicorn --reload --workers 2 --worker-connections 2 --access-logfile=- --pythonpath /app -b 0.0.0.0:5656 api_logic_server_run:flask_app 
+        #command: /usr/local/bin/gunicorn --reload --workers 2 --worker-connections 2 --access-logfile=- --pythonpath /app -b 0.0.0.0:5656 api_logic_server_run:flask_app 
         #working_dir: /app/ApiLogicProject 
         depends_on:
             - postgresql-service

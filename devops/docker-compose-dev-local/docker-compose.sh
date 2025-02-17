@@ -4,8 +4,8 @@
 # edit docker-compose-dev-local for database locations (comment out for demo)
 
 # cd <project root>
-# sh ./devops/docker-compose-dev-local/docker-compose.sh
-
+#
+ sh ./devops/docker-compose-dev-local/docker-compose.sh
 # runs at localhost:5656
 
 if [ -d "etc" ] 

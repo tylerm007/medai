@@ -18,7 +18,7 @@ export const CONFIG: Config = {
   uuid: 'com.ontimize.web.ngx.medai',
 
   // Title of the app
-  title: 'ApiLogicServer medai',
+  title: 'MedAI Plus',
 
   //  Language of the application.
   locale: 'en',

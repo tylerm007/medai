@@ -25,9 +25,12 @@ RUN npm install
 
 COPY . .
 
+#RUN apt-get clean
+#RUN echo 'Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcquire::BrokenProxy true;\n' > /etc/apt/apt.conf.d/99fixbadproxy
+
 # Generate the build of the application
 RUN npm run production
-RUN apt-get update && apt-get install -y nano
+#RUN apt-get update && apt-get install -y nano
 
 # Stage 2: Serve app with nginx server
 
