@@ -14,7 +14,26 @@
   <o-row attr="row1" layout-align="start stretch">
     <div fxLayout="row wrap" fxLayoutAlign="start start" fxFlex fxLayoutGap="14px">
       
-      <o-text-input #drug_name attr="drug_name" label=" drug_name*" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      <o-text-input #drug_name attr="drug_name" label=" drug_name" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+      <o-list-picker 
+        attr="dosage_unit"
+        service="DrugUnit" 
+        entity="DrugUnitType"
+        fxFlex="30" 
+        query-on-init="no" 
+        query-on-bind="yes" 
+        required="no" 
+        enabled="yes" 
+        filter="yes"
+        value-column="unit_name" 
+        value-column-type="VARCHAR"  
+        keys="unit_name" 
+        columns="unit_name;dosage_unit;unit_name" 
+        title="dosage_unit"
+        visible-columns="unit_name;unit_name" 
+        separator=" - " width="680px" class="form-field">
+</o-list-picker>
       
       <o-list-picker 
         attr="drug_id"
@@ -40,8 +59,6 @@
       <o-real-input #min_dose attr="min_dose" label="min_dose" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
       
       <o-real-input #max_dose attr="max_dose" label="max_dose" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
-      
-      <o-text-input #dose_unit attr="dose_unit" label="dose_unit" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
       
       <o-real-input #min_age attr="min_age" label="min_age" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
       

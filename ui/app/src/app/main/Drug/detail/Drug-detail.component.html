@@ -14,11 +14,28 @@
   <o-row attr="row1" layout-align="start stretch">
     <div fxLayout="row wrap" fxLayoutAlign="start start" fxFlex fxLayoutGap="14px">
       
-      <o-text-input #drug_name attr="drug_name" label=" drug_name*" enabled="yes" required="yes" fxFlex="20%" class="form-field"></o-text-input>
+      <o-text-input #drug_name attr="drug_name" label=" drug_name" enabled="yes" required="yes" fxFlex="20%" class="form-field"></o-text-input>
+      
+      <o-list-picker 
+        attr="dosage_unit"
+        service="DrugUnit" 
+        entity="DrugUnitType"
+        fxFlex="30" 
+        query-on-init="no" 
+        query-on-bind="yes" 
+        required="no" 
+        enabled="yes" 
+        filter="yes"
+        value-column="unit_name" 
+        value-column-type="VARCHAR"  
+        keys="unit_name" 
+        columns="unit_name;dosage_unit;unit_name" 
+        title="dosage_unit"
+        visible-columns="unit_name;unit_name" 
+        separator=" - " width="680px" class="form-field">
+</o-list-picker>
       
       <o-real-input #dosage attr="dosage" label="dosage" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
-      
-      <o-text-input #dosage_unit attr="dosage_unit" label="dosage_unit" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
       
       <o-text-input #drug_type attr="drug_type" label="drug_type" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
       
@@ -61,7 +78,7 @@
         edition-mode="dblclick" 
         horizontal-scroll="yes" class="fill-form">
         
-          <o-table-column #description attr="description" title=" description*" editable="no" required="no" content-align="left"></o-table-column>
+          <o-table-column #description attr="description" title=" description" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column attr="drug_id_1" title="drug_id_1">
     <o-table-cell-renderer-service attr="drug_id_1" 
@@ -116,7 +133,7 @@
         edition-mode="dblclick" 
         horizontal-scroll="yes" class="fill-form">
         
-          <o-table-column #description attr="description" title=" description*" editable="no" required="no" content-align="left"></o-table-column>
+          <o-table-column #description attr="description" title=" description" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column attr="drug_id_1" title="drug_id_1">
     <o-table-cell-renderer-service attr="drug_id_1" 
@@ -151,11 +168,11 @@
         entity="Dosage" 
         keys="id"
         parent-keys="drug_id:id"
-        columns="drug_name;drug_id;drug_type;min_dose;max_dose;dose_unit;min_age;max_age;min_weight;max_weight;min_creatine;max_creatine;id"  
+        columns="drug_name;dosage_unit;drug_id;drug_type;min_dose;max_dose;min_age;max_age;min_weight;max_weight;min_creatine;max_creatine;id"  
         horizontal-scroll="yes"
         detail-form-route="Dosage" 
         edit-form-route="Dosage"
-        visible-columns="drug_name;drug_id;drug_type;min_dose;max_dose;dose_unit;min_age;max_age;min_weight;max_weight;min_creatine;max_creatine;id"  
+        visible-columns="drug_name;dosage_unit;drug_id;drug_type;min_dose;max_dose;min_age;max_age;min_weight;max_weight;min_creatine;max_creatine;id"  
         sort-columns="drug_name" 
         query-rows="25" 
         quick-filter="yes"
@@ -171,7 +188,9 @@
         edition-mode="dblclick" 
         horizontal-scroll="yes" class="fill-form">
         
-          <o-table-column #drug_name attr="drug_name" title=" drug_name*" editable="no" required="no" content-align="left"></o-table-column>
+          <o-table-column #drug_name attr="drug_name" title=" drug_name" editable="no" required="no" content-align="left"></o-table-column>
+        
+          <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column attr="drug_id" title="drug_id">
     <o-table-cell-renderer-service attr="drug_id" 
@@ -187,8 +206,6 @@
           <o-table-column #min_dose attr="min_dose" title="min_dose" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
         
           <o-table-column #max_dose attr="max_dose" title="max_dose" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #dose_unit attr="dose_unit" title="dose_unit" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column #min_age attr="min_age" title="min_age" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
         
@@ -217,11 +234,11 @@
         entity="PatientMedication" 
         keys="id"
         parent-keys="drug_id:id"
-        columns="id;drug_id;patient_id;dosage;dosage_unit"  
+        columns="id;dosage_unit;drug_id;patient_id;dosage"  
         horizontal-scroll="yes"
         detail-form-route="PatientMedication" 
         edit-form-route="PatientMedication"
-        visible-columns="id;drug_id;patient_id;dosage;dosage_unit"  
+        visible-columns="id;dosage_unit;drug_id;patient_id;dosage"  
         sort-columns="id" 
         query-rows="25" 
         quick-filter="yes"
@@ -237,7 +254,9 @@
         edition-mode="dblclick" 
         horizontal-scroll="yes" class="fill-form">
         
-          <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+          <o-table-column #id attr="id" title=" id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+        
+          <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column attr="drug_id" title="drug_id">
     <o-table-cell-renderer-service attr="drug_id" 
@@ -258,8 +277,6 @@
 </o-table-column>
         
           <o-table-column #dosage attr="dosage" title="dosage" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
         
         <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
       </o-table>
@@ -274,11 +291,11 @@
         entity="Recommendation" 
         keys="id"
         parent-keys="drug_id:id"
-        columns="id;drug_id;patient_id;dosage;dosage_unit;recommendation_date"  
+        columns="id;dosage_unit;drug_id;patient_id;dosage;recommendation_date"  
         horizontal-scroll="yes"
         detail-form-route="Recommendation" 
         edit-form-route="Recommendation"
-        visible-columns="id;drug_id;patient_id;dosage;dosage_unit;recommendation_date"  
+        visible-columns="id;dosage_unit;drug_id;patient_id;dosage;recommendation_date"  
         sort-columns="id" 
         query-rows="25" 
         quick-filter="yes"
@@ -294,7 +311,9 @@
         edition-mode="dblclick" 
         horizontal-scroll="yes" class="fill-form">
         
-          <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+          <o-table-column #id attr="id" title=" id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+        
+          <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column attr="drug_id" title="drug_id">
     <o-table-cell-renderer-service attr="drug_id" 
@@ -315,8 +334,6 @@
 </o-table-column>
         
           <o-table-column #dosage attr="dosage" title="dosage" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-date-input #recommendation_date attr="recommendation_date" type="timestamp" label="recommendation_date" editable="no" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
         

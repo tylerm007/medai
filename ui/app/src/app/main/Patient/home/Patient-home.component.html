@@ -6,9 +6,9 @@
             entity="Patient" 
             title="PATIENT"
             keys="id"
-            columns="name;birth_date;weight_kg;creatine_mg_dl;medical_record_number;created_date;id" 
+            columns="name;birth_date;age;weight_kg;patient_sex;creatine_mg_dl;medical_record_number;created_date;id" 
             header-actions="R;D"
-            visible-columns="name;birth_date;weight_kg;creatine_mg_dl;medical_record_number;created_date;id"  
+            visible-columns="name;birth_date;age;weight_kg;patient_sex;creatine_mg_dl;medical_record_number;created_date;id"  
             sort-columns="name" 
             query-rows="20" 
             quick-filter="yes"
@@ -22,11 +22,15 @@
             show-title="yes"
             export-button="yes">
             
-            <o-table-column #name attr="name" title=" name*" editable="no" required="yes" content-align="left"></o-table-column>
+            <o-table-column #name attr="name" title=" name" editable="no" required="yes" content-align="left"></o-table-column>
             
             <o-date-input #birth_date attr="birth_date" type="date" label="birth_date" enabled="yes" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
             
+            <o-table-column #age attr="age" title="age" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
             <o-table-column #weight_kg attr="weight_kg" title="weight_kg" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #patient_sex attr="patient_sex" title="patient_sex" editable="no" required="no" content-align="left"></o-table-column>
             
             <o-table-column #creatine_mg_dl attr="creatine_mg_dl" title="creatine_mg_dl" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
             

@@ -1,0 +1,54 @@
+<o-form-layout-manager attr="ReadingHistory" mode="tab" title="READINGHISTORY">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="ReadingHistoryTable" 
+            service="ReadingHistory" 
+            entity="ReadingHistory" 
+            title="READINGHISTORY"
+            keys="id"
+            columns="id;reading_id;reading_date;reading_time;morning;afternoon;dinner;bedtime;notes_for_day" 
+            header-actions="R;D"
+            visible-columns="id;reading_id;reading_date;reading_time;morning;afternoon;dinner;bedtime;notes_for_day"  
+            sort-columns="id" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #id attr="id" title=" id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+            
+            <o-table-column attr="reading_id" title="reading_id">
+    <o-table-cell-renderer-service attr="reading_id" 
+        service="Reading" entity="ReadingType" columns="id;id"
+        parent-keys="id:reading_id"
+        value-column="id" keys="reading_id"
+        visible-columns="id" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-date-input #reading_date attr="reading_date" type="date" label="reading_date" enabled="yes" required="yes" format="LL" fxFlex="20%" class="form-field"></o-date-input>
+            
+            <o-table-column #reading_time attr="reading_time" title="reading_time" editable="no" required="yes" content-align="left"></o-table-column>
+            
+            <o-table-column #morning attr="morning" title="morning" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
+            <o-table-column #afternoon attr="afternoon" title="afternoon" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
+            <o-table-column #dinner attr="dinner" title="dinner" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
+            <o-table-column #bedtime attr="bedtime" title="bedtime" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
+            <o-table-column #notes_for_day attr="notes_for_day" title="notes_for_day" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>

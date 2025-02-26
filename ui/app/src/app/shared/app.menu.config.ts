@@ -6,11 +6,17 @@ import { DosageCardComponent } from './Dosage-card/Dosage-card.component';
 
 import { DrugCardComponent } from './Drug-card/Drug-card.component';
 
+import { DrugUnitCardComponent } from './DrugUnit-card/DrugUnit-card.component';
+
 import { PatientCardComponent } from './Patient-card/Patient-card.component';
+
+import { PatientLabCardComponent } from './PatientLab-card/PatientLab-card.component';
 
 import { PatientMedicationCardComponent } from './PatientMedication-card/PatientMedication-card.component';
 
 import { ReadingCardComponent } from './Reading-card/Reading-card.component';
+
+import { ReadingHistoryCardComponent } from './ReadingHistory-card/ReadingHistory-card.component';
 
 import { RecommendationCardComponent } from './Recommendation-card/Recommendation-card.component';
 
@@ -22,24 +28,26 @@ export const MENU_CONFIG: MenuRootItem[] = [
     id: 'data', name: ' data', icon: 'remove_red_eye', opened: true,
     items: [
     
-        { id: 'Patient', name: 'PATIENT', icon: 'view_list', route: '/main/Patient' }
+        { id: 'Patient', name: 'Patient', icon: 'view_list', route: '/main/Patient' }
     
-        ,{ id: 'Reading', name: 'READING', icon: 'view_list', route: '/main/Reading' }
-
-        ,{ id: 'PatientMedication', name: 'PATIENTMEDICATION', icon: 'view_list', route: '/main/PatientMedication' }
+        ,{ id: 'Reading', name: 'Readings', icon: 'view_list', route: '/main/Reading' }
+         ,{ id: 'ReadingHistory', name: 'History', icon: 'view_list', route: '/main/ReadingHistory' }
+        ,{ id: 'PatientMedication', name: 'Medication', icon: 'view_list', route: '/main/PatientMedication' }
     
-        ,{ id: 'Contraindication', name: 'CONTRAINDICATION', icon: 'view_list', route: '/main/Contraindication' }
+        ,{ id: 'Contraindication', name: 'Contraindication', icon: 'view_list', route: '/main/Contraindication' }
     
-        ,{ id: 'Dosage', name: 'DOSAGE', icon: 'view_list', route: '/main/Dosage' }
+        ,{ id: 'Dosage', name: 'Dosage', icon: 'view_list', route: '/main/Dosage' }
     
-        ,{ id: 'Drug', name: 'DRUG', icon: 'view_list', route: '/main/Drug' }
+        ,{ id: 'Drug', name: 'Drug', icon: 'view_list', route: '/main/Drug' }
     
-        ,{ id: 'Recommendation', name: 'RECOMMENDATION', icon: 'view_list', route: '/main/Recommendation' }
+        ,{ id: 'Recommendation', name: 'Recommendation', icon: 'view_list', route: '/main/Recommendation' }
+	 ,{ id: 'PatientLab', name: 'Labs', icon: 'view_list', route: '/main/PatientLab' }
     
     ] 
 },
     
     { id: 'settings', name: 'Settings', icon: 'settings', route: '/main/settings'}
+     ,{ id: 'DrugUnit', name: 'DRUGUNIT', icon: 'view_list', route: '/main/DrugUnit' }
     ,{ id: 'about', name: 'About', icon: 'info', route: '/main/about'}
     ,{ id: 'logout', name: 'LOGOUT', route: '/login', icon: 'power_settings_new', confirm: 'yes' }
 ];
@@ -52,11 +60,17 @@ export const MENU_COMPONENTS = [
 
     ,DrugCardComponent
 
+    ,DrugUnitCardComponent
+
     ,PatientCardComponent
+
+    ,PatientLabCardComponent
 
     ,PatientMedicationCardComponent
 
     ,ReadingCardComponent
+
+    ,ReadingHistoryCardComponent
 
     ,RecommendationCardComponent
 

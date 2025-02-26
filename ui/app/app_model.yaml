@@ -1,5 +1,5 @@
 about:
-  date: February 12, 2025 08:56:12
+  date: February 26, 2025 08:55:19
   recent_changes: works with modified safrs-react-admin
   version: 0.0.0
 api_root: '{http_type}://{swagger_host}:{port}/{api}'
@@ -56,6 +56,9 @@ entities:
       sort: true
       template: text
       type: VARCHAR(256)
+    - name: dosage_unit
+      template: text
+      type: VARCHAR(10)
     - name: drug_id
       required: true
       template: integer
@@ -69,13 +72,12 @@ entities:
     - name: max_dose
       template: real
       type: NUMERIC(10, 4)
-    - name: dose_unit
-      template: text
-      type: VARCHAR(10)
-    - name: min_age
+    - default: '18'
+      name: min_age
       template: real
       type: NUMERIC(10, 4)
-    - name: max_age
+    - default: '105'
+      name: max_age
       template: real
       type: NUMERIC(10, 4)
     - name: min_weight
@@ -108,6 +110,11 @@ entities:
     tab_groups:
     - direction: toone
       fks:
+      - dosage_unit
+      name: drug_unit
+      resource: DrugUnit
+    - direction: toone
+      fks:
       - drug_id
       name: drug
       resource: Drug
@@ -121,12 +128,12 @@ entities:
       sort: true
       template: text
       type: VARCHAR(256)
-    - name: dosage
-      template: real
-      type: NUMERIC(10, 4)
     - name: dosage_unit
       template: text
       type: VARCHAR(10)
+    - name: dosage
+      template: real
+      type: NUMERIC(10, 4)
     - name: drug_type
       template: text
       type: VARCHAR(256)
@@ -177,7 +184,53 @@ entities:
       - drug_id
       name: RecommendationList
       resource: Recommendation
+    - direction: toone
+      fks:
+      - dosage_unit
+      name: drug_unit
+      resource: DrugUnit
     type: Drug
+  DrugUnit:
+    columns:
+    - label: ' unit_name*'
+      name: unit_name
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR(10)
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: unit_name
+    hidden: {}
+    home_template: home_template.html
+    label: DrugUnit
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - unit_name
+    tab_groups:
+    - direction: tomany
+      fks:
+      - dosage_unit
+      name: DosageList
+      resource: Dosage
+    - direction: tomany
+      fks:
+      - dosage_unit
+      name: DrugList
+      resource: Drug
+    - direction: tomany
+      fks:
+      - dosage_unit
+      name: PatientMedicationList
+      resource: PatientMedication
+    - direction: tomany
+      fks:
+      - dosage_unit
+      name: RecommendationList
+      resource: Recommendation
+    type: DrugUnit
   Patient:
     columns:
     - label: ' name*'
@@ -189,9 +242,16 @@ entities:
       type: VARCHAR(256)
     - name: birth_date
       type: DATE
+    - name: age
+      template: real
+      type: NUMERIC(10, 1)
     - name: weight_kg
       template: integer
       type: BIGINT
+    - default: '''M''::character varying'
+      name: patient_sex
+      template: text
+      type: VARCHAR(1)
     - name: creatine_mg_dl
       template: real
       type: NUMERIC(10, 4)
@@ -219,6 +279,11 @@ entities:
     - direction: tomany
       fks:
       - patient_id
+      name: PatientLabList
+      resource: PatientLab
+    - direction: tomany
+      fks:
+      - patient_id
       name: PatientMedicationList
       resource: PatientMedication
     - direction: tomany
@@ -232,6 +297,56 @@ entities:
       name: RecommendationList
       resource: Recommendation
     type: Patient
+  PatientLab:
+    columns:
+    - label: ' lab_name*'
+      name: lab_name
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR(256)
+    - name: patient_id
+      required: true
+      template: integer
+      type: BIGINT
+    - name: lab_test_name
+      required: true
+      template: text
+      type: VARCHAR(256)
+    - name: lab_test_code
+      template: text
+      type: VARCHAR(256)
+    - name: lab_test_description
+      template: text
+      type: TEXT
+    - name: lab_date
+      type: DATE
+    - name: lab_result
+      template: text
+      type: JSON
+    - default: nextval('patient_lab_id_seq'::regclass)
+      name: id
+      required: true
+      template: integer
+      type: BIGINT
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: lab_name
+    hidden: {}
+    home_template: home_template.html
+    label: PatientLab
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - id
+    tab_groups:
+    - direction: toone
+      fks:
+      - patient_id
+      name: patient
+      resource: Patient
+    type: PatientLab
   PatientMedication:
     columns:
     - default: nextval('patient_medication_id_seq'::regclass)
@@ -242,6 +357,9 @@ entities:
       sort: true
       template: integer
       type: BIGINT
+    - name: dosage_unit
+      template: text
+      type: VARCHAR(10)
     - name: drug_id
       required: true
       template: integer
@@ -253,9 +371,6 @@ entities:
     - name: dosage
       template: real
       type: NUMERIC(10, 4)
-    - name: dosage_unit
-      template: text
-      type: VARCHAR(10)
     detail_template: detail_template.html
     exclude: 'false'
     favorite: id
@@ -267,6 +382,11 @@ entities:
     primary_key:
     - id
     tab_groups:
+    - direction: toone
+      fks:
+      - dosage_unit
+      name: drug_unit
+      resource: DrugUnit
     - direction: toone
       fks:
       - drug_id
@@ -292,6 +412,58 @@ entities:
       required: true
       template: integer
       type: BIGINT
+    - name: time_of_reading
+      required: true
+      template: text
+      type: VARCHAR(10)
+    - name: reading_date
+      type: DATE
+    - name: notes
+      template: text
+      type: TEXT
+    detail_template: detail_template.html
+    exclude: 'false'
+    favorite: id
+    hidden: {}
+    home_template: home_template.html
+    label: Reading
+    mode: tab
+    new_template: new_template.html
+    primary_key:
+    - id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - reading_id
+      name: ReadingHistoryList
+      resource: ReadingHistory
+    - direction: toone
+      fks:
+      - patient_id
+      name: patient
+      resource: Patient
+    type: Reading
+  ReadingHistory:
+    columns:
+    - default: nextval('reading_history_id_seq'::regclass)
+      label: ' id*'
+      name: id
+      required: true
+      search: true
+      sort: true
+      template: integer
+      type: BIGINT
+    - name: reading_id
+      required: true
+      template: integer
+      type: BIGINT
+    - name: reading_date
+      required: true
+      type: DATE
+    - name: reading_time
+      required: true
+      template: text
+      type: VARCHAR(10)
     - name: morning
       template: real
       type: NUMERIC(10, 4)
@@ -304,14 +476,15 @@ entities:
     - name: bedtime
       template: real
       type: NUMERIC(10, 4)
-    - name: reading_date
-      type: DATETIME
+    - name: notes_for_day
+      template: text
+      type: TEXT
     detail_template: detail_template.html
     exclude: 'false'
     favorite: id
     hidden: {}
     home_template: home_template.html
-    label: Reading
+    label: ReadingHistory
     mode: tab
     new_template: new_template.html
     primary_key:
@@ -319,10 +492,10 @@ entities:
     tab_groups:
     - direction: toone
       fks:
-      - patient_id
-      name: patient
-      resource: Patient
-    type: Reading
+      - reading_id
+      name: reading
+      resource: Reading
+    type: ReadingHistory
   Recommendation:
     columns:
     - default: nextval('recommendation_id_seq'::regclass)
@@ -333,6 +506,9 @@ entities:
       sort: true
       template: integer
       type: BIGINT
+    - name: dosage_unit
+      template: text
+      type: VARCHAR(10)
     - name: drug_id
       required: true
       template: integer
@@ -344,9 +520,6 @@ entities:
     - name: dosage
       template: real
       type: NUMERIC(10, 4)
-    - name: dosage_unit
-      template: text
-      type: VARCHAR(10)
     - name: recommendation_date
       type: DATETIME
     detail_template: detail_template.html
@@ -360,6 +533,11 @@ entities:
     primary_key:
     - id
     tab_groups:
+    - direction: toone
+      fks:
+      - dosage_unit
+      name: drug_unit
+      resource: DrugUnit
     - direction: toone
       fks:
       - drug_id

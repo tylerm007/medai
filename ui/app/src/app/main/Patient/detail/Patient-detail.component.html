@@ -14,11 +14,15 @@
   <o-row attr="row1" layout-align="start stretch">
     <div fxLayout="row wrap" fxLayoutAlign="start start" fxFlex fxLayoutGap="14px">
       
-      <o-text-input #name attr="name" label=" name*" enabled="yes" required="yes" fxFlex="20%" class="form-field"></o-text-input>
+      <o-text-input #name attr="name" label=" name" enabled="yes" required="yes" fxFlex="20%" class="form-field"></o-text-input>
       
       <o-date-input #birth_date attr="birth_date" type="date" label="birth_date" enabled="yes" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
       
+      <o-real-input #age attr="age" label="age" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
+      
       <o-integer-input #weight_kg attr="weight_kg" label="weight_kg" type="integer" editable="no" required="no" ></o-integer-input>
+      
+      <o-text-input #patient_sex attr="patient_sex" label="patient_sex" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
       
       <o-real-input #creatine_mg_dl attr="creatine_mg_dl" label="creatine_mg_dl" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
       
@@ -33,6 +37,62 @@
       
       <mat-tab-group fxFill>
         
+        <mat-tab label="PATIENTLAB-patient_id">
+    <div layout-padding>
+      <o-table 
+        attr="PatientLabTable" 
+        service="PatientLab" 
+        entity="PatientLab" 
+        keys="id"
+        parent-keys="patient_id:id"
+        columns="lab_name;patient_id;lab_test_name;lab_test_code;lab_test_description;lab_date;lab_result;id"  
+        horizontal-scroll="yes"
+        detail-form-route="PatientLab" 
+        edit-form-route="PatientLab"
+        visible-columns="lab_name;patient_id;lab_test_name;lab_test_code;lab_test_description;lab_date;lab_result;id"  
+        sort-columns="lab_name" 
+        query-rows="25" 
+        quick-filter="yes"
+        row-height="medium" 
+        select-all-checkbox="true" 
+        pageable="yes"  
+        auto-adjust="true" 
+        virtual-scroll="yes" 
+        insert-button="yes" 
+        delete-button="yes" 
+        fixed-header="true" 
+        class="vertical-padding-8"
+        edition-mode="dblclick" 
+        horizontal-scroll="yes" class="fill-form">
+        
+          <o-table-column #lab_name attr="lab_name" title=" lab_name" editable="no" required="yes" content-align="left"></o-table-column>
+        
+          <o-table-column attr="patient_id" title="patient_id">
+    <o-table-cell-renderer-service attr="patient_id" 
+        service="Patient" entity="PatientType" columns="id;name"
+        parent-keys="id:patient_id"
+        value-column="name" keys="patient_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+        
+          <o-table-column #lab_test_name attr="lab_test_name" title="lab_test_name" editable="no" required="yes" content-align="left"></o-table-column>
+        
+          <o-table-column #lab_test_code attr="lab_test_code" title="lab_test_code" editable="no" required="no" content-align="left"></o-table-column>
+        
+          <o-table-column #lab_test_description attr="lab_test_description" title="lab_test_description" editable="no" required="no" content-align="left"></o-table-column>
+        
+          <o-date-input #lab_date attr="lab_date" type="date" label="lab_date" enabled="yes" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
+        
+          <o-table-column #lab_result attr="lab_result" title="lab_result" editable="no" required="no" content-align="left"></o-table-column>
+        
+          <o-table-column #id attr="id" title="id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+        
+        <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
+      </o-table>
+    </div>
+</mat-tab>
+        
         <mat-tab label="PATIENTMEDICATION-patient_id">
     <div layout-padding>
       <o-table 
@@ -41,11 +101,11 @@
         entity="PatientMedication" 
         keys="id"
         parent-keys="patient_id:id"
-        columns="id;drug_id;patient_id;dosage;dosage_unit"  
+        columns="id;dosage_unit;drug_id;patient_id;dosage"  
         horizontal-scroll="yes"
         detail-form-route="PatientMedication" 
         edit-form-route="PatientMedication"
-        visible-columns="id;drug_id;patient_id;dosage;dosage_unit"  
+        visible-columns="id;dosage_unit;drug_id;patient_id;dosage"  
         sort-columns="id" 
         query-rows="25" 
         quick-filter="yes"
@@ -61,7 +121,9 @@
         edition-mode="dblclick" 
         horizontal-scroll="yes" class="fill-form">
         
-          <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+          <o-table-column #id attr="id" title=" id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+        
+          <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column attr="drug_id" title="drug_id">
     <o-table-cell-renderer-service attr="drug_id" 
@@ -82,8 +144,6 @@
 </o-table-column>
         
           <o-table-column #dosage attr="dosage" title="dosage" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
         
         <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
       </o-table>
@@ -98,11 +158,11 @@
         entity="Reading" 
         keys="id"
         parent-keys="patient_id:id"
-        columns="id;patient_id;morning;afternoon;dinner;bedtime;reading_date"  
+        columns="id;patient_id;time_of_reading;reading_date;notes"  
         horizontal-scroll="yes"
         detail-form-route="Reading" 
         edit-form-route="Reading"
-        visible-columns="id;patient_id;morning;afternoon;dinner;bedtime;reading_date"  
+        visible-columns="id;patient_id;time_of_reading;reading_date;notes"  
         sort-columns="id" 
         query-rows="25" 
         quick-filter="yes"
@@ -118,7 +178,7 @@
         edition-mode="dblclick" 
         horizontal-scroll="yes" class="fill-form">
         
-          <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+          <o-table-column #id attr="id" title=" id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
         
           <o-table-column attr="patient_id" title="patient_id">
     <o-table-cell-renderer-service attr="patient_id" 
@@ -129,15 +189,11 @@
     </o-table-cell-renderer-service>
 </o-table-column>
         
-          <o-table-column #morning attr="morning" title="morning" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+          <o-table-column #time_of_reading attr="time_of_reading" title="time_of_reading" editable="no" required="yes" content-align="left"></o-table-column>
         
-          <o-table-column #afternoon attr="afternoon" title="afternoon" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+          <o-date-input #reading_date attr="reading_date" type="date" label="reading_date" enabled="yes" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
         
-          <o-table-column #dinner attr="dinner" title="dinner" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #bedtime attr="bedtime" title="bedtime" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-date-input #reading_date attr="reading_date" type="timestamp" label="reading_date" editable="no" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
+          <o-table-column #notes attr="notes" title="notes" editable="no" required="no" content-align="left"></o-table-column>
         
         <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
       </o-table>
@@ -152,11 +208,11 @@
         entity="Recommendation" 
         keys="id"
         parent-keys="patient_id:id"
-        columns="id;drug_id;patient_id;dosage;dosage_unit;recommendation_date"  
+        columns="id;dosage_unit;drug_id;patient_id;dosage;recommendation_date"  
         horizontal-scroll="yes"
         detail-form-route="Recommendation" 
         edit-form-route="Recommendation"
-        visible-columns="id;drug_id;patient_id;dosage;dosage_unit;recommendation_date"  
+        visible-columns="id;dosage_unit;drug_id;patient_id;dosage;recommendation_date"  
         sort-columns="id" 
         query-rows="25" 
         quick-filter="yes"
@@ -172,7 +228,9 @@
         edition-mode="dblclick" 
         horizontal-scroll="yes" class="fill-form">
         
-          <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+          <o-table-column #id attr="id" title=" id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+        
+          <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column attr="drug_id" title="drug_id">
     <o-table-cell-renderer-service attr="drug_id" 
@@ -193,8 +251,6 @@
 </o-table-column>
         
           <o-table-column #dosage attr="dosage" title="dosage" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-date-input #recommendation_date attr="recommendation_date" type="timestamp" label="recommendation_date" editable="no" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
         

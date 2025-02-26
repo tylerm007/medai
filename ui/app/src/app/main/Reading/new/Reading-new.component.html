@@ -6,7 +6,7 @@ after-insert-mode="new" class="standalone-form-container" (onInsertMode)="onInse
 <o-row attr="row1" layout-align="start stretch">
   <div fxLayout="row wrap" fxLayoutAlign="start start" fxFlex fxLayoutGap="14px">
     
-        <o-integer-input #id attr="id" label=" id*" type="integer" editable="no" required="yes" ></o-integer-input>
+        <o-integer-input #id attr="id" label=" id" type="integer" editable="no" required="yes" ></o-integer-input>
       
         <o-list-picker 
         attr="patient_id"
@@ -27,15 +27,11 @@ after-insert-mode="new" class="standalone-form-container" (onInsertMode)="onInse
         separator=" - " width="680px" class="form-field">
 </o-list-picker>
       
-        <o-real-input #morning attr="morning" label="morning" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
+        <o-text-input #time_of_reading attr="time_of_reading" label="time_of_reading" enabled="yes" required="yes" fxFlex="20%" class="form-field"></o-text-input>
       
-        <o-real-input #afternoon attr="afternoon" label="afternoon" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
+        <o-date-input #reading_date attr="reading_date" type="date" label="reading_date" enabled="yes" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
       
-        <o-real-input #dinner attr="dinner" label="dinner" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
-      
-        <o-real-input #bedtime attr="bedtime" label="bedtime" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
-      
-        <o-date-input #reading_date attr="reading_date" type="timestamp" label="reading_date" editable="no" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
+        <o-text-input #notes attr="notes" label="notes" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
       
 </div>
 </o-row>

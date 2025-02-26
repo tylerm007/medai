@@ -1,8 +1,11 @@
 export const SERVICE_CONFIG: Object ={ 'Contraindication': { 'path': '/Contraindication' }
 ,'Dosage': { 'path': '/Dosage' }
 ,'Drug': { 'path': '/Drug' }
+,'DrugUnit': { 'path': '/DrugUnit' }
 ,'Patient': { 'path': '/Patient' }
+,'PatientLab': { 'path': '/PatientLab' }
 ,'PatientMedication': { 'path': '/PatientMedication' }
 ,'Reading': { 'path': '/Reading' }
+,'ReadingHistory': { 'path': '/ReadingHistory' }
 ,'Recommendation': { 'path': '/Recommendation' }
  };

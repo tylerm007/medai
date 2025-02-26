@@ -77,6 +77,26 @@ def declare_logic():
     #als rules report
     from api.system import api_utils
     # api_utils.rules_report()
-
+    def insert_reading_history(row: models.Reading, old_row: models.Reading, logic_row: LogicRow):
+        from api.api_discovery.insert_history import insert_reading_history
+        insert_reading_history(row, old_row)
+    
+    def fn_recommend_drug(row: models.Reading, old_row: models.Reading, logic_row: LogicRow):
+        from api.api_discovery.recommend_drug import recommend_drug
+        recommend_drug(row, old_row)
+        
+    def calculate_age(row: models.Patient, old_row: models.Patient, logic_row: LogicRow):
+        birth_date = row.birth_date
+        today = datetime.datetime.now()  # Get today's date
+        age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+        return age
+    
+    Rule.formula(derive=models.Patient.age, calling=calculate_age)
+    Rule.constraint(validate=models.Patient, as_condition=lambda row: row.age >= 18, error_msg="Patient must be 18 or older")
+    
+    Rule.copy(derive=models.Dosage.drug_name, from_parent=models.Drug.drug_name)
+    Rule.copy(derive=models.Dosage.drug_type, from_parent=models.Drug.drug_type)
+    Rule.commit_row_event(on_class=models.Reading, calling=fn_recommend_drug)
+    Rule.after_flush_row_event(on_class=models.Reading, calling=insert_reading_history)
     app_logger.debug("..logic/declare_logic.py (logic == rules + code)")
 

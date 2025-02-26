@@ -2,8 +2,8 @@
 
 # intended for use in portal cli - not to be run on your local machine.
 
-projectname="ejaz"  # lower case, only
-resourcegroup="ejaz_rg"
+projectname="medai"  # lower case, only
+resourcegroup="medai_rg"
 dockerrepositoryname="apilogicserver"  # change this to your DockerHub Repository
 githubaccount="apilogicserver"         # change this to your GitHub account
 version="1.0.0"
@@ -13,8 +13,8 @@ version="1.0.0"
 # which uses: https://github.com/Azure-Samples/multicontainerwordpress
 
 # login to Azure Portal CLI (substitute your github account for apilogicserver)
-# git clone https://github.com/apilogicserver/ejaz.git
-# cd ejaz
+# git clone https://github.com/apilogicserver/medai.git
+# cd medai
 # sh devops/docker-compose-dev-azure/azure-deploy.sh
 
 echo " "
@@ -76,7 +76,7 @@ az group create --name $resourcegroup --location "westus"
 az appservice plan create --name myAppServicePlan --resource-group $resourcegroup --sku S1 --is-linux
 
 # create docker compose app
-az webapp create --resource-group $resourcegroup --plan myAppServicePlan --name ejaz --multicontainer-config-type compose --multicontainer-config-file devops/docker-compose-dev-azure/docker-compose-dev-azure.yml
+az webapp create --resource-group $resourcegroup --plan myAppServicePlan --name medai --multicontainer-config-type compose --multicontainer-config-file devops/docker-compose-dev-azure/docker-compose-dev-azure.yml
 
 set +x # reset echo
 

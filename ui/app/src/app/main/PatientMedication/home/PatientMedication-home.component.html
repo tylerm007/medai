@@ -6,9 +6,9 @@
             entity="PatientMedication" 
             title="PATIENTMEDICATION"
             keys="id"
-            columns="id;drug_id;patient_id;dosage;dosage_unit" 
+            columns="id;dosage_unit;drug_id;patient_id;dosage" 
             header-actions="R;D"
-            visible-columns="id;drug_id;patient_id;dosage;dosage_unit"  
+            visible-columns="id;dosage_unit;drug_id;patient_id;dosage"  
             sort-columns="id" 
             query-rows="20" 
             quick-filter="yes"
@@ -22,7 +22,9 @@
             show-title="yes"
             export-button="yes">
             
-            <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+            <o-table-column #id attr="id" title=" id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+            
+            <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
             
             <o-table-column attr="drug_id" title="drug_id">
     <o-table-cell-renderer-service attr="drug_id" 
@@ -43,8 +45,6 @@
 </o-table-column>
             
             <o-table-column #dosage attr="dosage" title="dosage" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-            
-            <o-table-column #dosage_unit attr="dosage_unit" title="dosage_unit" editable="no" required="no" content-align="left"></o-table-column>
             
             <o-table-context-menu></o-table-context-menu>
             <o-table-paginator page-size-options="24;48;96"></o-table-paginator>

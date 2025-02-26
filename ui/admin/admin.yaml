@@ -1,12 +1,12 @@
 about:
-  date: February 12, 2025 08:56:12
+  date: February 26, 2025 08:55:19
   recent_changes: works with modified safrs-react-admin
   version: 0.0.0
 api_root: '{http_type}://{swagger_host}:{port}/{api}'
 authentication: '{system-default}'
 info:
-  number_relationships: 8
-  number_tables: 7
+  number_relationships: 14
+  number_tables: 10
 info_toggle_checked: true
 resources:
   Contraindication:
@@ -40,12 +40,12 @@ resources:
       name: drug_name
       search: true
       sort: true
+    - name: dosage_unit
     - name: drug_id
       required: true
     - name: drug_type
     - name: min_dose
     - name: max_dose
-    - name: dose_unit
     - name: min_age
     - name: max_age
     - name: min_weight
@@ -55,6 +55,11 @@ resources:
     - name: id
       required: true
     tab_groups:
+    - direction: toone
+      fks:
+      - dosage_unit
+      name: drug_unit
+      resource: DrugUnit
     - direction: toone
       fks:
       - drug_id
@@ -69,8 +74,8 @@ resources:
       required: true
       search: true
       sort: true
-    - name: dosage
     - name: dosage_unit
+    - name: dosage
     - name: drug_type
     - name: manufacturer
     - name: side_effects
@@ -102,8 +107,43 @@ resources:
       - drug_id
       name: RecommendationList
       resource: Recommendation
+    - direction: toone
+      fks:
+      - dosage_unit
+      name: drug_unit
+      resource: DrugUnit
     type: Drug
     user_key: drug_name
+  DrugUnit:
+    attributes:
+    - label: ' unit_name*'
+      name: unit_name
+      required: true
+      search: true
+      sort: true
+    tab_groups:
+    - direction: tomany
+      fks:
+      - dosage_unit
+      name: DosageList
+      resource: Dosage
+    - direction: tomany
+      fks:
+      - dosage_unit
+      name: DrugList
+      resource: Drug
+    - direction: tomany
+      fks:
+      - dosage_unit
+      name: PatientMedicationList
+      resource: PatientMedication
+    - direction: tomany
+      fks:
+      - dosage_unit
+      name: RecommendationList
+      resource: Recommendation
+    type: DrugUnit
+    user_key: unit_name
   Patient:
     attributes:
     - label: ' name*'
@@ -113,7 +153,9 @@ resources:
       sort: true
     - name: birth_date
       type: DATE
+    - name: age
     - name: weight_kg
+    - name: patient_sex
     - name: creatine_mg_dl
     - name: medical_record_number
     - name: created_date
@@ -121,6 +163,11 @@ resources:
     - name: id
       required: true
     tab_groups:
+    - direction: tomany
+      fks:
+      - patient_id
+      name: PatientLabList
+      resource: PatientLab
     - direction: tomany
       fks:
       - patient_id
@@ -138,6 +185,32 @@ resources:
       resource: Recommendation
     type: Patient
     user_key: name
+  PatientLab:
+    attributes:
+    - label: ' lab_name*'
+      name: lab_name
+      required: true
+      search: true
+      sort: true
+    - name: patient_id
+      required: true
+    - name: lab_test_name
+      required: true
+    - name: lab_test_code
+    - name: lab_test_description
+    - name: lab_date
+      type: DATE
+    - name: lab_result
+    - name: id
+      required: true
+    tab_groups:
+    - direction: toone
+      fks:
+      - patient_id
+      name: patient
+      resource: Patient
+    type: PatientLab
+    user_key: lab_name
   PatientMedication:
     attributes:
     - label: ' id*'
@@ -145,13 +218,18 @@ resources:
       required: true
       search: true
       sort: true
+    - name: dosage_unit
     - name: drug_id
       required: true
     - name: patient_id
       required: true
     - name: dosage
-    - name: dosage_unit
     tab_groups:
+    - direction: toone
+      fks:
+      - dosage_unit
+      name: drug_unit
+      resource: DrugUnit
     - direction: toone
       fks:
       - drug_id
@@ -173,19 +251,50 @@ resources:
       sort: true
     - name: patient_id
       required: true
-    - name: morning
-    - name: afternoon
-    - name: dinner
-    - name: bedtime
+    - name: time_of_reading
+      required: true
+    - name: reading_value
+      required: true
     - name: reading_date
-      type: DATETIME
+      type: DATE
+    - name: notes
     tab_groups:
+    - direction: tomany
+      fks:
+      - reading_id
+      name: ReadingHistoryList
+      resource: ReadingHistory
     - direction: toone
       fks:
       - patient_id
       name: patient
       resource: Patient
     type: Reading
+    user_key: id
+  ReadingHistory:
+    attributes:
+    - label: ' id*'
+      name: id
+      required: true
+      search: true
+      sort: true
+    - name: reading_id
+      required: true
+    - name: reading_date
+      required: true
+      type: DATE
+    - name: breakfast
+    - name: lunch
+    - name: dinner
+    - name: bedtime
+    - name: notes_for_day
+    tab_groups:
+    - direction: toone
+      fks:
+      - reading_id
+      name: reading
+      resource: Reading
+    type: ReadingHistory
     user_key: id
   Recommendation:
     attributes:
@@ -194,15 +303,21 @@ resources:
       required: true
       search: true
       sort: true
+    - name: dosage_unit
     - name: drug_id
       required: true
     - name: patient_id
       required: true
     - name: dosage
-    - name: dosage_unit
     - name: recommendation_date
       type: DATETIME
+    - name: time_of_reading
     tab_groups:
+    - direction: toone
+      fks:
+      - dosage_unit
+      name: drug_unit
+      resource: DrugUnit
     - direction: toone
       fks:
       - drug_id
