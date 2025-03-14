@@ -1,4 +1,10 @@
-# Quick Start
+# Quick Start - MedAI Plus
+This is a Proof of Concept to demonstrate rules for making recommendations.  See ui/blood-sugar-tracker.html for a Claude Sample UI
+Press F5 to run (with security) 
+http://localhost:5656    # React admin front end (login admin/p)
+cd ui/app
+npm install && npm start
+http://localhost:4299  # Ontimize Angular Front End
 
 **Microservice Automation Complete -- run to verify:** for **VSCode** projects except those downloaded from Web/GenAI:
 1. `Press F5 to Run` (your venv is defaulted)  
