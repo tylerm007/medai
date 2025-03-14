@@ -36,8 +36,6 @@ export const CONFIG: Config = {
 
   exportConfiguration: {
     path: '/export'
-  }
-
-  
+  },
 
 };

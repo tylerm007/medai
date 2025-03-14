@@ -31,7 +31,7 @@ export const MENU_CONFIG: MenuRootItem[] = [
         { id: 'Patient', name: 'Patient', icon: 'view_list', route: '/main/Patient' }
     
         ,{ id: 'Reading', name: 'Readings', icon: 'view_list', route: '/main/Reading' }
-         ,{ id: 'ReadingHistory', name: 'History', icon: 'view_list', route: '/main/ReadingHistory' }
+        ,{ id: 'ReadingHistory', name: 'History', icon: 'view_list', route: '/main/ReadingHistory' }
         ,{ id: 'PatientMedication', name: 'Medication', icon: 'view_list', route: '/main/PatientMedication' }
     
         ,{ id: 'Contraindication', name: 'Contraindication', icon: 'view_list', route: '/main/Contraindication' }
@@ -41,13 +41,13 @@ export const MENU_CONFIG: MenuRootItem[] = [
         ,{ id: 'Drug', name: 'Drug', icon: 'view_list', route: '/main/Drug' }
     
         ,{ id: 'Recommendation', name: 'Recommendation', icon: 'view_list', route: '/main/Recommendation' }
-	 ,{ id: 'PatientLab', name: 'Labs', icon: 'view_list', route: '/main/PatientLab' }
+	,{ id: 'PatientLab', name: 'Labs', icon: 'view_list', route: '/main/PatientLab' }
     
     ] 
 },
     
     { id: 'settings', name: 'Settings', icon: 'settings', route: '/main/settings'}
-     ,{ id: 'DrugUnit', name: 'DRUGUNIT', icon: 'view_list', route: '/main/DrugUnit' }
+    ,{ id: 'DrugUnit', name: 'Unit of Measure', icon: 'view_list', route: '/main/DrugUnit' }
     ,{ id: 'about', name: 'About', icon: 'info', route: '/main/about'}
     ,{ id: 'logout', name: 'LOGOUT', route: '/login', icon: 'power_settings_new', confirm: 'yes' }
 ];

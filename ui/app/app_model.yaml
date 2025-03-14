@@ -248,7 +248,7 @@ entities:
     - name: weight_kg
       template: integer
       type: BIGINT
-    - default: '''M''::character varying'
+    - default: 'M'
       name: patient_sex
       template: text
       type: VARCHAR(1)

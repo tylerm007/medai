@@ -1,7 +1,7 @@
 import importlib
 from pathlib import Path
 import logging
-
+import math
 app_logger = logging.getLogger(__name__)
 
 def discover_services(app, api, project_dir, swagger_host: str, PORT: str):
@@ -25,3 +25,6 @@ def discover_services(app, api, project_dir, swagger_host: str, PORT: str):
                     each_service.add_service(app, api, project_dir, swagger_host, PORT, method_decorators)  # invoke create function
     app.logger.info(f"..discovered services: {services}")
     return
+
+def math_quiz():
+    math.pow(2, 3)

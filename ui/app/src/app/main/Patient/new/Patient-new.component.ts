@@ -9,7 +9,7 @@ import { NavigationService, OFormComponent } from 'ontimize-web-ngx';
 export class PatientNewComponent {
   @ViewChild("PatientForm") form: OFormComponent;
   onInsertMode() {
-    const default_values = {'patient_sex': "'M'::character varying", 'id': "nextval('patient_id_seq'::regclass)"}
+    const default_values = {'patient_sex': "M"}
     this.form.setFieldValues(default_values);
   }
   constructor(protected injector: Injector) {
