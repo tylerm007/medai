@@ -1,0 +1,147 @@
+from flask import request, jsonify
+import logging
+import safrs
+import datetime
+from database import models
+import pandas as pd
+import os
+
+db = safrs.DB
+session = db.session
+
+app_logger = logging.getLogger("api_logic_server_app")
+
+
+def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_decorators):
+    pass
+
+    @app.route("/load_csv", methods=["GET"])
+    def load_csv():
+        """
+        Load a CSV file into the database
+        """
+        import datetime
+
+        # Load the CSV file
+        csv_file = request.args.get("csv_file")
+        if not csv_file:
+            return jsonify({"error": "No CSV file specified"}), 400
+        if not os.path.exists(csv_file):
+            return jsonify({"error": "CSV file not found"}), 404
+        
+        df = pd.read_csv(csv_file)
+
+        # Iterate over each row in the dataframe
+        for index, row in df.iterrows():
+            if not row["Patient Id"]:
+                continue
+            # Assuming your model is called 'YourModel' and has fields 'field1', 'field2', etc.
+            patient = models.Patient()
+            age = row["Age"] if not pd.isna(row["Age"]) else None
+            if age is not None:
+                patient.birth_date = datetime.datetime.now() - pd.DateOffset(
+                    years=int(age)
+                )
+            else:
+                continue
+            patient.patient_sex = "M" if row["Gender"] == 1 else "F"
+            patient.weight = int(row["Weight (lbs)"])
+            patient.height = row["Height (inches)"]
+            patient_id = row["Patient Id"]
+            # patient.id = row['ID']
+            patient.name = f"Patient-{patient_id}"
+            patient.medical_record_number = f"MRN{patient_id}"
+            patient.hba1c = float(row["HbA1c %"])
+            patient.cad = int(row["CAD"])
+            patient.hld = int(row["HLD"])
+            patient.duration = int(row["Duration"])
+            patient.creatine_mg_dl = float(row["Creatinine"])
+            session.add(patient)
+            try:
+                # Commit the session to save the records in the database
+                session.commit()
+                create_reading(
+                    patient, "breakfast", row["Blood sugar before breakfast"]
+                )
+                create_reading(patient, "lunch", row["Blood sugar before lunch"])
+                create_reading(patient, "dinner", row["Blood sugar before dinner"])
+                create_reading(patient, "bedtime", row["Blood sugar before bed time"])
+
+                reading_history = models.ReadingHistory()
+                reading_history.patient_id = patient.id
+                reading_history.reading_date = datetime.datetime.now()
+                reading_history.breakfast = row["Blood sugar before breakfast"]
+                reading_history.lunch = row["Blood sugar before lunch"]
+                reading_history.dinner = row["Blood sugar before dinner"]
+                reading_history.bedtime = row["Blood sugar before bed time"]
+                session.add(reading_history)
+                session.commit()
+            except Exception as e:
+                # session.rollback()
+                app_logger.error(f"Error loading CSV file: {e}")
+                return jsonify({"error": "Error loading CSV file"}), 500
+        session.close()
+        return jsonify({"success": "CSV file loaded"}), 200
+
+    def create_reading(patient, key, value):
+        reading = models.Reading()
+        reading.patient_id = patient.id
+        reading.reading_date = datetime.datetime.now()
+        reading.time_of_reading = key
+        setattr(reading, "reading_value", value)
+        session.add(reading)
+        session.commit()
+
+    @app.route("/load_insulin", methods=["GET"])
+    def load_insulin():
+        """
+        Load a CSV file into the database
+        """
+        import datetime
+
+        # Load the CSV file
+        csv_file = request.args.get("csv_file") or 'InsulinRules.csv'
+        if not csv_file:
+            return jsonify({"error": "No CSV file specified"}), 400
+        if not os.path.exists(csv_file):
+            return jsonify({"error": "CSV file not found"}), 404
+        df = pd.read_csv(csv_file)
+
+        # Iterate over each row in the dataframe
+        for index, row in df.iterrows():
+            '''
+                blood_sugar_reading = Column(String(20), nullable=False)
+                blood_sugar_level = Column(Integer, nullable=False)
+                glargine_before_dinner = Column(Integer)
+                lispro_before_breakfast = Column(Integer)
+                lispro_before_lunch = Column(Integer)
+                lispro_before_dinner = Column(Integer)
+            '''
+            if pd.isna(row["Blood_Sugar_Level"]):
+                continue
+            insulin = models.InsulinRule()
+            insulin.blood_sugar_level = int(row["Blood_Sugar_Level"])
+            insulin.blood_sugar_reading = row["Blood Sugar Reading time"]
+            insulin.glargine_before_dinner = (
+                row["Glargine_Before_Dinner (mg)"] if not pd.isna(row["Glargine_Before_Dinner (mg)"]) else None
+            )
+            insulin.lispro_before_breakfast = (
+                row["Lispro_Before_Breakfast (mg)"] if not pd.isna(row["Lispro_Before_Breakfast (mg)"]) else None
+            )
+            insulin.lispro_before_lunch = (
+                row["Lispro_Before_Lunch (mg)"] if not pd.isna(row["Lispro_Before_Lunch (mg)"]) else None
+            )
+            insulin.lispro_before_dinner = (
+                row["Lispro_Before_Dinner (mg)"] if not pd.isna(row["Lispro_Before_Dinner (mg)"]) else None
+            )
+            
+            session.add(insulin)
+            try:
+                # Commit the session to save the records in the database
+                session.commit()
+            except Exception as e:
+                # session.rollback()
+                app_logger.error(f"Error loading CSV file: {e}")
+                return jsonify({"error": "Error loading CSV file"}), 500
+        session.close()
+        return jsonify({"success": "Insulin Rule CSV file loaded"}), 200

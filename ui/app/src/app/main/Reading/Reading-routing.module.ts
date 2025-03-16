@@ -13,14 +13,7 @@ const routes: Routes = [
         permissionId: 'Reading-detail-permissions'
       }
     }
-  },{
-    path: ':reading_id/ReadingHistory', loadChildren: () => import('../ReadingHistory/ReadingHistory.module').then(m => m.ReadingHistoryModule),
-    data: {
-        oPermission: {
-            permissionId: 'ReadingHistory-detail-permissions'
-        }
-    }
-}
+  }
 ];
 
 export const READING_MODULE_DECLARATIONS = [

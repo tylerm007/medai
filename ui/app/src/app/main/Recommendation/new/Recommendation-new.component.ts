@@ -9,7 +9,7 @@ import { NavigationService, OFormComponent } from 'ontimize-web-ngx';
 export class RecommendationNewComponent {
   @ViewChild("RecommendationForm") form: OFormComponent;
   onInsertMode() {
-    const default_values = {}
+    const default_values = {'id': "nextval('recommendation_id_seq'::regclass)"}
     this.form.setFieldValues(default_values);
   }
   constructor(protected injector: Injector) {

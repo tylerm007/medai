@@ -36,7 +36,8 @@
 </o-list-picker>
       
       <o-text-input #time_of_reading attr="time_of_reading" label="time_of_reading" enabled="yes" required="yes" fxFlex="20%" class="form-field"></o-text-input>
-      <o-text-input #reading_value attr="reading_value" title="reading_value" type="decimal" editable="yes" required="yes" content-align="left"></o-text-input>
+      
+      <o-real-input #reading_value attr="reading_value" label="reading_value" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
       
       <o-date-input #reading_date attr="reading_date" type="date" label="reading_date" enabled="yes" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
       
@@ -46,64 +47,6 @@
   </o-row>
       
       <mat-tab-group fxFill>
-        
-        <mat-tab label="READINGHISTORY-reading_id">
-    <div layout-padding>
-      <o-table 
-        attr="ReadingHistoryTable" 
-        service="ReadingHistory" 
-        entity="ReadingHistory" 
-        keys="id"
-        parent-keys="reading_id:id"
-        columns="id;reading_id;reading_date;reading_time;morning;afternoon;dinner;bedtime;notes_for_day"  
-        horizontal-scroll="yes"
-        detail-form-route="ReadingHistory" 
-        edit-form-route="ReadingHistory"
-        visible-columns="id;reading_id;reading_date;reading_time;morning;afternoon;dinner;bedtime;notes_for_day"  
-        sort-columns="id" 
-        query-rows="25" 
-        quick-filter="yes"
-        row-height="medium" 
-        select-all-checkbox="true" 
-        pageable="yes"  
-        auto-adjust="true" 
-        virtual-scroll="yes" 
-        insert-button="yes" 
-        delete-button="yes" 
-        fixed-header="true" 
-        class="vertical-padding-8"
-        edition-mode="dblclick" 
-        horizontal-scroll="yes" class="fill-form">
-        
-          <o-table-column #id attr="id" title=" id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
-        
-          <o-table-column attr="reading_id" title="reading_id">
-    <o-table-cell-renderer-service attr="reading_id" 
-        service="Reading" entity="ReadingType" columns="id;id"
-        parent-keys="id:reading_id"
-        value-column="id" keys="reading_id"
-        visible-columns="id" separator=" - " width="680px">
-    </o-table-cell-renderer-service>
-</o-table-column>
-        
-          <o-date-input #reading_date attr="reading_date" type="date" label="reading_date" enabled="yes" required="yes" format="LL" fxFlex="20%" class="form-field"></o-date-input>
-        
-          <o-table-column #reading_time attr="reading_time" title="reading_time" editable="no" required="yes" content-align="left"></o-table-column>
-        
-          <o-table-column #morning attr="morning" title="morning" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #afternoon attr="afternoon" title="afternoon" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #dinner attr="dinner" title="dinner" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #bedtime attr="bedtime" title="bedtime" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
-        
-          <o-table-column #notes_for_day attr="notes_for_day" title="notes_for_day" editable="no" required="no" content-align="left"></o-table-column>
-        
-        <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
-      </o-table>
-    </div>
-</mat-tab>
         
       </mat-tab-group>
       

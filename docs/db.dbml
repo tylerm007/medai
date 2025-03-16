@@ -39,12 +39,28 @@ Table DrugUnit {
     unit_name VARCHAR(10) [primary key]
     }
 
+Table InsulinRule {
+    id BIGINT [primary key]
+    blood_sugar_reading VARCHAR(20) 
+    blood_sugar_level INTEGER 
+    glargine_before_dinner INTEGER 
+    lispro_before_breakfast INTEGER 
+    lispro_before_lunch INTEGER 
+    lispro_before_dinner INTEGER 
+    }
+
 Table Patient {
     id BIGINT [primary key]
     name VARCHAR(256) 
     birth_date DATE 
     age NUMERIC(10, 1) 
-    weight_kg BIGINT 
+    weight BIGINT 
+    height BIGINT 
+    hba1c NUMERIC(10, 2) 
+    duration BIGINT 
+    ckd INTEGER 
+    cad INTEGER 
+    hld INTEGER 
     patient_sex VARCHAR(1) 
     creatine_mg_dl NUMERIC(10, 4) 
     medical_record_number VARCHAR(256) 
@@ -74,17 +90,17 @@ Table Reading {
     id BIGINT [primary key]
     patient_id BIGINT 
     time_of_reading VARCHAR(10) 
+    reading_value NUMERIC(10, 4) 
     reading_date DATE 
     notes TEXT 
     }
 
 Table ReadingHistory {
     id BIGINT [primary key]
-    reading_id BIGINT 
+    patient_id BIGINT 
     reading_date DATE 
-    reading_time VARCHAR(10) 
-    morning NUMERIC(10, 4) 
-    afternoon NUMERIC(10, 4) 
+    breakfast NUMERIC(10, 4) 
+    lunch NUMERIC(10, 4) 
     dinner NUMERIC(10, 4) 
     bedtime NUMERIC(10, 4) 
     notes_for_day TEXT 
@@ -93,6 +109,7 @@ Table ReadingHistory {
 Table Recommendation {
     id BIGINT [primary key]
     patient_id BIGINT 
+    time_of_reading VARCHAR(10) 
     drug_id BIGINT 
     dosage NUMERIC(10, 4) 
     dosage_unit VARCHAR(10) 
@@ -112,7 +129,7 @@ Table Recommendation {
     Ref: PatientMedication.(drug_id) < Drug.(id)
     Ref: PatientMedication.(patient_id) < Patient.(id)
     Ref: Reading.(patient_id) < Patient.(id)
-    Ref: ReadingHistory.(reading_id) < Reading.(id)
+    Ref: ReadingHistory.(patient_id) < Patient.(id)
     Ref: Recommendation.(dosage_unit) < DrugUnit.(unit_name)
     Ref: Recommendation.(drug_id) < Drug.(id)
     Ref: Recommendation.(patient_id) < Patient.(id)

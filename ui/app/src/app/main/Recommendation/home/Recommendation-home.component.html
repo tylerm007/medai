@@ -6,9 +6,9 @@
             entity="Recommendation" 
             title="RECOMMENDATION"
             keys="id"
-            columns="id;dosage_unit;drug_id;patient_id;dosage;recommendation_date" 
+            columns="id;dosage_unit;drug_id;patient_id;time_of_reading;dosage;recommendation_date" 
             header-actions="R;D"
-            visible-columns="id;dosage_unit;drug_id;patient_id;dosage;recommendation_date"  
+            visible-columns="id;dosage_unit;drug_id;patient_id;time_of_reading;dosage;recommendation_date"  
             sort-columns="id" 
             query-rows="20" 
             quick-filter="yes"
@@ -43,6 +43,8 @@
         visible-columns="name" separator=" - " width="680px">
     </o-table-cell-renderer-service>
 </o-table-column>
+            
+            <o-table-column #time_of_reading attr="time_of_reading" title="time_of_reading" editable="no" required="yes" content-align="left"></o-table-column>
             
             <o-table-column #dosage attr="dosage" title="dosage" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
             

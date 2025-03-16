@@ -1,9 +1,9 @@
 -- drop database medai;
 -- create database medai;
 -- \c media;
--- patient table
 
 
+DROP TABLE IF EXISTS insulin_rules;
 DROP TABLE IF EXISTS contraindication;
 DROP TABLE IF EXISTS dosage;
 DROP TABLE IF EXISTS patient_medication;
@@ -33,7 +33,13 @@ create table patient (
 	name VARCHAR(256) NOT NULL,
 	birth_date DATE, -- constraint (18 * 365) < NOW() - birth_date
 	age NUMERIC(10,1), -- birth_date / 365.5
-	weight_kg BIGINT, 
+	weight BIGINT, 
+	height BIGINT,
+	hba1c NUMErIC(10,2),
+	duration BIGINT, -- in months
+	ckd INT,
+	cad INT,
+	hld INT,
 	patient_sex VARCHAR(1) DEFAULT 'M', -- enum('M', 'F'),
 	creatine_mg_dl NUMERIC(10,4),
 	medical_record_number VARCHAR(256),
@@ -64,14 +70,14 @@ create table reading (
 
 create table reading_history (
 	id SERIAL8 PRIMARY KEY,
-	reading_id BIGINT NOT NULL,
+	patient_id BIGINT NOT NULL,
 	reading_date DATE NOT NULL, -- copy from reading
 	breakfast NUMERIC(10,4),
 	lunch NUMERIC(10,4),
 	dinner NUMERIC(10,4),
 	bedtime NUMERIC(10,4),
 	notes_for_day TEXT,
-	FOREIGN KEY (reading_id) REFERENCES reading(id) ON DELETE CASCADE
+	FOREIGN KEY (patient_id) REFERENCES patient(id) ON DELETE CASCADE
 );
 -- Drug 
 
@@ -85,6 +91,13 @@ create table drug (
 	side_effects TEXT,
 	FOREIGN KEY (dosage_unit) REFERENCES drug_unit(unit_name)
 );
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Metformin', 2000, 'mg', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Glimepiride', 4, 'mg', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Tradjenta', 5, 'mg', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Glargine', 20, 'unit', 'Injectable', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Lispro', 36, 'unit', 'Injectable', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Farxiga', 10, 'mg', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Ozempic', 0.5, 'mg', 'Injectable', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
 
 create table patient_medication (
 	id SERIAL8 PRIMARY KEY,
@@ -137,4 +150,14 @@ create table contraindication (
 	description TEXT,
 	FOREIGN KEY (drug_id_1) REFERENCES drug(id),
 	FOREIGN KEY (drug_id_2) REFERENCES drug(id) 
+);
+
+create table insulin_rules (
+        id SERIAL8 PRIMARY KEY,
+        blood_sugar_reading VARCHAR(20) NOT NULL,
+        blood_sugar_level INT NOT NULL,
+        glargine_before_dinner INT,
+        lispro_before_breakfast INT,
+        lispro_before_lunch INT,
+        lispro_before_dinner INT
 );

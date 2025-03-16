@@ -20,7 +20,13 @@
       
       <o-real-input #age attr="age" label="age" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
       
-      <o-integer-input #weight_kg attr="weight_kg" label="weight_kg" type="integer" editable="no" required="no" ></o-integer-input>
+      <o-integer-input #weight attr="weight" label="weight" type="integer" editable="no" required="no" ></o-integer-input>
+      
+      <o-integer-input #height attr="height" label="height" type="integer" editable="no" required="no" ></o-integer-input>
+      
+      <o-real-input #hba1c attr="hba1c" label="hba1c" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
+      
+      <o-integer-input #duration attr="duration" label="duration" type="integer" editable="no" required="no" ></o-integer-input>
       
       <o-text-input #patient_sex attr="patient_sex" label="patient_sex" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
       
@@ -31,6 +37,12 @@
       <o-date-input #created_date attr="created_date" type="timestamp" label="created_date" editable="no" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
       
       <o-integer-input #id attr="id" label="id" type="integer" editable="no" required="yes" ></o-integer-input>
+      
+      <o-integer-input #ckd attr="ckd" label="ckd" type="integer" editable="no" required="no" ></o-integer-input>
+      
+      <o-integer-input #cad attr="cad" label="cad" type="integer" editable="no" required="no" ></o-integer-input>
+      
+      <o-integer-input #hld attr="hld" label="hld" type="integer" editable="no" required="no" ></o-integer-input>
       
     </div>
   </o-row>
@@ -158,11 +170,11 @@
         entity="Reading" 
         keys="id"
         parent-keys="patient_id:id"
-        columns="id;patient_id;time_of_reading;reading_date;notes"  
+        columns="id;patient_id;time_of_reading;reading_value;reading_date;notes"  
         horizontal-scroll="yes"
         detail-form-route="Reading" 
         edit-form-route="Reading"
-        visible-columns="id;patient_id;time_of_reading;reading_date;notes"  
+        visible-columns="id;patient_id;time_of_reading;reading_value;reading_date;notes"  
         sort-columns="id" 
         query-rows="25" 
         quick-filter="yes"
@@ -191,9 +203,67 @@
         
           <o-table-column #time_of_reading attr="time_of_reading" title="time_of_reading" editable="no" required="yes" content-align="left"></o-table-column>
         
+          <o-table-column #reading_value attr="reading_value" title="reading_value" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+        
           <o-date-input #reading_date attr="reading_date" type="date" label="reading_date" enabled="yes" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
         
           <o-table-column #notes attr="notes" title="notes" editable="no" required="no" content-align="left"></o-table-column>
+        
+        <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
+      </o-table>
+    </div>
+</mat-tab>
+        
+        <mat-tab label="READINGHISTORY-patient_id">
+    <div layout-padding>
+      <o-table 
+        attr="ReadingHistoryTable" 
+        service="ReadingHistory" 
+        entity="ReadingHistory" 
+        keys="id"
+        parent-keys="patient_id:id"
+        columns="id;patient_id;reading_date;breakfast;lunch;dinner;bedtime;notes_for_day"  
+        horizontal-scroll="yes"
+        detail-form-route="ReadingHistory" 
+        edit-form-route="ReadingHistory"
+        visible-columns="id;patient_id;reading_date;breakfast;lunch;dinner;bedtime;notes_for_day"  
+        sort-columns="id" 
+        query-rows="25" 
+        quick-filter="yes"
+        row-height="medium" 
+        select-all-checkbox="true" 
+        pageable="yes"  
+        auto-adjust="true" 
+        virtual-scroll="yes" 
+        insert-button="yes" 
+        delete-button="yes" 
+        fixed-header="true" 
+        class="vertical-padding-8"
+        edition-mode="dblclick" 
+        horizontal-scroll="yes" class="fill-form">
+        
+          <o-table-column #id attr="id" title=" id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+        
+          <o-table-column attr="patient_id" title="patient_id">
+    <o-table-cell-renderer-service attr="patient_id" 
+        service="Patient" entity="PatientType" columns="id;name"
+        parent-keys="id:patient_id"
+        value-column="name" keys="patient_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+        
+          <o-date-input #reading_date attr="reading_date" type="date" label="reading_date" enabled="yes" required="yes" format="LL" fxFlex="20%" class="form-field"></o-date-input>
+        
+          <o-table-column #breakfast attr="breakfast" title="breakfast" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+        
+          <o-table-column #lunch attr="lunch" title="lunch" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+        
+          <o-table-column #dinner attr="dinner" title="dinner" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+        
+          <o-table-column #bedtime attr="bedtime" title="bedtime" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+        
+          <o-table-column #notes_for_day attr="notes_for_day" title="notes_for_day" editable="no" required="no" content-align="left"></o-table-column>
         
         <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
       </o-table>
@@ -208,11 +278,11 @@
         entity="Recommendation" 
         keys="id"
         parent-keys="patient_id:id"
-        columns="id;dosage_unit;drug_id;patient_id;dosage;recommendation_date"  
+        columns="id;dosage_unit;drug_id;patient_id;time_of_reading;dosage;recommendation_date"  
         horizontal-scroll="yes"
         detail-form-route="Recommendation" 
         edit-form-route="Recommendation"
-        visible-columns="id;dosage_unit;drug_id;patient_id;dosage;recommendation_date"  
+        visible-columns="id;dosage_unit;drug_id;patient_id;time_of_reading;dosage;recommendation_date"  
         sort-columns="id" 
         query-rows="25" 
         quick-filter="yes"
@@ -249,6 +319,8 @@
         visible-columns="name" separator=" - " width="680px">
     </o-table-cell-renderer-service>
 </o-table-column>
+        
+          <o-table-column #time_of_reading attr="time_of_reading" title="time_of_reading" editable="no" required="yes" content-align="left"></o-table-column>
         
           <o-table-column #dosage attr="dosage" title="dosage" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
         

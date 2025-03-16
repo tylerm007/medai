@@ -21,6 +21,8 @@ export const routes: Routes = [
     
         { path: 'DrugUnit', loadChildren: () => import('./DrugUnit/DrugUnit.module').then(m => m.DrugUnitModule) },
     
+        { path: 'InsulinRule', loadChildren: () => import('./InsulinRule/InsulinRule.module').then(m => m.InsulinRuleModule) },
+    
         { path: 'Patient', loadChildren: () => import('./Patient/Patient.module').then(m => m.PatientModule) },
     
         { path: 'PatientLab', loadChildren: () => import('./PatientLab/PatientLab.module').then(m => m.PatientLabModule) },

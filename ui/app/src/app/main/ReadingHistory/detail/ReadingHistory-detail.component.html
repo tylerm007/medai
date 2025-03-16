@@ -17,9 +17,9 @@
       <o-integer-input #id attr="id" label=" id" type="integer" editable="no" required="yes" ></o-integer-input>
       
       <o-list-picker 
-        attr="reading_id"
-        service="Reading" 
-        entity="ReadingType"
+        attr="patient_id"
+        service="Patient" 
+        entity="PatientType"
         fxFlex="30" 
         query-on-init="no" 
         query-on-bind="yes" 
@@ -29,19 +29,17 @@
         value-column="id" 
         value-column-type="BIGINT"  
         keys="id" 
-        columns="id;reading_id;id" 
-        title="reading_id"
-        visible-columns="id;id" 
+        columns="id;patient_id;name" 
+        title="patient_id"
+        visible-columns="id;name" 
         separator=" - " width="680px" class="form-field">
 </o-list-picker>
       
       <o-date-input #reading_date attr="reading_date" type="date" label="reading_date" enabled="yes" required="yes" format="LL" fxFlex="20%" class="form-field"></o-date-input>
       
-      <o-text-input #reading_time attr="reading_time" label="reading_time" enabled="yes" required="yes" fxFlex="20%" class="form-field"></o-text-input>
+      <o-real-input #breakfast attr="breakfast" label="breakfast" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
       
-      <o-real-input #morning attr="morning" label="morning" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
-      
-      <o-real-input #afternoon attr="afternoon" label="afternoon" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
+      <o-real-input #lunch attr="lunch" label="lunch" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
       
       <o-real-input #dinner attr="dinner" label="dinner" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
       

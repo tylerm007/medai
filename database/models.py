@@ -1,15 +1,15 @@
 # coding: utf-8
-from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, JSON, Numeric, String, Text, text
+from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Integer, JSON, Numeric, String, Text, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-
+from sqlalchemy.schema import Sequence
 ########################################################################################################################
 # Classes describing database for SqlAlchemy ORM, initially created by schema introspection.
 #
 # Alter this file per your database maintenance policy
 #    See https://apilogicserver.github.io/Docs/Project-Rebuild/#rebuilding
 #
-# Created:  February 26, 2025 08:55:19
+# Created:  March 16, 2025 09:22:01
 # Database: postgresql://postgres:postgres@127.0.0.1:5432/medai
 # Dialect:  postgresql
 #
@@ -25,7 +25,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import Mapped
 from sqlalchemy.sql.sqltypes import NullType
 from typing import List
-from sqlalchemy import Sequence
 
 db = SQLAlchemy() 
 Base = declarative_base()  # type: flask_sqlalchemy.model.DefaultMeta
@@ -61,6 +60,24 @@ class DrugUnit(Base):  # type: ignore
 
 
 
+class InsulinRule(Base):  # type: ignore
+    __tablename__ = 'insulin_rules'
+    _s_collection_name = 'InsulinRule'  # type: ignore
+
+    id = Column(BigInteger, Sequence('insulin_rules_id_seq'), primary_key=True)
+    blood_sugar_reading = Column(String(20), nullable=False)
+    blood_sugar_level = Column(Integer, nullable=False)
+    glargine_before_dinner = Column(Integer)
+    lispro_before_breakfast = Column(Integer)
+    lispro_before_lunch = Column(Integer)
+    lispro_before_dinner = Column(Integer)
+
+    # parent relationships (access parent)
+
+    # child relationships (access children)
+
+
+
 class Patient(Base):  # type: ignore
     __tablename__ = 'patient'
     _s_collection_name = 'Patient'  # type: ignore
@@ -69,8 +86,14 @@ class Patient(Base):  # type: ignore
     name = Column(String(256), nullable=False)
     birth_date = Column(Date)
     age = Column(Numeric(10, 1))
-    weight_kg = Column(BigInteger)
-    patient_sex = Column(String(1), server_default=text("M"))
+    weight = Column(BigInteger)
+    height = Column(BigInteger)
+    hba1c = Column(NUMERIC(10,2))
+    duration = Column(BigInteger)
+    ckd = Column(Integer)
+    cad = Column(Integer)
+    hld = Column(Integer)
+    patient_sex = Column(String(1), server_default=text("'M'::character varying"))
     creatine_mg_dl = Column(Numeric(10, 4))
     medical_record_number = Column(String(256))
     created_date = Column(DateTime, server_default=text("now()"))
@@ -80,6 +103,7 @@ class Patient(Base):  # type: ignore
     # child relationships (access children)
     PatientLabList : Mapped[List["PatientLab"]] = relationship(back_populates="patient")
     ReadingList : Mapped[List["Reading"]] = relationship(back_populates="patient")
+    ReadingHistoryList : Mapped[List["ReadingHistory"]] = relationship(back_populates="patient")
     PatientMedicationList : Mapped[List["PatientMedication"]] = relationship(back_populates="patient")
     RecommendationList : Mapped[List["Recommendation"]] = relationship(back_populates="patient")
 
@@ -136,7 +160,7 @@ class Reading(Base):  # type: ignore
     id = Column(BigInteger, Sequence('reading_id_seq'), primary_key=True)
     patient_id = Column(ForeignKey('patient.id', ondelete='CASCADE'), nullable=False)
     time_of_reading = Column(String(10), nullable=False)
-    reading_value = Column(Numeric(10, 4), nullable=False)
+    reading_value = Column(Numeric(10, 4))
     reading_date = Column(Date, server_default=text("now()"))
     notes = Column(Text)
 
@@ -144,7 +168,26 @@ class Reading(Base):  # type: ignore
     patient : Mapped["Patient"] = relationship(back_populates=("ReadingList"))
 
     # child relationships (access children)
-    ReadingHistoryList : Mapped[List["ReadingHistory"]] = relationship(back_populates="reading")
+
+
+
+class ReadingHistory(Base):  # type: ignore
+    __tablename__ = 'reading_history'
+    _s_collection_name = 'ReadingHistory'  # type: ignore
+
+    id = Column(BigInteger, Sequence('reading_history_id_seq'), primary_key=True)
+    patient_id = Column(ForeignKey('patient.id', ondelete='CASCADE'), nullable=False)
+    reading_date = Column(Date, nullable=False)
+    breakfast = Column(Numeric(10, 4))
+    lunch = Column(Numeric(10, 4))
+    dinner = Column(Numeric(10, 4))
+    bedtime = Column(Numeric(10, 4))
+    notes_for_day = Column(Text)
+
+    # parent relationships (access parent)
+    patient : Mapped["Patient"] = relationship(back_populates=("ReadingHistoryList"))
+
+    # child relationships (access children)
 
 
 
@@ -210,36 +253,16 @@ class PatientMedication(Base):  # type: ignore
 
 
 
-class ReadingHistory(Base):  # type: ignore
-    __tablename__ = 'reading_history'
-    _s_collection_name = 'ReadingHistory'  # type: ignore
-
-    id = Column(BigInteger, Sequence('reading_history_id_seq'), primary_key=True)
-    reading_id = Column(ForeignKey('reading.id', ondelete='CASCADE'), nullable=False)
-    reading_date = Column(Date, nullable=False)
-    breakfast = Column(Numeric(10, 4))
-    lunch = Column(Numeric(10, 4))
-    dinner = Column(Numeric(10, 4))
-    bedtime = Column(Numeric(10, 4))
-    notes_for_day = Column(Text)
-
-    # parent relationships (access parent)
-    reading : Mapped["Reading"] = relationship(back_populates=("ReadingHistoryList"))
-
-    # child relationships (access children)
-
-
-
 class Recommendation(Base):  # type: ignore
     __tablename__ = 'recommendation'
     _s_collection_name = 'Recommendation'  # type: ignore
 
     id = Column(BigInteger, Sequence('recommendation_id_seq'), primary_key=True)
     patient_id = Column(ForeignKey('patient.id', ondelete='CASCADE'), nullable=False)
+    time_of_reading = Column(String(10), nullable=False)
     drug_id = Column(ForeignKey('drug.id'), nullable=False)
     dosage = Column(Numeric(10, 4))
     dosage_unit = Column(ForeignKey('drug_unit.unit_name'))
-    time_of_reading = Column(String(10), nullable=False)
     recommendation_date = Column(DateTime, server_default=text("now()"))
 
     # parent relationships (access parent)

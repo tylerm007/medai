@@ -8,6 +8,8 @@ import { DrugCardComponent } from './Drug-card/Drug-card.component';
 
 import { DrugUnitCardComponent } from './DrugUnit-card/DrugUnit-card.component';
 
+import { InsulinRuleCardComponent } from './InsulinRule-card/InsulinRule-card.component';
+
 import { PatientCardComponent } from './Patient-card/Patient-card.component';
 
 import { PatientLabCardComponent } from './PatientLab-card/PatientLab-card.component';
@@ -28,26 +30,32 @@ export const MENU_CONFIG: MenuRootItem[] = [
     id: 'data', name: ' data', icon: 'remove_red_eye', opened: true,
     items: [
     
-        { id: 'Patient', name: 'Patient', icon: 'view_list', route: '/main/Patient' }
+        { id: 'Contraindication', name: 'CONTRAINDICATION', icon: 'view_list', route: '/main/Contraindication' }
     
-        ,{ id: 'Reading', name: 'Readings', icon: 'view_list', route: '/main/Reading' }
-        ,{ id: 'ReadingHistory', name: 'History', icon: 'view_list', route: '/main/ReadingHistory' }
-        ,{ id: 'PatientMedication', name: 'Medication', icon: 'view_list', route: '/main/PatientMedication' }
+        ,{ id: 'Dosage', name: 'DOSAGE', icon: 'view_list', route: '/main/Dosage' }
     
-        ,{ id: 'Contraindication', name: 'Contraindication', icon: 'view_list', route: '/main/Contraindication' }
+        ,{ id: 'Drug', name: 'DRUG', icon: 'view_list', route: '/main/Drug' }
     
-        ,{ id: 'Dosage', name: 'Dosage', icon: 'view_list', route: '/main/Dosage' }
+        ,{ id: 'DrugUnit', name: 'DRUGUNIT', icon: 'view_list', route: '/main/DrugUnit' }
     
-        ,{ id: 'Drug', name: 'Drug', icon: 'view_list', route: '/main/Drug' }
+        ,{ id: 'InsulinRule', name: 'INSULINRULE', icon: 'view_list', route: '/main/InsulinRule' }
     
-        ,{ id: 'Recommendation', name: 'Recommendation', icon: 'view_list', route: '/main/Recommendation' }
-	,{ id: 'PatientLab', name: 'Labs', icon: 'view_list', route: '/main/PatientLab' }
+        ,{ id: 'Patient', name: 'PATIENT', icon: 'view_list', route: '/main/Patient' }
+    
+        ,{ id: 'PatientLab', name: 'PATIENTLAB', icon: 'view_list', route: '/main/PatientLab' }
+    
+        ,{ id: 'PatientMedication', name: 'PATIENTMEDICATION', icon: 'view_list', route: '/main/PatientMedication' }
+    
+        ,{ id: 'Reading', name: 'READING', icon: 'view_list', route: '/main/Reading' }
+    
+        ,{ id: 'ReadingHistory', name: 'READINGHISTORY', icon: 'view_list', route: '/main/ReadingHistory' }
+    
+        ,{ id: 'Recommendation', name: 'RECOMMENDATION', icon: 'view_list', route: '/main/Recommendation' }
     
     ] 
 },
     
     { id: 'settings', name: 'Settings', icon: 'settings', route: '/main/settings'}
-    ,{ id: 'DrugUnit', name: 'Unit of Measure', icon: 'view_list', route: '/main/DrugUnit' }
     ,{ id: 'about', name: 'About', icon: 'info', route: '/main/about'}
     ,{ id: 'logout', name: 'LOGOUT', route: '/login', icon: 'power_settings_new', confirm: 'yes' }
 ];
@@ -61,6 +69,8 @@ export const MENU_COMPONENTS = [
     ,DrugCardComponent
 
     ,DrugUnitCardComponent
+
+    ,InsulinRuleCardComponent
 
     ,PatientCardComponent
 

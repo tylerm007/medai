@@ -81,9 +81,13 @@ def declare_logic():
         from api.api_discovery.insert_history import insert_reading_history
         insert_reading_history(row, old_row)
     
+    def fn_recommend_insulin(row: models.Reading, old_row: models.Reading, logic_row: LogicRow):
+        from api.api_discovery.recommend_drug import recommend_insulin_drug
+        recommend_insulin_drug(row, old_row, logic_row)
+        
     def fn_recommend_drug(row: models.Reading, old_row: models.Reading, logic_row: LogicRow):
         from api.api_discovery.recommend_drug import recommend_drug
-        recommend_drug(row, old_row)
+        recommend_drug(row, old_row,logic_row)
         
     def calculate_age(row: models.Patient, old_row: models.Patient, logic_row: LogicRow):
         birth_date = row.birth_date
@@ -96,7 +100,8 @@ def declare_logic():
     
     Rule.copy(derive=models.Dosage.drug_name, from_parent=models.Drug.drug_name)
     Rule.copy(derive=models.Dosage.drug_type, from_parent=models.Drug.drug_type)
-    Rule.commit_row_event(on_class=models.Reading, calling=fn_recommend_drug)
-    Rule.after_flush_row_event(on_class=models.Reading, calling=insert_reading_history)
+    #Rule.commit_row_event(on_class=models.Reading, calling=fn_recommend_drug)
+    Rule.after_flush_row_event(on_class=models.ReadingHistory, calling=fn_recommend_drug)
+    Rule.after_flush_row_event(on_class=models.Reading, calling=fn_recommend_insulin)
     app_logger.debug("..logic/declare_logic.py (logic == rules + code)")
 

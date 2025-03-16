@@ -2,6 +2,7 @@ export const SERVICE_CONFIG: Object ={ 'Contraindication': { 'path': '/Contraind
 ,'Dosage': { 'path': '/Dosage' }
 ,'Drug': { 'path': '/Drug' }
 ,'DrugUnit': { 'path': '/DrugUnit' }
+,'InsulinRule': { 'path': '/InsulinRule' }
 ,'Patient': { 'path': '/Patient' }
 ,'PatientLab': { 'path': '/PatientLab' }
 ,'PatientMedication': { 'path': '/PatientMedication' }

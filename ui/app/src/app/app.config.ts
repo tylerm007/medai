@@ -5,9 +5,7 @@ import { SERVICE_CONFIG } from './shared/app.services.config';
 import { environment } from 'src/environments/environment';
 
 export const CONFIG: Config = {
-  //apiEndpoint: environment.apiEndpoint,
-  apiEndpoint:  (window['__env'] !== undefined) ? window['__env']['apiUrl'] : environment.apiEndpoint,
-
+  apiEndpoint: environment.apiEndpoint,
   //production: environment.production,
   bundle: {
     path: 'bundle'
@@ -15,10 +13,10 @@ export const CONFIG: Config = {
   // Application identifier. Is the unique package identifier of the app.
   // It is used when storing or managing temporal data related with the app.
   // By default is set as 'ontimize-web-uuid'.
-  uuid: 'com.ontimize.web.ngx.medai',
+  uuid: 'com.ontimize.web.ngx.medai_mar16',
 
   // Title of the app
-  title: 'MedAI Plus',
+  title: 'ApiLogicServer medai_mar16',
 
   //  Language of the application.
   locale: 'en',
@@ -36,6 +34,8 @@ export const CONFIG: Config = {
 
   exportConfiguration: {
     path: '/export'
-  },
+  }
+
+  
 
 };

@@ -12,7 +12,13 @@ after-insert-mode="new" class="standalone-form-container" (onInsertMode)="onInse
       
         <o-real-input #age attr="age" label="age" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
       
-        <o-integer-input #weight_kg attr="weight_kg" label="weight_kg" type="integer" editable="no" required="no" ></o-integer-input>
+        <o-integer-input #weight attr="weight" label="weight" type="integer" editable="no" required="no" ></o-integer-input>
+      
+        <o-integer-input #height attr="height" label="height" type="integer" editable="no" required="no" ></o-integer-input>
+      
+        <o-real-input #hba1c attr="hba1c" label="hba1c" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
+      
+        <o-integer-input #duration attr="duration" label="duration" type="integer" editable="no" required="no" ></o-integer-input>
       
         <o-text-input #patient_sex attr="patient_sex" label="patient_sex" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
       
@@ -23,6 +29,12 @@ after-insert-mode="new" class="standalone-form-container" (onInsertMode)="onInse
         <o-date-input #created_date attr="created_date" type="timestamp" label="created_date" editable="no" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
       
         <o-integer-input #id attr="id" label="id" type="integer" editable="no" required="yes" ></o-integer-input>
+      
+        <o-integer-input #ckd attr="ckd" label="ckd" type="integer" editable="no" required="no" ></o-integer-input>
+      
+        <o-integer-input #cad attr="cad" label="cad" type="integer" editable="no" required="no" ></o-integer-input>
+      
+        <o-integer-input #hld attr="hld" label="hld" type="integer" editable="no" required="no" ></o-integer-input>
       
 </div>
 </o-row>

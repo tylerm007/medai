@@ -35,10 +35,12 @@
             
             <o-table-column #time_of_reading attr="time_of_reading" title="time_of_reading" editable="no" required="yes" content-align="left"></o-table-column>
             
+            <o-table-column #reading_value attr="reading_value" title="reading_value" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
             <o-date-input #reading_date attr="reading_date" type="date" label="reading_date" enabled="yes" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
             
             <o-table-column #notes attr="notes" title="notes" editable="no" required="no" content-align="left"></o-table-column>
-            <o-table-column #reading_value attr="reading_value" title="reading_value" type="decimal" editable="yes" required="yes" content-align="left"></o-table-column>
+            
             <o-table-context-menu></o-table-context-menu>
             <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
         </o-table>

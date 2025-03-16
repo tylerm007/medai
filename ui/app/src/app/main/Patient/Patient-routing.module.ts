@@ -35,6 +35,13 @@ const routes: Routes = [
         }
     }
 },{
+    path: ':patient_id/ReadingHistory', loadChildren: () => import('../ReadingHistory/ReadingHistory.module').then(m => m.ReadingHistoryModule),
+    data: {
+        oPermission: {
+            permissionId: 'ReadingHistory-detail-permissions'
+        }
+    }
+},{
     path: ':patient_id/Recommendation', loadChildren: () => import('../Recommendation/Recommendation.module').then(m => m.RecommendationModule),
     data: {
         oPermission: {

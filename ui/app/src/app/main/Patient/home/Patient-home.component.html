@@ -6,9 +6,9 @@
             entity="Patient" 
             title="PATIENT"
             keys="id"
-            columns="name;birth_date;age;weight_kg;patient_sex;creatine_mg_dl;medical_record_number;created_date;id" 
+            columns="name;birth_date;age;weight;height;hba1c;duration;patient_sex;creatine_mg_dl;medical_record_number;created_date;id;ckd;cad;hld" 
             header-actions="R;D"
-            visible-columns="name;birth_date;age;weight_kg;patient_sex;creatine_mg_dl;medical_record_number;created_date;id"  
+            visible-columns="name;birth_date;age;weight;height;hba1c;duration;patient_sex;creatine_mg_dl;medical_record_number;created_date;id;ckd;cad;hld"  
             sort-columns="name" 
             query-rows="20" 
             quick-filter="yes"
@@ -28,7 +28,13 @@
             
             <o-table-column #age attr="age" title="age" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
             
-            <o-table-column #weight_kg attr="weight_kg" title="weight_kg" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            <o-table-column #weight attr="weight" title="weight" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #height attr="height" title="height" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #hba1c attr="hba1c" title="hba1c" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
+            <o-table-column #duration attr="duration" title="duration" type="integer" editable="no" required="no" content-align="center"></o-table-column>
             
             <o-table-column #patient_sex attr="patient_sex" title="patient_sex" editable="no" required="no" content-align="left"></o-table-column>
             
@@ -39,6 +45,12 @@
             <o-date-input #created_date attr="created_date" type="timestamp" label="created_date" editable="no" required="no" format="LL" fxFlex="20%" class="form-field"></o-date-input>
             
             <o-table-column #id attr="id" title="id" type="integer" editable="no" required="yes" content-align="center"></o-table-column>
+            
+            <o-table-column #ckd attr="ckd" title="ckd" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #cad attr="cad" title="cad" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #hld attr="hld" title="hld" type="integer" editable="no" required="no" content-align="center"></o-table-column>
             
             <o-table-context-menu></o-table-context-menu>
             <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
