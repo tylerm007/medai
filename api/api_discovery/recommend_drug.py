@@ -17,32 +17,31 @@ def recommend_drug(row:models.ReadingHistory, old_row:models.ReadingHistory, log
     # This rule will recommend a drug based on the patient's reading
     # patient data age, sex, weight, creatine, labs, and medications
     app_logger.info(f"Recommendation for patient {row.patient.name} at {row.reading_date}")
-    app_logger.info(f"metformin {metformin(row)}")
     
     dosage = metformin(row)
     drug_id = 1
-    create_recommendation(row, dosage, drug_id ,"breakfast",logic_row)
-    create_recommendation(row, dosage, drug_id ,"dinner", logic_row)
+    create_recommendation(row, dosage, drug_id ,"breakfast",logic_row, "metformin")
+    create_recommendation(row, dosage, drug_id ,"dinner", logic_row, "metformin")
     
     dosage = glimepiride(row)
     drug_id = 2
-    create_recommendation(row, dosage, drug_id ,"breakfast", logic_row)
+    create_recommendation(row, dosage, drug_id ,"breakfast", logic_row, "glimepiride")
     
     dosage = tradjenta(row)
     drug_id = 3
-    create_recommendation(row, dosage, drug_id ,"breakfast", logic_row)
+    create_recommendation(row, dosage, drug_id ,"breakfast", logic_row ,"tradjenta")
     
     dosage = ozempic(row)
     drug_id = 7
-    create_recommendation(row, dosage, drug_id ,"breakfast", logic_row)
+    create_recommendation(row, dosage, drug_id ,"breakfast", logic_row,"ozempic")
     
     dosage = farxiga(row)
     drug_id = 6
-    create_recommendation(row, dosage, drug_id ,"breakfast", logic_row)
+    create_recommendation(row, dosage, drug_id ,"breakfast", logic_row,"farxiga")
     
     return 
 
-def create_recommendation(row, dosage, drug_id, time_of_reading, logic_row):
+def create_recommendation(row, dosage, drug_id, time_of_reading, logic_row, drug_name: str):
     r = models.Recommendation()
     r.patient_id = row.patient_id
     #r.reading_id = row.id
@@ -51,7 +50,10 @@ def create_recommendation(row, dosage, drug_id, time_of_reading, logic_row):
     r.dosage_unit = "mg"
     r.drug_id = drug_id
     r.recommendation_date = row.reading_date
+    logic_row.log(f"{drug_name}")
     if r.dosage:
+        logic_row.log(f"row: {row}")
+        logic_row.log(f"Creating recommendation {r.drug_id} - {r.dosage} for {r.patient_id} at {r.time_of_reading}")
         try:
             from sqlalchemy import text
             db.session.execute(text(f"INSERT INTO recommendation (patient_id, time_of_reading, dosage, dosage_unit, drug_id, recommendation_date) VALUES ({r.patient_id}, '{r.time_of_reading}', {r.dosage}, '{r.dosage_unit}', {r.drug_id}, '{r.recommendation_date}')"))
@@ -83,6 +85,10 @@ def tradjenta(row: models.ReadingHistory) -> str:
     TODO >> If patient is already on Ozempic, then Tradjenta is  Contraindicated and vice versa
     '''
     if (80 <= int(row.breakfast) <= 400) and (row.patient.creatine_mg_dl > 1.0) and (100 <= row.patient.weight <= 400) and (6.5 <= row.patient.hba1c <= 14):
+        for meds in row.patient.PatientMedicationList:
+            if meds.drug_id == 7:
+                # Ozempic is contraindicated with Tradjenta
+                return None
         return 5 #"Tradjenta 5mg"
     return None
 
@@ -109,19 +115,19 @@ def recommend_insulin_drug (row:models.Reading, old_row:models.Reading, logic_ro
     dosage = glargine(row)
     drug_id = 4
     if row.time_of_reading == "bedtime":
-        create_recommendation(row, dosage, drug_id ,"bedtime", logic_row)
+        create_recommendation(row, dosage, drug_id ,"bedtime", logic_row,"glargine")
 
     
     drug_id = 5
     if row.time_of_reading == "breakfast":
         dosage = lispro(row, "Before_Breakfast")
-        create_recommendation(row, dosage, drug_id ,"breakfast", logic_row)
+        create_recommendation(row, dosage, drug_id ,"breakfast", logic_row,"lispro")
     if row.time_of_reading == "lunch":
         dosage = lispro(row, "Before_Lunch")
-        create_recommendation(row, dosage, drug_id ,"lunch", logic_row)
+        create_recommendation(row, dosage, drug_id ,"lunch", logic_row,"lispro")
     if row.time_of_reading == "dinner":
         dosage = lispro(row, "Before_Dinner")
-        create_recommendation(row, dosage, drug_id ,"dinner", logic_row)
+        create_recommendation(row, dosage, drug_id ,"dinner", logic_row,"lispro")
     return  
 
 def glargine(row: models.Reading) -> str:

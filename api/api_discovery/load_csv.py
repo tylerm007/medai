@@ -15,10 +15,24 @@ app_logger = logging.getLogger("api_logic_server_app")
 def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_decorators):
     pass
 
+    def create_reading(patient, key, value):
+        reading = models.Reading()
+        reading.patient_id = patient.id
+        reading.reading_date = datetime.datetime.now()
+        reading.time_of_reading = key
+        setattr(reading, "reading_value", value)
+        session.add(reading)
+        try:
+            session.commit()
+        except Exception as e:
+            print(f"Error creating reading: {e}")
+
+
     @app.route("/load_csv", methods=["GET"])
     def load_csv():
         """
         Load a CSV file into the database
+        curl 'http://localhost:5656/load_csv?csv_file=patient.csv'
         """
         import datetime
 
@@ -37,7 +51,7 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
                 continue
             # Assuming your model is called 'YourModel' and has fields 'field1', 'field2', etc.
             patient = models.Patient()
-            age = row["Age"] if not pd.isna(row["Age"]) else None
+            age = int(row["Age"]) if not pd.isna(row["Age"]) else None
             if age is not None:
                 patient.birth_date = datetime.datetime.now() - pd.DateOffset(
                     years=int(age)
@@ -46,12 +60,13 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
                 continue
             patient.patient_sex = "M" if row["Gender"] == 1 else "F"
             patient.weight = int(row["Weight (lbs)"])
-            patient.height = row["Height (inches)"]
-            patient_id = row["Patient Id"]
+            patient.height = int(row["Height (inches)"])
+            patient_id = int(row["Patient Id"])
             # patient.id = row['ID']
             patient.name = f"Patient-{patient_id}"
             patient.medical_record_number = f"MRN{patient_id}"
             patient.hba1c = float(row["HbA1c %"])
+            patient.ckd = int(row["CKD"])
             patient.cad = int(row["CAD"])
             patient.hld = int(row["HLD"])
             patient.duration = int(row["Duration"])
@@ -60,38 +75,48 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
             try:
                 # Commit the session to save the records in the database
                 session.commit()
-                create_reading(
-                    patient, "breakfast", row["Blood sugar before breakfast"]
-                )
-                create_reading(patient, "lunch", row["Blood sugar before lunch"])
-                create_reading(patient, "dinner", row["Blood sugar before dinner"])
-                create_reading(patient, "bedtime", row["Blood sugar before bed time"])
+                #Metformin,Glimepiride,Tradjenta,Glargine,Lispro,Farxiga,Ozempic
+                insert_medication(patient.id, row,  "Metformin" , 1)
+                insert_medication(patient.id, row,  "Glimepiride" , 2)
+                insert_medication(patient.id, row,  "Tradjenta" , 3)
+                insert_medication(patient.id, row,  "Glargine" , 4)
+                insert_medication(patient.id, row,  "Lispro" , 5)
+                insert_medication(patient.id, row,  "Farxiga" , 6)
+                insert_medication(patient.id, row,  "Ozempic" , 7)
+                
+                create_reading(patient, "breakfast", int(row["Blood sugar before breakfast"]))
+                create_reading(patient, "lunch", int(row["Blood sugar before lunch"]))
+                create_reading(patient, "dinner", int(row["Blood sugar before dinner"]))
+                create_reading(patient, "bedtime", int(row["Blood sugar before bed time"]))
 
                 reading_history = models.ReadingHistory()
                 reading_history.patient_id = patient.id
                 reading_history.reading_date = datetime.datetime.now()
-                reading_history.breakfast = row["Blood sugar before breakfast"]
-                reading_history.lunch = row["Blood sugar before lunch"]
-                reading_history.dinner = row["Blood sugar before dinner"]
-                reading_history.bedtime = row["Blood sugar before bed time"]
+                reading_history.breakfast = int(row["Blood sugar before breakfast"])
+                reading_history.lunch = int(row["Blood sugar before lunch"])
+                reading_history.dinner = int(row["Blood sugar before dinner"])
+                reading_history.bedtime = int(row["Blood sugar before bed time"])
                 session.add(reading_history)
                 session.commit()
             except Exception as e:
                 # session.rollback()
                 app_logger.error(f"Error loading CSV file: {e}")
-                return jsonify({"error": "Error loading CSV file"}), 500
+                #return jsonify({"error": "Error loading CSV file"}), 500
         session.close()
         return jsonify({"success": "CSV file loaded"}), 200
 
-    def create_reading(patient, key, value):
-        reading = models.Reading()
-        reading.patient_id = patient.id
-        reading.reading_date = datetime.datetime.now()
-        reading.time_of_reading = key
-        setattr(reading, "reading_value", value)
-        session.add(reading)
-        session.commit()
 
+    def insert_medication(patient_id: int, row: dict,  key:str , drug_id:int):
+        if int(row[key]) == 0:
+            return
+        medication = models.PatientMedication()
+        medication.patient_id = patient_id
+        medication.drug_id = drug_id
+        medication.dosage = int(row[key])
+        medication.dosage_unit = 'mg'
+        session.add(medication)
+        session.commit()
+        
     @app.route("/load_insulin", methods=["GET"])
     def load_insulin():
         """

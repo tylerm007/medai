@@ -1,5 +1,4 @@
 ID,Patient Id,Age,Gender,Weight (lbs),Height (inches),Duration,HbA1c %,CKD,CAD,HLD,Low Actvity (min/day),Medium Activity min,High Activity mins,Blood sugar before breakfast,Blood sugar before lunch,Blood sugar before dinner,Blood sugar before bed time,Creatinine,Metformin,Glimepiride,Tradjenta,Glargine,Lispro,Farxiga,Ozempic
-,0,20-100,,40-600,48-84,1-600 (Months),6-20,,,,,,,20-600,20-600,20-600,20-600,0.2-14,,,,,,,
 1,2694,67,0,204,62,102,9,1,0,0,30,11,12,142,147,108,127,1.8,0,0,0,0,0,10,0.5
 2,539,40,1,92,57,63,14,1,1,0,34,13,12,125,175,108,204,1,0,0,0,0,0,0,0
 3,3853,69,1,226,67,20,6.1,1,1,0,31,25,3,168,168,176,155,0.5,0,0,0,0,0,0,0.5
