@@ -11,6 +11,8 @@ CREATE DATABASE authdb;
 --
 -- Table structure for table Role
 --
+truncate table "UserRole";
+truncate table "User";
 
 DROP TABLE IF EXISTS "Role";
 CREATE TABLE "Role" (
@@ -39,7 +41,8 @@ CREATE TABLE "User" (
 -- Dumping data for table User
 --
 
-INSERT INTO "User" VALUES ('Administrator',NULL,'admin','Admin User','admin@corp.com','p');
+INSERT INTO "User" VALUES ('Administrator',NULL,'admin','Admin User','admin@corp.com','LOGIC2025');
+INSERT INTO "User" VALUES ('tyler@genai-logic.com',NULL,'tyler@genai-logic.com','Tyler','tyler@genai-logic.com','LOGIC2025');
 
 
 --
@@ -57,3 +60,4 @@ CREATE TABLE "UserRole" (
 );
 
 INSERT INTO "UserRole" VALUES ('admin',NULL,'sa');
+INSERT INTO "UserRole" VALUES ('tyler@genai-logic.com',NULL,'sa');

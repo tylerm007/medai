@@ -25,63 +25,67 @@ import { RecommendationCardComponent } from './Recommendation-card/Recommendatio
 
 export const MENU_CONFIG: MenuRootItem[] = [
     { id: 'home', name: 'HOME', icon: 'home', route: '/main/home' },
-    
+
     {
-    id: 'data', name: ' data', icon: 'remove_red_eye', opened: true,
-    items: [
-    
-        { id: 'Contraindication', name: 'CONTRAINDICATION', icon: 'view_list', route: '/main/Contraindication' }
-    
-        ,{ id: 'Dosage', name: 'DOSAGE', icon: 'view_list', route: '/main/Dosage' }
-    
-        ,{ id: 'Drug', name: 'DRUG', icon: 'view_list', route: '/main/Drug' }
-    
-        ,{ id: 'DrugUnit', name: 'DRUGUNIT', icon: 'view_list', route: '/main/DrugUnit' }
-    
-        ,{ id: 'InsulinRule', name: 'INSULINRULE', icon: 'view_list', route: '/main/InsulinRule' }
-    
-        ,{ id: 'Patient', name: 'PATIENT', icon: 'view_list', route: '/main/Patient' }
-    
-        ,{ id: 'PatientLab', name: 'PATIENTLAB', icon: 'view_list', route: '/main/PatientLab' }
-    
-        ,{ id: 'PatientMedication', name: 'PATIENTMEDICATION', icon: 'view_list', route: '/main/PatientMedication' }
-    
-        ,{ id: 'Reading', name: 'READING', icon: 'view_list', route: '/main/Reading' }
-    
-        ,{ id: 'ReadingHistory', name: 'READINGHISTORY', icon: 'view_list', route: '/main/ReadingHistory' }
-    
-        ,{ id: 'Recommendation', name: 'RECOMMENDATION', icon: 'view_list', route: '/main/Recommendation' }
-    
-    ] 
-},
-    
-    { id: 'settings', name: 'Settings', icon: 'settings', route: '/main/settings'}
-    ,{ id: 'about', name: 'About', icon: 'info', route: '/main/about'}
-    ,{ id: 'logout', name: 'LOGOUT', route: '/login', icon: 'power_settings_new', confirm: 'yes' }
+        id: 'data', name: ' data', icon: 'remove_red_eye', opened: true,
+        items: [
+
+            { id: 'Patient', name: 'Patient Profile', icon: 'view_list', route: '/main/Patient' }
+
+            , { id: 'Reading', name: 'Blood Sugar Readings', icon: 'view_list', route: '/main/Reading' }
+
+            , { id: 'ReadingHistory', name: 'History', icon: 'view_list', route: '/main/ReadingHistory' }
+
+            , { id: 'PatientLab', name: 'Patient Labs', icon: 'view_list', route: '/main/PatientLab' }
+
+            , { id: 'PatientMedication', name: 'Medications', icon: 'view_list', route: '/main/PatientMedication' }
+
+            , { id: 'Recommendation', name: 'Recommendations', icon: 'view_list', route: '/main/Recommendation' }
+
+        ]
+    },
+    {
+        id: 'other', name: ' Other', icon: 'remove_red_eye', opened: true,
+        items: [
+            { id: 'Contraindication', name: 'Contraindication', icon: 'view_list', route: '/main/Contraindication' }
+
+            , { id: 'Dosage', name: 'Drug Dosage', icon: 'view_list', route: '/main/Dosage' }
+
+            , { id: 'Drug', name: 'Drugs', icon: 'view_list', route: '/main/Drug' }
+
+            , { id: 'DrugUnit', name: 'Drug Unit', icon: 'view_list', route: '/main/DrugUnit' }
+
+            , { id: 'InsulinRule', name: 'Insulin Rules', icon: 'view_list', route: '/main/InsulinRule' }
+
+        ]
+    }
+    , { id: 'settings', name: 'Settings', icon: 'settings', route: '/main/settings' }
+    , { id: 'about', name: 'About', icon: 'info', route: '/main/about' }
+    , { id: 'logout', name: 'LOGOUT', route: '/login', icon: 'power_settings_new', confirm: 'yes' }
 ];
 
 export const MENU_COMPONENTS = [
 
     ContraindicationCardComponent
 
-    ,DosageCardComponent
+    , DosageCardComponent
 
-    ,DrugCardComponent
+    , DrugCardComponent
 
-    ,DrugUnitCardComponent
+    , DrugUnitCardComponent
 
-    ,InsulinRuleCardComponent
+    , InsulinRuleCardComponent
 
-    ,PatientCardComponent
+    , PatientCardComponent
 
-    ,PatientLabCardComponent
+    , PatientLabCardComponent
 
-    ,PatientMedicationCardComponent
+    , PatientMedicationCardComponent
 
-    ,ReadingCardComponent
+    , ReadingCardComponent
 
-    ,ReadingHistoryCardComponent
+    , ReadingHistoryCardComponent
 
-    ,RecommendationCardComponent
+    , RecommendationCardComponent
 
 ];

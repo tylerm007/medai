@@ -49,7 +49,7 @@
       
       <mat-tab-group fxFill>
         
-        <mat-tab label="PATIENTLAB-patient_id">
+        <mat-tab label="Labs">
     <div layout-padding>
       <o-table 
         attr="PatientLabTable" 
@@ -105,7 +105,7 @@
     </div>
 </mat-tab>
         
-        <mat-tab label="PATIENTMEDICATION-patient_id">
+        <mat-tab label="Medications">
     <div layout-padding>
       <o-table 
         attr="PatientMedicationTable" 
@@ -117,7 +117,7 @@
         horizontal-scroll="yes"
         detail-form-route="PatientMedication" 
         edit-form-route="PatientMedication"
-        visible-columns="id;dosage_unit;drug_id;patient_id;dosage"  
+        visible-columns="id;drug_id;patient_id;dosage;dosage_unit"  
         sort-columns="id" 
         query-rows="25" 
         quick-filter="yes"
@@ -162,7 +162,7 @@
     </div>
 </mat-tab>
         
-        <mat-tab label="READING-patient_id">
+        <mat-tab label="Blood Sugar Readings">
     <div layout-padding>
       <o-table 
         attr="ReadingTable" 
@@ -214,7 +214,7 @@
     </div>
 </mat-tab>
         
-        <mat-tab label="READINGHISTORY-patient_id">
+        <mat-tab label="History">
     <div layout-padding>
       <o-table 
         attr="ReadingHistoryTable" 
@@ -270,7 +270,7 @@
     </div>
 </mat-tab>
         
-        <mat-tab label="RECOMMENDATION-patient_id">
+        <mat-tab label="Recommendations">
     <div layout-padding>
       <o-table 
         attr="RecommendationTable" 
@@ -282,7 +282,7 @@
         horizontal-scroll="yes"
         detail-form-route="Recommendation" 
         edit-form-route="Recommendation"
-        visible-columns="id;dosage_unit;drug_id;patient_id;time_of_reading;dosage;recommendation_date"  
+        visible-columns="id;drug_id;patient_id;time_of_reading;dosage;dosage_unit;recommendation_date"  
         sort-columns="id" 
         query-rows="25" 
         quick-filter="yes"
