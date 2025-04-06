@@ -2,7 +2,7 @@
 -- create database medai;
 -- \c media;
 
-
+DROP  VIEW IF EXISTS patient_full_view;
 DROP TABLE IF EXISTS insulin_rules;
 DROP TABLE IF EXISTS contraindication;
 DROP TABLE IF EXISTS dosage;
@@ -161,3 +161,66 @@ create table insulin_rules (
         lispro_before_lunch INT,
         lispro_before_dinner INT
 );
+
+
+CREATE VIEW patient_full_view AS
+SELECT 
+    p.id AS patient_id,
+    p.name,
+    p.birth_date,
+    p.age,
+    p.weight,
+    p.height,
+    p.hba1c,
+    p.duration,
+    p.ckd,
+    p.cad,
+    p.hld,
+    p.patient_sex,
+    p.creatine_mg_dl,
+    p.medical_record_number,
+    p.created_date,
+    
+    -- Blood Sugar History
+    rh.breakfast,
+    rh.lunch,
+    rh.dinner,
+    rh.bedtime,
+    rh.notes_for_day,
+    
+    -- Medications
+    pm.drug_id,
+    d.drug_name,
+    pm.dosage,
+    pm.dosage_unit,
+
+
+    MAX(CASE WHEN d.drug_name = 'Metformin' THEN pm.dosage ELSE NULL END) AS Metformin,
+    MAX(CASE WHEN d.drug_name = 'Tradjenta' THEN pm.dosage ELSE NULL END) AS Tradjenta,
+    MAX(CASE WHEN d.drug_name = 'Glimepiride' THEN pm.dosage ELSE NULL END) AS Glimepiride,
+    MAX(CASE WHEN d.drug_name = 'Farxiga' THEN pm.dosage ELSE NULL END) AS Farxiga,
+	MAX(CASE WHEN d.drug_name = 'Ozempic' THEN pm.dosage ELSE NULL END) AS Ozempic,
+    
+    -- AI Recommendations-- Pivoted Medications
+    MAX(CASE WHEN d_rec.drug_name = 'Metformin' THEN rec.dosage ELSE NULL END) AS Metformin,
+    MAX(CASE WHEN d_rec.drug_name = 'Tradjenta' THEN rec.dosage ELSE NULL END) AS Tradjenta,
+    MAX(CASE WHEN d_rec.drug_name = 'Glimepiride' THEN rec.dosage ELSE NULL END) AS Glimepiride,
+    MAX(CASE WHEN d_rec.drug_name = 'Farxiga' THEN rec.dosage ELSE NULL END) AS Farxiga,
+    MAX(CASE WHEN d_rec.drug_name = 'Glargine' THEN rec.dosage ELSE NULL END) AS Glargine,
+	MAX(CASE WHEN d_rec.drug_name = 'Lispro' THEN rec.dosage ELSE NULL END) AS Lispro,
+	MAX(CASE WHEN d_rec.drug_name = 'Ozempic' THEN rec.dosage ELSE NULL END) AS Ozempic,
+	
+
+FROM patient p
+LEFT JOIN patient_lab pl ON p.id = pl.patient_id
+LEFT JOIN reading r ON p.id = r.patient_id
+LEFT JOIN reading_history rh ON p.id = rh.patient_id
+LEFT JOIN patient_medication pm ON p.id = pm.patient_id
+LEFT JOIN drug d ON pm.drug_id = d.id
+LEFT JOIN recommendation rec ON p.id = rec.patient_id
+LEFT JOIN drug d_rec ON rec.drug_id = d_rec.id
+GROUP BY p.id, p.name, p.birth_date, p.age, p.weight, p.height, p.hba1c, p.duration, p.ckd, p.cad, p.hld, 
+		p.patient_sex, p.creatine_mg_dl, p.medical_record_number, p.created_date, pl.lab_name, pl.lab_test_name, 
+		pl.lab_test_code, pl.lab_test_description, pl.lab_date, pl.lab_result, r.reading_date, r.notes, rh.breakfast, 
+		rh.lunch, rh.dinner, rh.bedtime, rh.notes_for_day, rec.time_of_reading, rec.drug_id, d_rec.drug_name, 
+		rec.dosage, rec.dosage_unit;

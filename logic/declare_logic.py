@@ -100,7 +100,7 @@ def declare_logic():
     
     Rule.copy(derive=models.Dosage.drug_name, from_parent=models.Drug.drug_name)
     Rule.copy(derive=models.Dosage.drug_type, from_parent=models.Drug.drug_type)
-    #Rule.commit_row_event(on_class=models.Reading, calling=fn_recommend_drug)
+    Rule.commit_row_event(on_class=models.Reading, calling=insert_reading_history)
     Rule.after_flush_row_event(on_class=models.ReadingHistory, calling=fn_recommend_drug)
     Rule.after_flush_row_event(on_class=models.Reading, calling=fn_recommend_insulin)
     

@@ -39,6 +39,23 @@ def recommend_drug(row:models.ReadingHistory, old_row:models.ReadingHistory, log
     drug_id = 6
     create_recommendation(row, dosage, drug_id ,"breakfast", logic_row,"farxiga")
     
+    dosage = _glargine(round(row.bedtime),  "bedtime")
+    if dosage:
+        drug_id = 4
+        create_recommendation(row, dosage, drug_id ,"bedtime", logic_row,"glargine")
+            
+    drug_id = 5
+    dosage = _lispro(row.breakfast,"breakfast", "Before_Breakfast")
+    if dosage:
+        create_recommendation(row, dosage, drug_id ,"breakfast", logic_row,"lispro")
+    else:
+        dosage = _lispro(row.lunch,"lunch", "Before_Lunch")
+        if dosage:
+            create_recommendation(row, dosage, drug_id ,"lunch", logic_row,"lispro")
+        else:
+            dosage = _lispro(row.dinner, "dinner", "Before_Dinner")
+            if dosage:
+                create_recommendation(row, dosage, drug_id ,"dinner", logic_row,"lispro")
     return 
 
 def create_recommendation(row, dosage, drug_id, time_of_reading, logic_row, drug_name: str):
@@ -130,40 +147,46 @@ def recommend_insulin_drug (row:models.Reading, old_row:models.Reading, logic_ro
         create_recommendation(row, dosage, drug_id ,"dinner", logic_row,"lispro")
     return  
 
-def glargine(row: models.Reading) -> str:
+def glargine(row: models.Reading):
+    return _glargine(row.reading_value, row.time_of_reading)
+
+def _glargine (reading_value: any ,time_of_reading: str ) -> str:
     """
     Glargine (Only given Before Bedtime):                                                                 
     Refer to Insulin dosage rule spreadsheet
     """
-    reading = row.reading_value
+    reading = reading_value
     insulin = session.query(models.InsulinRule).filter(models.InsulinRule.blood_sugar_reading == "Before_Bedtime"
                 and models.InsulinRule.blood_sugar_level <= reading
                 and models.InsulinRule.blood_sugar_level >= reading
                 ).first()
     value = insulin.glargine_before_dinner
-    if value and row.time_of_reading == "bedtime":
+    if value and time_of_reading == "bedtime":
         return value
     return None
 
 def lispro(row: models.Reading, blood_sugar_reading: str) -> str:
+    return _lispro(row.reading_value,row.time_of_reading, blood_sugar_reading)
+    
+def _lispro(reading_value, time_of_reading, blood_sugar_reading: str) -> str:
     '''
     Lispro (Only given @Before Breakfast, Before Lunch, Before Dinner):             
     Refer to Insulin dosage rule spreadsheet
     
     '''
-    reading = row.reading_value
+    reading = reading_value
     insulin = session.query(models.InsulinRule).filter(models.InsulinRule.blood_sugar_reading == blood_sugar_reading
                 and models.InsulinRule.blood_sugar_level <= reading
                 and models.InsulinRule.blood_sugar_level >= reading
                 ).first()
-    value = insulin.lispro_before_breakfast
-    if row.time_of_reading == "breakfast":
+    if time_of_reading == "breakfast":
+        value = insulin.lispro_before_breakfast
         return value
-    value = insulin.lispro_before_lunch
-    if row.time_of_reading == "lunch":
+    elif time_of_reading == "lunch":
+        value = insulin.lispro_before_lunch
         return value
-    value = insulin.lispro_before_dinner
-    if row.time_of_reading == "dinner":
+    elif time_of_reading == "dinner":
+        value = insulin.lispro_before_dinner
         return value
     return None
     
