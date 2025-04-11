@@ -1,0 +1,127 @@
+
+The following rules have been activated
+ - 2025-04-11 14:20:53,767 - logic_logger - DEBUG
+Rule Bank[0x11234b590] (loaded 2025-04-11 12:00:13.937232)		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+Mapped Class[Contraindication] rules:		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+Mapped Class[Patient] rules:		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+  Derive <class 'database.models.Patient'>.age as Formula (1): <function>		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+Mapped Class[Dosage] rules:		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+  Derive <class 'database.models.Dosage'>.drug_name as Copy(drug.drug_name)		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+  Derive <class 'database.models.Dosage'>.drug_type as Copy(drug.drug_type)		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+Mapped Class[Reading] rules:		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+  RowEvent Reading.insert_reading_history() 		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+  RowEvent Reading.fn_recommend_insulin() 		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+Mapped Class[ReadingHistory] rules:		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+  RowEvent ReadingHistory.fn_recommend_drug() 		##   - 2025-04-11 14:20:53,767 - logic_logger - INFO
+Logic Bank - 14 rules loaded - 2025-04-11 14:20:53,767 - logic_logger - INFO
+Logic Bank - 14 rules loaded - 2025-04-11 14:20:53,767 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x1189c9cd0) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,438 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x118a04290) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,441 - logic_logger - INFO
+..Recommendation[221] {Delete - client} id: 221, patient_id: 521, time_of_reading: breakfast, drug_id: 2, dosage: 2.0000, dosage_unit: mg, recommendation_date: 2025-05-11 00:00:00  row: 0x1189d73b0  session: 0x1189c9cd0  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,442 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x124f5a480) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,443 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x1189aa9f0) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,443 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x118992480) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,443 - logic_logger - INFO
+..Recommendation[219] {Delete - client} id: 219, patient_id: 521, time_of_reading: breakfast, drug_id: 1, dosage: 1000.0000, dosage_unit: mg, recommendation_date: 2025-05-11 00:00:00  row: 0x1189d4890  session: 0x118a04290  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,444 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x1189c9cd0)   										 - 2025-04-11 14:23:15,448 - logic_logger - INFO
+..Recommendation[218] {Delete - client} id: 218, patient_id: 521, time_of_reading: breakfast, drug_id: 2, dosage: 2.0000, dosage_unit: mg, recommendation_date: 2025-05-11 00:00:00  row: 0x1189d68d0  session: 0x124f5a480  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,449 - logic_logger - INFO
+..Recommendation[220] {Delete - client} id: 220, patient_id: 521, time_of_reading: dinner, drug_id: 1, dosage: 1000.0000, dosage_unit: mg, recommendation_date: 2025-05-11 00:00:00  row: 0x125085490  session: 0x1189aa9f0  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,450 - logic_logger - INFO
+..Recommendation[217] {Delete - client} id: 217, patient_id: 521, time_of_reading: dinner, drug_id: 1, dosage: 1000.0000, dosage_unit: mg, recommendation_date: 2025-05-11 00:00:00  row: 0x118a05610  session: 0x118992480  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,451 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x118a04290)   										 - 2025-04-11 14:23:15,451 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x124f5a480)   										 - 2025-04-11 14:23:15,453 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x1189aa9f0)   										 - 2025-04-11 14:23:15,453 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x118992480)   										 - 2025-04-11 14:23:15,454 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x1189c9cd0)   										 - 2025-04-11 14:23:15,455 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x118a04290)   										 - 2025-04-11 14:23:15,456 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x124f5a480)   										 - 2025-04-11 14:23:15,457 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,458 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x1189aa9f0)   										 - 2025-04-11 14:23:15,458 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x118992480)   										 - 2025-04-11 14:23:15,458 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,458 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x118a04290))       	 - 2025-04-11 14:23:15,460 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x1189c9cd0))       	 - 2025-04-11 14:23:15,459 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,460 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x1189aa9f0))       	 - 2025-04-11 14:23:15,460 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,459 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x124f5a480))       	 - 2025-04-11 14:23:15,461 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,460 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x118992480))       	 - 2025-04-11 14:23:15,461 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x125084500) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,464 - logic_logger - INFO
+..Recommendation[216] {Delete - client} id: 216, patient_id: 521, time_of_reading: breakfast, drug_id: 1, dosage: 1000.0000, dosage_unit: mg, recommendation_date: 2025-05-11 00:00:00  row: 0x1189a9f70  session: 0x125084500  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,467 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x125084500)   										 - 2025-04-11 14:23:15,467 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x1189a9d30) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,470 - logic_logger - INFO
+..Recommendation[215] {Delete - client} id: 215, patient_id: 521, time_of_reading: breakfast, drug_id: 2, dosage: 2.0000, dosage_unit: mg, recommendation_date: 2025-05-11 00:00:00  row: 0x1189c9ca0  session: 0x1189a9d30  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,471 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x125084500)   										 - 2025-04-11 14:23:15,472 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x1189a9d30)   										 - 2025-04-11 14:23:15,472 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x1189ab050) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,473 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,474 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x125084500))       	 - 2025-04-11 14:23:15,485 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x1189d4bf0) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,482 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x1250ddd90) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,484 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x1189a9d30)   										 - 2025-04-11 14:23:15,484 - logic_logger - INFO
+..Recommendation[214] {Delete - client} id: 214, patient_id: 521, time_of_reading: dinner, drug_id: 1, dosage: 1000.0000, dosage_unit: mg, recommendation_date: 2025-05-11 00:00:00  row: 0x1189d6cc0  session: 0x1189ab050  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,485 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x1189d7e00) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,479 - logic_logger - INFO
+..Recommendation[191] {Delete - client} id: 191, patient_id: 521, time_of_reading: breakfast, drug_id: 2, dosage: 2.0000, dosage_unit: mg, recommendation_date: 2025-04-12 00:00:00  row: 0x118a06bd0  session: 0x1189d4bf0  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,486 - logic_logger - INFO
+..Recommendation[190] {Delete - client} id: 190, patient_id: 521, time_of_reading: dinner, drug_id: 1, dosage: 1000.0000, dosage_unit: mg, recommendation_date: 2025-04-12 00:00:00  row: 0x118a05970  session: 0x1250ddd90  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,487 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,487 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x1189a9d30))       	 - 2025-04-11 14:23:15,489 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x1189ab050)   										 - 2025-04-11 14:23:15,488 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x1189d4bf0)   										 - 2025-04-11 14:23:15,489 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x1250ddd90)   										 - 2025-04-11 14:23:15,489 - logic_logger - INFO
+..Recommendation[213] {Delete - client} id: 213, patient_id: 521, time_of_reading: breakfast, drug_id: 1, dosage: 1000.0000, dosage_unit: mg, recommendation_date: 2025-05-11 00:00:00  row: 0x125092f00  session: 0x1189d7e00  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,489 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x1189ab050)   										 - 2025-04-11 14:23:15,493 - logic_logger - INFO
+
+Logic Phase:		ROW LOGIC		(session=0x118a07380) (sqlalchemy before_flush)			 - 2025-04-11 14:23:15,495 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x1189d4bf0)   										 - 2025-04-11 14:23:15,495 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x1250ddd90)   										 - 2025-04-11 14:23:15,495 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x1189d7e00)   										 - 2025-04-11 14:23:15,495 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,495 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x1189ab050))       	 - 2025-04-11 14:23:15,497 - logic_logger - INFO
+..Recommendation[189] {Delete - client} id: 189, patient_id: 521, time_of_reading: breakfast, drug_id: 1, dosage: 1000.0000, dosage_unit: mg, recommendation_date: 2025-04-12 00:00:00  row: 0x1250decf0  session: 0x118a07380  ins_upd_dlt: dlt, initial: dlt - 2025-04-11 14:23:15,496 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,497 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x1250ddd90))       	 - 2025-04-11 14:23:15,499 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,496 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x1189d4bf0))       	 - 2025-04-11 14:23:15,499 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x118a07380)   										 - 2025-04-11 14:23:15,498 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x1189d7e00)   										 - 2025-04-11 14:23:15,498 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,501 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x1189d7e00))       	 - 2025-04-11 14:23:15,503 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x118a07380)   										 - 2025-04-11 14:23:15,503 - logic_logger - INFO
+
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-11 14:23:15,504 - logic_logger - INFO
+
+Logic Phase:		COMPLETE(session=0x118a07380))       	 - 2025-04-11 14:23:15,504 - logic_logger - INFO

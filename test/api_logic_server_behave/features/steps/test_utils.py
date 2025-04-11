@@ -52,8 +52,8 @@ except ImportError:
     raise Exception(f'login: ImportError: config.config.Args')
 
 
-def login(user: str = 'aneu') -> dict:
-    """ login (default aneu), return header with token
+def login(user: str = 'admin') -> dict:
+    """ login (default admin), return header with token
 
     Note different api for sql vs. keycloak
 
@@ -131,3 +131,66 @@ def does_file_contain(search_for: str, in_file: str) -> bool:
 
 if __name__ == "__main__":
     print(f'\n test_services.py, starting')
+
+def get(endpoint: str, key: int, where: str = None) -> dict:
+    #"Authorization": jwt,
+    jwt = login()
+    header = {"Content-Type": "application/json","accept": "application/vnd.api+json"} 
+    header.update(jwt)
+    server = \
+        f'{Config.CREATED_HTTP_SCHEME}://{Config.CREATED_SWAGGER_HOST}:{Config.CREATED_SWAGGER_PORT}{Config.CREATED_API_PREFIX}'
+    get_uri = f'{server}/{endpoint}/' 
+    if key is not None:
+        get_uri += str(key)
+    if where is not None:
+        get_uri = f'{get_uri}?{where}'
+    r = requests.get(url=get_uri, headers=header)
+    status_code = r.status_code
+    if status_code > 300:
+        raise Exception(f'POST failed with {r.text}')
+    response_text = r.text
+    result_data = json.loads(response_text)
+    print(result_data)
+    return result_data
+        
+def post(endpoint: str, post_data: dict):
+    #"Authorization": jwt,
+    jwt = login()
+    header = {"Content-Type": "application/json","accept": "application/vnd.api+json"} 
+    header.update(jwt)
+    server = \
+        f'{Config.CREATED_HTTP_SCHEME}://{Config.CREATED_SWAGGER_HOST}:{Config.CREATED_SWAGGER_PORT}{Config.CREATED_API_PREFIX}'
+    payload = \
+        {
+            "data": {
+                "attributes": post_data,
+                "type": endpoint
+            }
+        }
+    post_uri = f'{server}/{endpoint}/'
+    r = requests.post(url=post_uri, json=payload, headers=header)
+    status_code = r.status_code
+    if status_code > 300:
+        raise Exception(f'POST failed with {r.text}')
+    response_text = r.text
+    result_data = json.loads(response_text)
+    print(result_data)
+    return result_data
+    
+def put(endpoint: str, post_data: dict, ident: int):
+    #"Authorization": jwt,
+    jwt = login()
+    header = {"Content-Type": "application/json","accept": "application/vnd.api+json"} 
+    header.update(jwt)
+
+    server = \
+        f'{Config.CREATED_HTTP_SCHEME}://{Config.CREATED_SWAGGER_HOST}:{Config.CREATED_SWAGGER_PORT}{Config.CREATED_API_PREFIX}'
+    put_uri = f'{server}/{endpoint}/{ident}'
+    r = requests.patch(url=put_uri, json=post_data, headers=header)
+    status_code = r.status_code
+    if status_code > 300:
+        raise Exception(f'PUT failed with {r.text}')
+    response_text = r.text
+    result_data = json.loads(response_text)
+    print(result_data)
+    return result_data
