@@ -139,12 +139,13 @@ def get(endpoint: str, key: int, where: str = None) -> dict:
     header.update(jwt)
     server = \
         f'{Config.CREATED_HTTP_SCHEME}://{Config.CREATED_SWAGGER_HOST}:{Config.CREATED_SWAGGER_PORT}{Config.CREATED_API_PREFIX}'
-    get_uri = f'{server}/{endpoint}/' 
+    get_uri = f'{server}/{endpoint}' 
     if key is not None:
-        get_uri += str(key)
+        get_uri += f'/{str(key)}'
     if where is not None:
         get_uri = f'{get_uri}?{where}'
     r = requests.get(url=get_uri, headers=header)
+    print(f'get_uri: {get_uri}')
     status_code = r.status_code
     if status_code > 300:
         raise Exception(f'POST failed with {r.text}')

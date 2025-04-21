@@ -112,7 +112,7 @@ def tradjenta(row: models.ReadingHistory) -> str:
 def ozempic(row: models.ReadingHistory) -> str:
     '''
     IF Blood Sugar Before Breakfast is 100-600 AND Creatinine 1-6
-    AND Weight >180 AND HbA1c 6.5-14 : Prescribe Ozempic 1mg
+    AND Weight >180 AND HbA1c 6.5-14 : Prescribe Ozempic 1mg 
     '''
     if (100 <= int(row.breakfast) <= 600) and (1 <= row.patient.creatine_mg_dl <= 6) and (row.patient.weight > 180) and (6.5 <= row.patient.hba1c <= 14):
         return 1 #"Ozempic 1mg"
@@ -145,6 +145,8 @@ def recommend_insulin_drug (row:models.Reading, old_row:models.Reading, logic_ro
     if row.time_of_reading == "dinner":
         dosage = lispro(row, "Before_Dinner")
         create_recommendation(row, dosage, drug_id ,"dinner", logic_row,"lispro")
+        dosage = lispro(row, "Before_Bedtime")
+        create_recommendation(row, dosage, drug_id ,"bedtime", logic_row,"lispro")
     return  
 
 def glargine(row: models.Reading):
@@ -156,10 +158,10 @@ def _glargine (reading_value: any ,time_of_reading: str ) -> str:
     Refer to Insulin dosage rule spreadsheet
     """
     reading = reading_value
-    insulin = session.query(models.InsulinRule).filter(models.InsulinRule.blood_sugar_reading == "Before_Bedtime"
+    insulin = session.query(models.InsulinRule).filter(models.InsulinRule.blood_sugar_reading == "Before_Breakfast"
                 and models.InsulinRule.blood_sugar_level <= reading
                 and models.InsulinRule.blood_sugar_level >= reading
-                ).first()
+                ).order_by(models.InsulinRule.blood_sugar_level).first()
     value = insulin.glargine_before_dinner
     if value and time_of_reading == "bedtime":
         return value
@@ -176,17 +178,23 @@ def _lispro(reading_value, time_of_reading, blood_sugar_reading: str) -> str:
     '''
     reading = reading_value
     insulin = session.query(models.InsulinRule).filter(models.InsulinRule.blood_sugar_reading == blood_sugar_reading
-                and models.InsulinRule.blood_sugar_level <= reading
-                and models.InsulinRule.blood_sugar_level >= reading
-                ).first()
+                and models.InsulinRule.blood_sugar_level >= reading - 10
+                and models.InsulinRule.blood_sugar_level <= reading + 10
+            ).order_by(models.InsulinRule.blood_sugar_level).all()
     if time_of_reading == "breakfast":
-        value = insulin.lispro_before_breakfast
-        return value
+        for insulin_reading in insulin:
+            if insulin_reading.lispro_before_breakfast is not None:
+                return insulin_reading.lispro_before_breakfast
+
     elif time_of_reading == "lunch":
-        value = insulin.lispro_before_lunch
-        return value
+        for insulin_reading in insulin:
+            if insulin_reading.lispro_before_lunch is not None:
+                return insulin_reading.lispro_before_lunch
+
     elif time_of_reading == "dinner":
-        value = insulin.lispro_before_dinner
-        return value
+        for insulin_reading in insulin:
+            if insulin_reading.lispro_before_dinner is not None:
+                return insulin_reading.lispro_before_dinner
+ 
     return None
     
