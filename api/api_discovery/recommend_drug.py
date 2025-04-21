@@ -159,12 +159,13 @@ def _glargine (reading_value: any ,time_of_reading: str ) -> str:
     """
     reading = reading_value
     insulin = session.query(models.InsulinRule).filter(models.InsulinRule.blood_sugar_reading == "Before_Breakfast"
-                and models.InsulinRule.blood_sugar_level <= reading
-                and models.InsulinRule.blood_sugar_level >= reading
-                ).order_by(models.InsulinRule.blood_sugar_level).first()
-    value = insulin.glargine_before_dinner
-    if value and time_of_reading == "bedtime":
-        return value
+                and models.InsulinRule.blood_sugar_level <= reading + 10
+                and models.InsulinRule.blood_sugar_level >= reading - 10
+                ).order_by(models.InsulinRule.blood_sugar_level).all()
+    for insulin_reading in insulin:
+        if insulin_reading.glargine_before_dinner is not None and time_of_reading == "bedtime":
+            return insulin_reading.glargine_before_dinner
+
     return None
 
 def lispro(row: models.Reading, blood_sugar_reading: str) -> str:
