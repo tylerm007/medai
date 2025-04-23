@@ -8,9 +8,9 @@ Feature: About Sample # features/about.feature:6
 Feature: Patient Testing # features/medai.feature:1
 
   Scenario: Validate Recommendations              # features/medai.feature:2
-    Given Existing Patients Readings              # features/steps/medai.py:9
-    When Blood Sugar History is given             # features/steps/medai.py:17
-    Then Recommendations should match prior entry # features/steps/medai.py:46
+    Given Existing Patients Readings              # features/steps/medai.py:11
+    When Blood Sugar History is given             # features/steps/medai.py:19
+    Then Recommendations should match prior entry # features/steps/medai.py:48
 
 &nbsp;&nbsp;
-/Users/tylerband/medai+/medai/test/api_logic_server_behave/behave_run.py completed at April 21, 2025 13:21:39
+/Users/tylerband/medai+/medai/test/api_logic_server_behave/behave_run.py completed at April 23, 2025 13:56:33

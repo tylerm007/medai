@@ -202,7 +202,7 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
         import datetime
 
         # Load the CSV file
-        csv_file = request.args.get("csv_file") or 'InsulinRules.csv'
+        csv_file = request.args.get("csv_file") or 'insulin_new_rules.csv'
         if not csv_file:
             return jsonify({"error": "No CSV file specified"}), 400
         if not os.path.exists(csv_file):
@@ -225,7 +225,7 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
             insulin.blood_sugar_level = int(row["Blood_Sugar_Level"])
             insulin.blood_sugar_reading = row["Blood Sugar Reading time"]
             insulin.glargine_before_dinner = (
-                row["Glargine_Before_Dinner (mg)"] if not pd.isna(row["Glargine_Before_Dinner (mg)"]) else None
+                row["Glargine_Before_Bedtime (mg)"] if not pd.isna(row["Glargine_Before_Bedtime (mg)"]) else None
             )
             insulin.lispro_before_breakfast = (
                 row["Lispro_Before_Breakfast (mg)"] if not pd.isna(row["Lispro_Before_Breakfast (mg)"]) else None

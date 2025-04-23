@@ -4,11 +4,13 @@ import test_utils
 import json
 import datetime
 
+patient_id = 525
+days_to_add = 30
 # Implement Behave Tests -- your code goes here
 
 @given('Existing Patients Readings')
 def step_impl(context):
-    context.patient = test_utils.get('Patient', 522)
+    context.patient = test_utils.get('Patient', patient_id)
     #assert context.patient is not None
     print(f'Patient: {context.patient}')
     context.patient_id = int(context.patient['data']['id'])
@@ -28,7 +30,7 @@ def step_impl(context):
     dinner = reading_history['attributes']['dinner']
     lunch = reading_history['attributes']['lunch']
 
-    reading_date = (datetime.datetime.now() + datetime.timedelta(days=4)).strftime("%Y-%m-%d")
+    reading_date = (datetime.datetime.now() + datetime.timedelta(days=days_to_add)).strftime("%Y-%m-%d")
     context.reading_date = f'{reading_date} 00:00:00'
     history = {
                 "bedtime": bedtime,

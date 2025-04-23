@@ -1,43 +1,46 @@
 
 The following rules have been activated
- - 2025-04-21 13:21:35,584 - logic_logger - DEBUG
-Rule Bank[0x107878860] (loaded 2025-04-21 13:14:10.461592)		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-Mapped Class[Contraindication] rules:		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-  Constraint Function: None 		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-Mapped Class[Patient] rules:		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-  Derive <class 'database.models.Patient'>.age as Formula (1): <function>		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-  Constraint Function: None 		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-Mapped Class[Dosage] rules:		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-  Derive <class 'database.models.Dosage'>.drug_name as Copy(drug.drug_name)		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-  Derive <class 'database.models.Dosage'>.drug_type as Copy(drug.drug_type)		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-Mapped Class[Reading] rules:		##   - 2025-04-21 13:21:35,585 - logic_logger - INFO
-  RowEvent Reading.insert_reading_history() 		##   - 2025-04-21 13:21:35,586 - logic_logger - INFO
-  RowEvent Reading.fn_recommend_insulin() 		##   - 2025-04-21 13:21:35,586 - logic_logger - INFO
-Mapped Class[ReadingHistory] rules:		##   - 2025-04-21 13:21:35,586 - logic_logger - INFO
-  RowEvent ReadingHistory.fn_recommend_drug() 		##   - 2025-04-21 13:21:35,586 - logic_logger - INFO
-Logic Bank - 14 rules loaded - 2025-04-21 13:21:35,586 - logic_logger - INFO
-Logic Bank - 14 rules loaded - 2025-04-21 13:21:35,586 - logic_logger - INFO
+ - 2025-04-23 13:56:33,388 - logic_logger - DEBUG
+Rule Bank[0x106e443e0] (loaded 2025-04-23 13:56:27.413027)		##   - 2025-04-23 13:56:33,388 - logic_logger - INFO
+Mapped Class[Contraindication] rules:		##   - 2025-04-23 13:56:33,388 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-04-23 13:56:33,388 - logic_logger - INFO
+Mapped Class[Patient] rules:		##   - 2025-04-23 13:56:33,388 - logic_logger - INFO
+  Derive <class 'database.models.Patient'>.age as Formula (1): <function>		##   - 2025-04-23 13:56:33,388 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-04-23 13:56:33,388 - logic_logger - INFO
+Mapped Class[Dosage] rules:		##   - 2025-04-23 13:56:33,388 - logic_logger - INFO
+  Derive <class 'database.models.Dosage'>.drug_name as Copy(drug.drug_name)		##   - 2025-04-23 13:56:33,388 - logic_logger - INFO
+  Derive <class 'database.models.Dosage'>.drug_type as Copy(drug.drug_type)		##   - 2025-04-23 13:56:33,389 - logic_logger - INFO
+Mapped Class[Reading] rules:		##   - 2025-04-23 13:56:33,389 - logic_logger - INFO
+  RowEvent Reading.insert_reading_history() 		##   - 2025-04-23 13:56:33,389 - logic_logger - INFO
+  RowEvent Reading.fn_recommend_insulin() 		##   - 2025-04-23 13:56:33,389 - logic_logger - INFO
+Mapped Class[ReadingHistory] rules:		##   - 2025-04-23 13:56:33,389 - logic_logger - INFO
+  RowEvent ReadingHistory.fn_recommend_drug() 		##   - 2025-04-23 13:56:33,389 - logic_logger - INFO
+Logic Bank - 14 rules loaded - 2025-04-23 13:56:33,389 - logic_logger - INFO
+Logic Bank - 14 rules loaded - 2025-04-23 13:56:33,389 - logic_logger - INFO
 
-Logic Phase:		ROW LOGIC		(session=0x12dfc39b0) (sqlalchemy before_flush)			 - 2025-04-21 13:21:35,699 - logic_logger - INFO
-..ReadingHistory[None] {Insert - client} id: None, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,700 - logic_logger - INFO
-Logic Phase:		COMMIT LOGIC		(session=0x12dfc39b0)   										 - 2025-04-21 13:21:35,706 - logic_logger - INFO
-Logic Phase:		AFTER_FLUSH LOGIC	(session=0x12dfc39b0)   										 - 2025-04-21 13:21:35,719 - logic_logger - INFO
-..ReadingHistory[100] {AfterFlush Event} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,720 - logic_logger - INFO
-..ReadingHistory[100] {metformin} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,723 - logic_logger - INFO
-..ReadingHistory[100] {metformin} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,724 - logic_logger - INFO
-..ReadingHistory[100] {glimepiride} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,725 - logic_logger - INFO
-..ReadingHistory[100] {tradjenta} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,728 - logic_logger - INFO
-..ReadingHistory[100] {row: 100} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,728 - logic_logger - INFO
-..ReadingHistory[100] {Creating recommendation 3 - 5 for 522 at breakfast} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,729 - logic_logger - INFO
-..ReadingHistory[100] {ozempic} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,737 - logic_logger - INFO
-..ReadingHistory[100] {row: 100} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,738 - logic_logger - INFO
-..ReadingHistory[100] {Creating recommendation 7 - 1 for 522 at breakfast} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,738 - logic_logger - INFO
-..ReadingHistory[100] {farxiga} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,741 - logic_logger - INFO
-..ReadingHistory[100] {row: 100} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,742 - logic_logger - INFO
-..ReadingHistory[100] {Creating recommendation 6 - 10 for 522 at breakfast} id: 100, patient_id: 522, reading_date: 2025-04-25 00:00:00, breakfast: 235, lunch: 300, dinner: 250, bedtime: 230, notes_for_day: BeHave Test  row: 0x12dacbbf0  session: 0x12dfc39b0  ins_upd_dlt: ins, initial: ins - 2025-04-21 13:21:35,742 - logic_logger - INFO
+Logic Phase:		ROW LOGIC		(session=0x121bdd340) (sqlalchemy before_flush)			 - 2025-04-23 13:56:33,494 - logic_logger - INFO
+..ReadingHistory[None] {Insert - client} id: None, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,498 - logic_logger - INFO
+Logic Phase:		COMMIT LOGIC		(session=0x121bdd340)   										 - 2025-04-23 13:56:33,506 - logic_logger - INFO
+Logic Phase:		AFTER_FLUSH LOGIC	(session=0x121bdd340)   										 - 2025-04-23 13:56:33,521 - logic_logger - INFO
+..ReadingHistory[145] {AfterFlush Event} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,521 - logic_logger - INFO
+..ReadingHistory[145] {metformin} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,525 - logic_logger - INFO
+..ReadingHistory[145] {row: 145} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,526 - logic_logger - INFO
+..ReadingHistory[145] {Creating recommendation 1 - 1000 for 525 at breakfast} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,526 - logic_logger - INFO
+..ReadingHistory[145] {metformin} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,532 - logic_logger - INFO
+..ReadingHistory[145] {row: 145} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,532 - logic_logger - INFO
+..ReadingHistory[145] {Creating recommendation 1 - 1000 for 525 at dinner} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,532 - logic_logger - INFO
+..ReadingHistory[145] {tradjenta} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,534 - logic_logger - INFO
+..ReadingHistory[145] {ozempic} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,534 - logic_logger - INFO
+..ReadingHistory[145] {farxiga} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,535 - logic_logger - INFO
+..ReadingHistory[145] {glimepiride} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,548 - logic_logger - INFO
+..ReadingHistory[145] {row: 145} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,549 - logic_logger - INFO
+..ReadingHistory[145] {Creating recommendation 2 - 2 for 525 at breakfast} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,549 - logic_logger - INFO
+..ReadingHistory[145] {glargine} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,564 - logic_logger - INFO
+..ReadingHistory[145] {row: 145} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,565 - logic_logger - INFO
+..ReadingHistory[145] {Creating recommendation 4 - 15 for 525 at bedtime} id: 145, patient_id: 525, reading_date: 2025-05-23 00:00:00, breakfast: 145, lunch: 165, dinner: 190, bedtime: 180, notes_for_day: BeHave Test  row: 0x121bdd910  session: 0x121bdd340  ins_upd_dlt: ins, initial: ins - 2025-04-23 13:56:33,565 - logic_logger - INFO
 
-These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-21 13:21:35,747 - logic_logger - INFO
-  ReadingHistory		## - 2025-04-21 13:21:35,747 - logic_logger - INFO
-    1. RowEvent ReadingHistory.fn_recommend_drug() 		## - 2025-04-21 13:21:35,747 - logic_logger - INFO
+These Rules Fired (see Logic Phases, above, for actual order):		## - 2025-04-23 13:56:33,567 - logic_logger - INFO
+  ReadingHistory		## - 2025-04-23 13:56:33,567 - logic_logger - INFO
+    1. RowEvent ReadingHistory.fn_recommend_drug() 		## - 2025-04-23 13:56:33,567 - logic_logger - INFO
 
-Logic Phase:		COMPLETE(session=0x12dfc39b0))       	 - 2025-04-21 13:21:35,747 - logic_logger - INFO
+Logic Phase:		COMPLETE(session=0x121bdd340))       	 - 2025-04-23 13:56:33,568 - logic_logger - INFO
