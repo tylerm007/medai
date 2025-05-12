@@ -1,0 +1,222 @@
+// src/app/blood-sugar-readings/page.tsx
+"use client";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePageTitle } from "@/context/PageTitleContext";
+import ProtectedRoute from "@/components/Auth/ProtectedRoute";
+import LoadingSpinner from "@/components/Auth/LoadingSpinner";
+import SearchInput from "@/components/Search/SearchInput";
+import { DataTable } from "@/components/DataTable/DataTable";
+import { AddReadingModal } from "@/components/BloodSugar/AddReadingModal";
+import { BloodSugarReading, mockData } from "@/types/bloodSugar";
+import { ColumnDef } from "@/components/DataTable/DataTable";
+
+export default function BloodSugarReadingsPage() {
+  const { setTitle } = usePageTitle();
+  const [readings, setReadings] = useState<BloodSugarReading[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof BloodSugarReading;
+    direction: "asc" | "desc";
+  }>({ key: "reading_date", direction: "desc" });
+  const [filter, setFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setReadings(mockData);
+      setLoading(false);
+    }, 1000);
+  };
+
+  const handleSort = (key: keyof BloodSugarReading) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  const columns: ColumnDef<BloodSugarReading>[] = [
+    {
+      key: "id",
+      header: "Reading ID",
+      sortable: true,
+    },
+    {
+      key: "patient_id",
+      header: "Patient ID",
+      sortable: true,
+      cellRenderer: (row) => (
+        <Link
+          href={`/patient/${row.patient_id}`}
+          className="text-medical-primary hover:underline"
+        >
+          {row.patient_id}
+        </Link>
+      ),
+    },
+    {
+      key: "time_of_reading",
+      header: "Time",
+      sortable: true,
+    },
+    {
+      key: "reading_value",
+      header: "Value (mg/dL)",
+      sortable: true,
+      align: "right",
+      cellRenderer: (row) => (
+        <span
+          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            row.reading_value > 180
+              ? "bg-red-100 text-red-800"
+              : row.reading_value < 70
+              ? "bg-yellow-100 text-yellow-800"
+              : "bg-green-100 text-green-800"
+          }`}
+        >
+          {row.reading_value} mg/dL
+        </span>
+      ),
+    },
+    {
+      key: "reading_date",
+      header: "Date",
+      sortable: true,
+      cellRenderer: (row) => new Date(row.reading_date).toLocaleDateString(),
+    },
+    {
+      key: "notes",
+      header: "Notes",
+      cellRenderer: (row) => row.notes || "–",
+    },
+  ];
+
+  const filteredData = readings.filter(
+    (reading) =>
+      reading.patient_id.toLowerCase().includes(filter.toLowerCase()) ||
+      reading.notes.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (sortConfig.direction === "asc") {
+      return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1;
+    }
+    return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1;
+  });
+
+  const paginatedData = sortedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleAddReading = (newReading: Omit<BloodSugarReading, "id">) => {
+    const newEntry = {
+      ...newReading,
+      id: `BSR${String(mockData.length + 1).padStart(4, "0")}`,
+    };
+    mockData.unshift(newEntry);
+    setReadings([newEntry, ...readings]);
+  };
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <ProtectedRoute>
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div>
+            <nav className="mt-2 text-sm">
+              <Link
+                href="/patient"
+                className="text-medical-primary hover:underline"
+              >
+                Patient
+              </Link>
+              <span className="text-gray-500 mx-2">/</span>
+              <span className="text-gray-500">Blood Sugar Readings</span>
+            </nav>
+          </div>
+
+          <div className="flex gap-3 w-full sm:w-auto">
+            <SearchInput
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              placeholder="Search readings..."
+              className="flex-1"
+            />
+            <button
+              onClick={loadData}
+              className="px-4 py-2 border rounded-lg hover:bg-gray-50 flex items-center"
+            >
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              Refresh
+            </button>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="px-4 py-2 bg-medical-primary text-white rounded-lg hover:bg-medical-primary-dark flex items-center"
+            >
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Add New
+            </button>
+          </div>
+        </div>
+
+        {/* Data Table */}
+        {error ? (
+          <div className="bg-red-50 text-red-700 p-4 rounded-lg">{error}</div>
+        ) : (
+          <DataTable<BloodSugarReading>
+            columns={columns}
+            data={paginatedData}
+            sortConfig={sortConfig}
+            onSort={handleSort}
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={filteredData.length}
+            onPageChange={setCurrentPage}
+          />
+        )}
+
+        <AddReadingModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onSave={handleAddReading}
+        />
+      </div>
+    </ProtectedRoute>
+  );
+}
