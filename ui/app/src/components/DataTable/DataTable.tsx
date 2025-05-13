@@ -1,15 +1,14 @@
-// src/components/DataTable/DataTable.tsx
 import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 interface DataTableProps<T> {
   columns: ColumnDef<T>[];
   data: T[];
+  totalCount: number;
   sortConfig?: SortConfig;
-  onSort?: (key: keyof T) => void;
+  onSort?: (key: keyof T, direction: "asc" | "desc") => void;
   currentPage: number;
   itemsPerPage: number;
-  totalItems: number;
   onPageChange: (page: number) => void;
 }
 
@@ -28,15 +27,31 @@ interface SortConfig {
 
 export function DataTable<T>({
   columns,
-  data,
+  data = [],
+  totalCount,
   sortConfig,
   onSort,
   currentPage,
   itemsPerPage,
-  totalItems,
   onPageChange,
 }: DataTableProps<T>) {
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const total = totalCount;
+  const totalPages = Math.ceil(total / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = data.slice(startIndex, endIndex);
+
+  const isFirstPage = currentPage === 1;
+  const isLastPage = currentPage >= totalPages;
+
+  const fromItem = totalCount === 0 ? 0 : startIndex + 1;
+  const toItem = Math.min(endIndex, totalCount);
+
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      onPageChange(totalPages);
+    }
+  }, [totalPages, currentPage, onPageChange]);
 
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -56,9 +71,17 @@ export function DataTable<T>({
                   } ${
                     column.sortable ? "cursor-pointer hover:bg-gray-100" : ""
                   }`}
-                  onClick={() =>
-                    column.sortable && onSort?.(column.key as keyof T)
-                  }
+                  onClick={() => {
+                    if (column.sortable) {
+                      const newDirection =
+                        sortConfig?.key === column.key
+                          ? sortConfig.direction === "asc"
+                            ? "desc"
+                            : "asc"
+                          : "desc";
+                      onSort?.(column.key as keyof T, newDirection);
+                    }
+                  }}
                 >
                   <div
                     className={`flex ${
@@ -85,26 +108,37 @@ export function DataTable<T>({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.map((row, index) => (
-              <tr key={index} className="hover:bg-gray-50 transition-colors">
-                {columns.map((column) => (
-                  <td
-                    key={column.key as string}
-                    className={`px-6 py-4 whitespace-nowrap text-sm ${
-                      column.align === "right"
-                        ? "text-right"
-                        : column.align === "center"
-                        ? "text-center"
-                        : "text-gray-900"
-                    }`}
-                  >
-                    {column.cellRenderer
-                      ? column.cellRenderer(row)
-                      : (row[column.key] as ReactNode)}
-                  </td>
-                ))}
+            {paginatedData.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="px-6 py-4 text-center text-sm text-gray-500"
+                >
+                  No results found
+                </td>
               </tr>
-            ))}
+            ) : (
+              paginatedData.map((row, index) => (
+                <tr key={index} className="hover:bg-gray-50 transition-colors">
+                  {columns.map((column) => (
+                    <td
+                      key={column.key as string}
+                      className={`px-6 py-4 whitespace-nowrap text-sm ${
+                        column.align === "right"
+                          ? "text-right"
+                          : column.align === "center"
+                          ? "text-center"
+                          : "text-gray-900"
+                      }`}
+                    >
+                      {column.cellRenderer
+                        ? column.cellRenderer(row)
+                        : (row[column.key] as ReactNode)}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -112,22 +146,33 @@ export function DataTable<T>({
       {/* Pagination */}
       <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
         <div className="text-sm text-gray-700">
-          Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-          {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems}{" "}
-          results
+          {total === 0 ? (
+            "No results found"
+          ) : (
+            <>
+              Showing {fromItem} to {toItem} of {total} results
+            </>
+          )}
         </div>
         <div className="flex space-x-2">
           <button
-            onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-            className="px-3 py-1.5 border rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={isFirstPage}
+            className={`px-3 py-1.5 border rounded-md text-sm ${
+              isFirstPage ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
+            }`}
           >
             Previous
           </button>
+          <span className="px-3 py-1.5 text-sm">
+            Page {Math.min(currentPage, totalPages)} of {totalPages}
+          </span>
           <button
-            onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
-            disabled={currentPage >= totalPages}
-            className="px-3 py-1.5 border rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLastPage}
+            onClick={() => onPageChange(currentPage + 1)}
+            className={`px-3 py-1.5 border rounded-md text-sm ${
+              isLastPage ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
+            }`}
           >
             Next
           </button>

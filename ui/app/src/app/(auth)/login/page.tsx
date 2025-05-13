@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -61,7 +62,13 @@ export default function LoginPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <img src="/medai_logo.png" className="h-10 mb-8" alt="MedAI Logo" />
+            <Image
+              src="/medai_logo.png"
+              alt="MedAI Logo"
+              width={120}
+              height={40}
+              className="h-10 mb-8 w-auto"
+            />
           </motion.div>
           <motion.div
             initial={{ y: 20, opacity: 0 }}
@@ -86,10 +93,12 @@ export default function LoginPage() {
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center"
               >
-                <img
+                <Image
                   src={`/health-icons/icon-${i + 1}.svg`}
-                  className="w-6 h-6"
                   alt={`Feature ${i + 1}`}
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
                 />
               </motion.div>
             ))}

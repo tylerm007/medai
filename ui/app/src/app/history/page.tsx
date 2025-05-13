@@ -1,4 +1,4 @@
-// src/app/blood-sugar-readings/page.tsx
+// src/app/history-readings/page.tsx
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
@@ -7,17 +7,17 @@ import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 import LoadingSpinner from "@/components/Auth/LoadingSpinner";
 import SearchInput from "@/components/Search/SearchInput";
 import { DataTable } from "@/components/DataTable/DataTable";
-import { AddReadingModal } from "@/components/BloodSugar/AddReadingModal";
+import { AddHistoryModal } from "@/components/ReadingHistory/AddReadingHistoryModal";
 import { usePatients } from "@/hooks/usePatients";
-import { useBloodSugarReadings } from "@/hooks/useBloodSugarReadings";
+import { usePatientReadingHistories } from "@/hooks/usePatientReadingHistories";
 import { ColumnDef } from "@/components/DataTable/DataTable";
-import type { BloodSugarReading } from "@/types/bloodSugar";
+import type { PatientReadingHistory } from "@/types/patientReadingHistory";
 
-export default function BloodSugarReadingsPage() {
+export default function HistoryReadingsPage() {
   const { setTitle } = usePageTitle();
   const { patients } = usePatients();
   const {
-    readings = [],
+    histories = [],
     loading,
     totalCount,
     error,
@@ -26,15 +26,15 @@ export default function BloodSugarReadingsPage() {
     searchInput,
     handleSearch,
     handleSort,
-    createReading,
+    createHistory,
     refresh,
     sortBy,
     sortDirection,
-  } = useBloodSugarReadings(undefined, patients);
+  } = usePatientReadingHistories(undefined, patients);
   const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
-    setTitle("Blood Sugar Readings");
+    setTitle("Daily Reading Histories");
   }, [setTitle]);
 
   const patientLookup = useMemo(() => {
@@ -44,15 +44,15 @@ export default function BloodSugarReadingsPage() {
     }, {});
   }, [patients]);
 
-  const columns: ColumnDef<BloodSugarReading>[] = [
+  const columns: ColumnDef<PatientReadingHistory>[] = [
     {
       key: "id",
-      header: "Reading ID",
+      header: "History ID",
       sortable: true,
     },
     {
       key: "patient_id",
-      header: "Patient ID",
+      header: "Patient",
       sortable: true,
       cellRenderer: (row) => (
         <Link
@@ -64,50 +64,62 @@ export default function BloodSugarReadingsPage() {
       ),
     },
     {
-      key: "time_of_reading",
-      header: "Time",
-      sortable: true,
-    },
-    {
-      key: "reading_value",
-      header: "Value (mg/dL)",
-      sortable: true,
-      align: "right",
-      cellRenderer: (row) => (
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            row.reading_value > 180
-              ? "bg-red-100 text-red-800"
-              : row.reading_value < 70
-              ? "bg-yellow-100 text-yellow-800"
-              : "bg-green-100 text-green-800"
-          }`}
-        >
-          {row.reading_value} mg/dL
-        </span>
-      ),
-    },
-    {
       key: "reading_date",
       header: "Date",
       sortable: true,
       cellRenderer: (row) => new Date(row.reading_date).toLocaleDateString(),
     },
     {
-      key: "notes",
-      header: "Notes",
-      cellRenderer: (row) => row.notes || "–",
+      key: "breakfast",
+      header: "Breakfast (mg/dL)",
+      sortable: true,
+      align: "right",
+      cellRenderer: (row) => (
+        <span className="text-gray-700">{row.breakfast || "–"}</span>
+      ),
+    },
+    {
+      key: "lunch",
+      header: "Lunch (mg/dL)",
+      sortable: true,
+      align: "right",
+      cellRenderer: (row) => (
+        <span className="text-gray-700">{row.lunch || "–"}</span>
+      ),
+    },
+    {
+      key: "dinner",
+      header: "Dinner (mg/dL)",
+      sortable: true,
+      align: "right",
+      cellRenderer: (row) => (
+        <span className="text-gray-700">{row.dinner || "–"}</span>
+      ),
+    },
+    {
+      key: "bedtime",
+      header: "Bedtime (mg/dL)",
+      sortable: true,
+      align: "right",
+      cellRenderer: (row) => (
+        <span className="text-gray-700">{row.bedtime || "–"}</span>
+      ),
+    },
+    {
+      key: "notes_for_day",
+      header: "Daily Notes",
+      cellRenderer: (row) => row.notes_for_day || "–",
     },
   ];
 
-  const handleAddReading = async (
-    newReading: Omit<BloodSugarReading, "id">
+  const handleAddHistory = async (
+    newHistory: Omit<PatientReadingHistory, "id">
   ) => {
     try {
-      await createReading(newReading);
+      await createHistory(newHistory);
       setShowAddModal(false);
     } catch (err) {
-      console.error("Failed to add reading:", err);
+      console.error("Failed to add history:", err);
     }
   };
 
@@ -127,7 +139,7 @@ export default function BloodSugarReadingsPage() {
                 Patient
               </Link>
               <span className="text-gray-500 mx-2">/</span>
-              <span className="text-gray-500">Blood Sugar Readings</span>
+              <span className="text-gray-500">Daily Reading Histories</span>
             </nav>
           </div>
 
@@ -135,7 +147,7 @@ export default function BloodSugarReadingsPage() {
             <SearchInput
               value={searchInput}
               onChange={(e) => handleSearch(e.target.value)}
-              placeholder="Search readings..."
+              placeholder="Search histories..."
               className="flex-1"
             />
             <button
@@ -183,9 +195,9 @@ export default function BloodSugarReadingsPage() {
         {error ? (
           <div className="bg-red-50 text-red-700 p-4 rounded-lg">{error}</div>
         ) : (
-          <DataTable<BloodSugarReading>
+          <DataTable<PatientReadingHistory>
             columns={columns}
-            data={readings}
+            data={histories}
             totalCount={totalCount}
             sortConfig={
               sortBy
@@ -202,10 +214,10 @@ export default function BloodSugarReadingsPage() {
           />
         )}
 
-        <AddReadingModal
+        <AddHistoryModal
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
-          onSave={handleAddReading}
+          onSave={handleAddHistory}
         />
       </div>
     </ProtectedRoute>

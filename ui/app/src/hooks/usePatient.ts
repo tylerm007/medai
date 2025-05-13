@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { PatientService } from "@/lib/api/patientService";
-import type { Patient } from "@/lib/api/patientService";
+import type { Patient } from "@/types/patient";
 
 export const usePatient = (id: number) => {
   const [patient, setPatient] = useState<Patient | null>(null);

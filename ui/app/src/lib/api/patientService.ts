@@ -1,69 +1,32 @@
 // lib/api/patientService.ts
-import axios from "axios";
-import { useAuth } from "@/context/AuthContext";
+import { apiClient } from "@/lib/api/apiClient";
+import type { ApiResponse } from "@/lib/api/types";
+import type { Patient } from "@/types/patient";
 
-const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-});
-
-apiClient.interceptors.request.use((config) => {
-  if (typeof window === "undefined") return config;
-
-  const storedAuth = localStorage.getItem("medai-auth");
-  const token = storedAuth ? JSON.parse(storedAuth).token : null;
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-export interface Patient {
-  id: number;
-  name: string;
-  birth_date: string;
-  age: string;
-  weight: number;
-  height: number;
-  hba1c: string;
-  duration: number;
-  patient_sex: "M" | "F";
-  creatine_mg_dl: string;
-  medical_record_number: string;
-  created_date: string;
-  ckd: 0 | 1;
-  cad: 0 | 1;
-  hld: 0 | 1;
-}
-
-interface ApiResponse<T> {
-  code: number;
-  data: T;
-  message?: string;
-}
+const PATIENT_COLUMNS: (keyof Patient)[] = [
+  "id",
+  "name",
+  "birth_date",
+  "age",
+  "weight",
+  "height",
+  "hba1c",
+  "duration",
+  "patient_sex",
+  "creatine_mg_dl",
+  "medical_record_number",
+  "created_date",
+  "ckd",
+  "cad",
+  "hld",
+];
 
 export const PatientService = {
   getAllPatients: async (search?: string): Promise<Patient[]> => {
     const response = await apiClient.post<ApiResponse<Patient[]>>(
       "/Patient/Patient",
       {
-        columns: [
-          "name",
-          "birth_date",
-          "age",
-          "weight",
-          "height",
-          "hba1c",
-          "duration",
-          "patient_sex",
-          "creatine_mg_dl",
-          "medical_record_number",
-          "created_date",
-          "id",
-          "ckd",
-          "cad",
-          "hld",
-        ],
+        columns: PATIENT_COLUMNS,
         filter: search
           ? {
               $or: [
@@ -83,22 +46,7 @@ export const PatientService = {
     const response = await apiClient.post<ApiResponse<Patient[]>>(
       "/Patient/Patient",
       {
-        columns: [
-          "name",
-          "birth_date",
-          "age",
-          "weight",
-          "height",
-          "hba1c",
-          "duration",
-          "patient_sex",
-          "creatine_mg_dl",
-          "medical_record_number",
-          "id",
-          "ckd",
-          "cad",
-          "hld",
-        ],
+        columns: PATIENT_COLUMNS,
         filter: {
           id: id, // Simplified filter format
         },

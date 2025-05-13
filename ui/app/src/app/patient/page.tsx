@@ -184,10 +184,6 @@ export default function PatientPage() {
     }
   }, [patients, setTitle]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -236,8 +232,8 @@ export default function PatientPage() {
                         <div className="flex-1">
                           <div className="font-medium text-gray-900">
                             {patient.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
+                            </div>
+                            <div className="text-sm text-gray-500">
                             MRN: {patient.medical_record_number} | Age:{" "}
                             {parseFloat(patient.age).toFixed(1)}
                           </div>

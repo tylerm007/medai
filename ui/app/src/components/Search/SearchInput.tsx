@@ -1,6 +1,6 @@
 // src/components/Search/SearchInput.tsx
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import React from "react";
+import { useState, useEffect } from "react";
 
 interface SearchInputProps {
   value: string;
