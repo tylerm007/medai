@@ -43,22 +43,26 @@ export const BloodSugarService = {
     };
 
     const response = await apiClient
-      .post<ApiResponse<BloodSugarReading[]>>("/Reading/Reading", payload)
+      .get<ApiResponse<BloodSugarReading[]>>("/Reading")
       .catch((error) => {
         console.error("API Error Details:", {
           url: error.config?.url,
-          payload,
           status: error.response?.status,
           response: error.response?.data,
         });
         throw error;
       });
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.status !== 200) throw new Error("API Error");
 
     const processedData = response.data.data.map((item: any) => ({
       ...item,
-      reading_value: parseFloat(item.reading_value),
+      reading_value: parseFloat(item.attributes.reading_value),
+      reading_date: item.attributes.reading_date,
+      notes: item.attributes.notes,
+      time_of_reading: item.attributes.time_of_reading,
+      patient_id: item.attributes.patient_id,
+      id: item.id,
     }));
 
     const total =
@@ -71,10 +75,10 @@ export const BloodSugarService = {
 
   createReading: async (reading: Omit<BloodSugarReading, "id">) => {
     const response = await apiClient.post<ApiResponse<BloodSugarReading>>(
-      "/Reading/Reading",
-      reading
+      "/Reading",
+      reading,
     );
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.status !== 200) throw new Error("API Error");
     return response.data.data;
   },
 };

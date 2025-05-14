@@ -226,7 +226,7 @@ export default function PatientPage() {
                     patients.map((patient) => (
                       <Link
                         key={patient.id}
-                        href={`/patient/${patient.id}`}
+                        href={`/Patient/${patient.id}`}
                         className="flex items-center p-4 hover:bg-gray-50 border-b last:border-b-0 transition-colors"
                       >
                         <div className="flex-1">
@@ -380,7 +380,7 @@ export default function PatientPage() {
             {patients.slice(0, 5).map((patient) => (
               <Link
                 key={patient.id}
-                href={`/patient/${patient.id}`}
+                href={`/Patient/${patient.id}`}
                 className="grid grid-cols-4 gap-4 p-4 hover:bg-gray-50 border-b last:border-b-0 transition-colors"
               >
                 <div className="font-medium text-gray-900">{patient.name}</div>

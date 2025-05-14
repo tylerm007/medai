@@ -36,7 +36,7 @@ export default function PatientDetail() {
               <span className="mx-1">/</span>
             </li>
             <li>
-              <Link href="/patient" className="hover:underline text-blue-600">
+              <Link href="/Patient" className="hover:underline text-blue-600">
                 Patient
               </Link>
               <span className="mx-1">/</span>
@@ -53,8 +53,8 @@ export default function PatientDetail() {
               <img
                 src={
                   patient.patient_sex === "F"
-                    ? "/patient-details/female.svg"
-                    : "/patient-details/male.svg"
+                    ? "/Patient-details/female.svg"
+                    : "/Patient-details/male.svg"
                 }
                 alt={patient.patient_sex === "F" ? "Female" : "Male"}
                 className="w-32 h-32 rounded-full border-4 border-blue-200 shadow-md object-cover"
