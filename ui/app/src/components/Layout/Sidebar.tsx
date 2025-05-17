@@ -56,7 +56,7 @@ export default function Sidebar() {
               icon={ClipboardIcon}
               href="/blood-sugar-readings"
             />
-            <SidebarItem name="History" icon={ClockIcon} href="/history" />
+            <SidebarItem name="History" icon={ClockIcon} href="/history-readings" />
             <SidebarItem
               name="Patient Labs"
               icon={BeakerIcon}

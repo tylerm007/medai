@@ -1,40 +1,39 @@
-// src/app/history-readings/page.tsx
+// src/app/patient-labs/page.tsx
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { usePageTitle } from "@/context/PageTitleContext";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 import LoadingSpinner from "@/components/Auth/LoadingSpinner";
 import SearchInput from "@/components/Search/SearchInput";
-import { DataTable } from "@/components/DataTable/DataTable";
-import { AddHistoryModal } from "@/components/ReadingHistory/AddReadingHistoryModal";
+import { DataTable, ColumnDef } from "@/components/DataTable/DataTable";
+import { AddLabModal } from "@/components/Lab/AddLabModal";
+import { usePatientLabs } from "@/hooks/usePatientLabs";
+import type { PatientLab } from "@/types/patientLab";
 import { usePatients } from "@/hooks/usePatients";
-import { usePatientReadingHistories } from "@/hooks/usePatientReadingHistories";
-import { ColumnDef } from "@/components/DataTable/DataTable";
-import type { PatientReadingHistory } from "@/types/patientReadingHistory";
 
-export default function HistoryReadingsPage() {
+export default function PatientLabsPage() {
   const { setTitle } = usePageTitle();
   const { patients } = usePatients();
   const {
-    histories = [],
+    labs,
     loading,
-    totalCount,
     error,
-    currentPage,
-    handlePageChange,
+    totalCount,
     searchInput,
     handleSearch,
-    handleSort,
-    createHistory,
-    refresh,
+    currentPage,
+    handlePageChange,
     sortBy,
     sortDirection,
-  } = usePatientReadingHistories(undefined, patients);
+    handleSort,
+    createLab,
+    refresh,
+  } = usePatientLabs();
   const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
-    setTitle("Daily Reading Histories");
+    setTitle("Patient Lab Results");
   }, [setTitle]);
 
   const patientLookup = useMemo(() => {
@@ -44,10 +43,10 @@ export default function HistoryReadingsPage() {
     }, {});
   }, [patients]);
 
-  const columns: ColumnDef<PatientReadingHistory>[] = [
+  const columns: ColumnDef<PatientLab>[] = [
     {
       key: "id",
-      header: "History ID",
+      header: "Lab ID",
       sortable: true,
     },
     {
@@ -59,67 +58,52 @@ export default function HistoryReadingsPage() {
           href={`/patient/${row.patient_id}`}
           className="text-medical-primary hover:underline"
         >
-          {patientLookup[row.patient_id]}
+          {patientLookup[row.patient_id] || "Unknown"}
         </Link>
       ),
     },
     {
-      key: "reading_date",
+      key: "lab_name",
+      header: "Lab Name",
+      sortable: true,
+    },
+    {
+      key: "lab_test_name",
+      header: "Test Name",
+      sortable: true,
+    },
+    {
+      key: "lab_test_code",
+      header: "Test Code",
+      sortable: true,
+    },
+    {
+      key: "lab_date",
       header: "Date",
       sortable: true,
-      cellRenderer: (row) => new Date(row.reading_date).toLocaleDateString(),
+      cellRenderer: (row) => new Date(row.lab_date).toLocaleDateString(),
     },
     {
-      key: "breakfast",
-      header: "Breakfast (mg/dL)",
+      key: "lab_result",
+      header: "Result",
       sortable: true,
-      align: "right",
       cellRenderer: (row) => (
-        <span className="text-gray-700">{row.breakfast || "–"}</span>
+        <span className="font-medium">{row.lab_result}</span>
       ),
     },
     {
-      key: "lunch",
-      header: "Lunch (mg/dL)",
-      sortable: true,
-      align: "right",
-      cellRenderer: (row) => (
-        <span className="text-gray-700">{row.lunch || "–"}</span>
-      ),
-    },
-    {
-      key: "dinner",
-      header: "Dinner (mg/dL)",
-      sortable: true,
-      align: "right",
-      cellRenderer: (row) => (
-        <span className="text-gray-700">{row.dinner || "–"}</span>
-      ),
-    },
-    {
-      key: "bedtime",
-      header: "Bedtime (mg/dL)",
-      sortable: true,
-      align: "right",
-      cellRenderer: (row) => (
-        <span className="text-gray-700">{row.bedtime || "–"}</span>
-      ),
-    },
-    {
-      key: "notes_for_day",
-      header: "Daily Notes",
-      cellRenderer: (row) => row.notes_for_day || "–",
+      key: "lab_test_description",
+      header: "Description",
+      cellRenderer: (row) => row.lab_test_description || "–",
     },
   ];
 
-  const handleAddHistory = async (
-    newHistory: Omit<PatientReadingHistory, "id">
-  ) => {
+  const handleAddLab = async (newLab: Omit<PatientLab, "id">) => {
     try {
-      await createHistory(newHistory);
+      await createLab(newLab);
       setShowAddModal(false);
     } catch (err) {
-      console.error("Failed to add history:", err);
+      console.error("Failed to add lab:", err);
     }
   };
 
@@ -132,14 +116,11 @@ export default function HistoryReadingsPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
             <nav className="mt-2 text-sm">
-              <Link
-                href="/patient"
-                className="text-medical-primary hover:underline"
-              >
-                Patient
+              <Link href="/" className="text-medical-primary hover:underline">
+                Home
               </Link>
               <span className="text-gray-500 mx-2">/</span>
-              <span className="text-gray-500">Daily Reading Histories</span>
+              <span className="text-gray-500">Lab Results</span>
             </nav>
           </div>
 
@@ -147,7 +128,7 @@ export default function HistoryReadingsPage() {
             <SearchInput
               value={searchInput}
               onChange={(e) => handleSearch(e.target.value)}
-              placeholder="Search histories..."
+              placeholder="Search lab results..."
               className="flex-1"
             />
             <button
@@ -195,29 +176,26 @@ export default function HistoryReadingsPage() {
         {error ? (
           <div className="bg-red-50 text-red-700 p-4 rounded-lg">{error}</div>
         ) : (
-          <DataTable<PatientReadingHistory>
+          <DataTable<PatientLab>
             columns={columns}
-            data={histories}
+            data={labs}
             totalCount={totalCount}
             sortConfig={
               sortBy
-                ? {
-                    key: sortBy,
-                    direction: sortDirection || "desc",
-                  }
+                ? { key: sortBy, direction: sortDirection || "asc" }
                 : undefined
             }
             onSort={handleSort}
             currentPage={currentPage}
-            itemsPerPage={10}
+            itemsPerPage={20}
             onPageChange={handlePageChange}
           />
         )}
 
-        <AddHistoryModal
+        <AddLabModal
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
-          onSave={handleAddHistory}
+          onSave={handleAddLab}
         />
       </div>
     </ProtectedRoute>
