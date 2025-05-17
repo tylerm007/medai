@@ -55,7 +55,7 @@ export default function HistoryReadingsPage() {
       sortable: true,
       cellRenderer: (row) => (
         <Link
-          href={`/patient/${row.patient_id}`}
+          href={`/Patient/${row.patient_id}`}
           className="text-medical-primary hover:underline"
         >
           {patientLookup[row.patient_id]}
@@ -132,7 +132,7 @@ export default function HistoryReadingsPage() {
           <div>
             <nav className="mt-2 text-sm">
               <Link
-                href="/patient"
+                href="/Patient"
                 className="text-medical-primary hover:underline"
               >
                 Patient

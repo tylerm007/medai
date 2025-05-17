@@ -2,6 +2,7 @@
 import { apiClient } from "@/lib/api/apiClient";
 import type { ApiResponse } from "@/lib/api/types";
 import type { PatientReadingHistory } from "@/types/patientReadingHistory";
+import { read } from "fs";
 
 interface PatientReadingHistoryRequest {
   filter?: any;
@@ -48,29 +49,31 @@ export const PatientReadingHistoryService = {
     };
 
     const response = await apiClient
-      .post<ApiResponse<PatientReadingHistory[]>>(
-        "/ReadingHistory/ReadingHistory",
-        payload
+      .get<ApiResponse<PatientReadingHistory[]>>(
+        "/ReadingHistory",
       )
       .catch((error) => {
         console.error("API Error Details:", {
           url: error.config?.url,
-          payload,
           status: error.response?.status,
           response: error.response?.data,
         });
         throw error;
       });
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.status !== 200) throw new Error("API Error");
 
     const processedData = response.data.data.map((item: any) => ({
       ...item,
       // Parse numeric values if needed (assuming API returns strings)
-      breakfast: parseFloat(item.breakfast),
-      lunch: parseFloat(item.lunch),
-      dinner: parseFloat(item.dinner),
-      bedtime: parseFloat(item.bedtime),
+      breakfast: parseFloat(item.attributes.breakfast),
+      lunch: parseFloat(item.attributes.lunch),
+      dinner: parseFloat(item.attributes.dinner),
+      bedtime: parseFloat(item.attributes.bedtime),
+      reading_date: item.attributes.reading_date,
+      notes_for_day: item.attributes.notes_for_day, 
+      patient_id: item.attributes.patient_id,
+      id: item.id,
     }));
 
     const total =
@@ -83,7 +86,7 @@ export const PatientReadingHistoryService = {
 
   createReadingHistory: async (reading: Omit<PatientReadingHistory, "id">) => {
     const response = await apiClient.post<ApiResponse<PatientReadingHistory>>(
-      "/ReadingHistory/ReadingHistory",
+      "/ReadingHistory",
       reading
     );
     if (response.data.code !== 0) throw new Error("API Error");
