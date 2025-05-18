@@ -79,7 +79,7 @@ export default function Sidebar() {
             <SidebarItem
               name="Contraindication"
               icon={ExclamationTriangleIcon}
-              href="/contraindication"
+              href="/contraindications"
             />
             <SidebarItem
               name="Drug Dosage"
