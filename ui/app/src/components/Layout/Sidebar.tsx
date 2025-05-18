@@ -41,7 +41,7 @@ export default function Sidebar() {
             <SidebarItem
               name="Patient"
               icon={UserIcon}
-              href="/Patient"
+              href="/patient"
             />
           </div>
           {/* Patient Management */}
@@ -54,23 +54,23 @@ export default function Sidebar() {
             <SidebarItem
               name="Blood Sugar Readings"
               icon={ClipboardIcon}
-              href="/Reading"
+              href="/blood-sugar-readings"
             />
             <SidebarItem name="History" icon={ClockIcon} href="/history-readings" />
             <SidebarItem
               name="Patient Labs"
               icon={BeakerIcon}
-              href="/PatientLabs"
+              href="/patient-labs"
             />
             <SidebarItem
               name="Medications"
               icon={ArchiveBoxIcon}
-              href="/PatientMedication"
+              href="/medications"
             />
             <SidebarItem
               name="Recommendations"
               icon={LightBulbIcon}
-              href="/Recommendation"
+              href="/recommendations"
             />
           </SidebarSection>
 
@@ -79,19 +79,19 @@ export default function Sidebar() {
             <SidebarItem
               name="Contraindication"
               icon={ExclamationTriangleIcon}
-              href="/Contraindication"
+              href="/contraindication"
             />
             <SidebarItem
               name="Drug Dosage"
               icon={AdjustmentsHorizontalIcon}
-              href="/Dosage"
+              href="/dosage"
             />
-            <SidebarItem name="Drugs" icon={Squares2X2Icon} href="/Drug" />
-            <SidebarItem name="Drug Unit" icon={CubeIcon} href="/DrugUnit" />
+            <SidebarItem name="Drugs" icon={Squares2X2Icon} href="/drugs" />
+            <SidebarItem name="Drug Unit" icon={CubeIcon} href="/drug-units" />
             <SidebarItem
               name="Insulin Rules"
               icon={ScaleIcon}
-              href="/InsulinRule"
+              href="/insulin-rules"
             />
           </SidebarSection>
 

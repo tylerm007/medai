@@ -43,7 +43,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.replace("/Patient");
+      router.replace("/patient");
     }
   }, [isAuthenticated, isLoading, router]);
 

@@ -6,10 +6,11 @@ import { usePageTitle } from "@/context/PageTitleContext";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 import LoadingSpinner from "@/components/Auth/LoadingSpinner";
 import SearchInput from "@/components/Search/SearchInput";
-import { DataTable, ColumnDef } from "@/components/DataTable/DataTable";
+import { DataTable } from "@/components/DataTable/DataTable";
 import { AddHistoryModal } from "@/components/ReadingHistory/AddReadingHistoryModal";
 import { usePatients } from "@/hooks/usePatients";
 import { usePatientReadingHistories } from "@/hooks/usePatientReadingHistories";
+import { ColumnDef } from "@/components/DataTable/DataTable";
 import type { PatientReadingHistory } from "@/types/patientReadingHistory";
 
 export default function HistoryReadingsPage() {
@@ -55,7 +56,7 @@ export default function HistoryReadingsPage() {
       sortable: true,
       cellRenderer: (row) => (
         <Link
-          href={`/Patient/${row.patient_id}`}
+          href={`/patient/${row.patient_id}`}
           className="text-medical-primary hover:underline"
         >
           {patientLookup[row.patient_id]}
@@ -132,7 +133,7 @@ export default function HistoryReadingsPage() {
           <div>
             <nav className="mt-2 text-sm">
               <Link
-                href="/Patient"
+                href="/patient"
                 className="text-medical-primary hover:underline"
               >
                 Patient

@@ -30,13 +30,13 @@ export default function PatientDetail() {
         <nav className="text-sm text-gray-600 mb-2">
           <ul className="flex space-x-2">
             <li>
-              <Link href="/dashboard" className="hover:underline text-blue-600">
+              <Link href="/patient" className="hover:underline text-blue-600">
                 Dashboard
               </Link>
               <span className="mx-1">/</span>
             </li>
             <li>
-              <Link href="/Patient" className="hover:underline text-blue-600">
+              <Link href="/patient" className="hover:underline text-blue-600">
                 Patient
               </Link>
               <span className="mx-1">/</span>
@@ -53,8 +53,8 @@ export default function PatientDetail() {
               <img
                 src={
                   patient.patient_sex === "F"
-                    ? "/Patient-details/female.svg"
-                    : "/Patient-details/male.svg"
+                    ? "/patient-details/female.svg"
+                    : "/patient-details/male.svg"
                 }
                 alt={patient.patient_sex === "F" ? "Female" : "Male"}
                 className="w-32 h-32 rounded-full border-4 border-blue-200 shadow-md object-cover"

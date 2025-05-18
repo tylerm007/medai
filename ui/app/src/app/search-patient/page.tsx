@@ -34,7 +34,7 @@ export default function SearchPatientPage() {
           <nav className="text-sm text-gray-600">
             <ul className="flex space-x-2">
               <li>
-                <Link href="/Patient" className="hover:underline text-blue-600">
+                <Link href="/patient" className="hover:underline text-blue-600">
                   Patient
                 </Link>                
               </li>

@@ -23,17 +23,35 @@ const PATIENT_COLUMNS: (keyof Patient)[] = [
 
 export const PatientService = {
   getAllPatients: async (search?: string): Promise<Patient[]> => {
-    const response = await apiClient.get<ApiResponse<Patient[]>>(
-      "/Patient",
+    const response = await apiClient.post<ApiResponse<Patient[]>>(
+      "/Patient/Patient",
+      {
+        columns: PATIENT_COLUMNS,
+        filter: search
+          ? {
+              $or: [
+                { name: { like: `%${search}%` } },
+                { medical_record_number: { like: `%${search}%` } },
+              ],
+            }
+          : undefined,
+      }
     );
 
-    if (response.status !== 200) throw new Error("API Error");
+    if (response.data.code !== 0) throw new Error("API Error");
     return response.data.data;
   },
 
   getPatientById: async (id: number): Promise<Patient> => {
-    const response = await apiClient.get<ApiResponse<Patient[]>>(
-      "/Patient/44" ,
+    const response = await apiClient.post<ApiResponse<Patient[]>>(
+      "/Patient/Patient",
+      {
+        columns: PATIENT_COLUMNS,
+        filter: {
+          id: id, // Simplified filter format
+        },
+        limit: 1, // Add limit to ensure single result
+      }
     );
 
     if (!response.data.data?.[0]) throw new Error("Patient not found");

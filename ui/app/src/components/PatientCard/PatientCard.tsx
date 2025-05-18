@@ -21,7 +21,7 @@ export default function PatientCard({ patient }: { patient: any }) {
       whileHover={{ scale: 1.02 }}
       className="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-100"
     >
-      <Link href={`/Patient/${patient.id}`} className="block p-6">
+      <Link href={`/patient/${patient.id}`} className="block p-6">
         {/* Status Indicator */}
         <div className="absolute top-4 right-4">
           <div

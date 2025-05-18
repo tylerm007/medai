@@ -10,6 +10,7 @@ interface DataTableProps<T> {
   currentPage: number;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
+  className?: string;
 }
 
 export interface ColumnDef<T> {
@@ -18,6 +19,7 @@ export interface ColumnDef<T> {
   align?: "left" | "right" | "center";
   sortable?: boolean;
   cellRenderer?: (row: T) => ReactNode;
+  minWidth?: number;
 }
 
 interface SortConfig {
@@ -34,6 +36,7 @@ export function DataTable<T>({
   currentPage,
   itemsPerPage,
   onPageChange,
+  className = "",
 }: DataTableProps<T>) {
   const total = totalCount;
   const totalPages = Math.ceil(total / itemsPerPage);
@@ -54,7 +57,9 @@ export function DataTable<T>({
   }, [totalPages, currentPage, onPageChange]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div
+      className={`bg-white rounded-xl shadow-sm overflow-hidden ${className}`}
+    >
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
