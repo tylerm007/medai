@@ -84,7 +84,7 @@ export default function Sidebar() {
             <SidebarItem
               name="Drug Dosage"
               icon={AdjustmentsHorizontalIcon}
-              href="/dosage"
+              href="/dosages"
             />
             <SidebarItem name="Drugs" icon={Squares2X2Icon} href="/drugs" />
             <SidebarItem name="Drug Unit" icon={CubeIcon} href="/drug-units" />
