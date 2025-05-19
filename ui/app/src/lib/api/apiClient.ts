@@ -2,7 +2,6 @@
 import axios from "axios";
 
 export const apiClient = axios.create({
-  //baseURL: 'http://ec2-54-147-28-15.compute-1.amazonaws.com:5656/api'
     baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 

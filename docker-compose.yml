@@ -10,7 +10,7 @@ services:
           - APILOGICPROJECT_VERBOSE=true
           - APILOGICPROJECT_IS_DOCKER=true
           - APILOGICPROJECT_SECURITY_ENABLED=true
-          - APILOGICPROJECT_SWAGGER_HOST=ec2-54-147-28-15.compute-1.amazonaws.com
+          - APILOGICPROJECT_SWAGGER_HOST=ec2-54-145-40-116.compute-1.amazonaws.com
           ## TODO: verify Database uri's here, 
           - APILOGICPROJECT_SQLALCHEMY_DATABASE_URI=postgresql://postgres:Mart1nbaum$2908@database-1.ct6ae4ec4d3p.us-east-1.rds.amazo
 naws.com/medai
@@ -48,4 +48,4 @@ ast-1.rds.amazonaws.com/authdb
           - apilogicserver
         environment:
           - NODE_ENV=production
-          - API_URL=http://ec2-54-147-28-15.compute-1.amazonaws.com:5656/ontimizeweb/services/rest
+          - API_URL=http://ec2-54-145-40-116.compute-1.amazonaws.com:5656/ontimizeweb/services/rest
