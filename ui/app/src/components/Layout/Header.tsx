@@ -31,10 +31,10 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="fixed top-0 right-0 left-64 bg-white shadow-sm z-40">
+    <header className="fixed top-0 right-0 left-64 bg-white dark:bg-gray-900 shadow-sm z-40">
       <div className="flex items-center justify-between px-6 h-16">
         <div className="flex items-center">
-          <h1 className="text-xl font-semibold text-gray-800">{title}</h1>
+          <h1 className="text-xl font-semibold text-gray-800 dark:text-white">{title}</h1>
         </div>
         <div className="flex items-center space-x-4 relative">
           <button className="p-2 hover:bg-gray-100 rounded-full">
@@ -55,7 +55,7 @@ export default function Header() {
                   .join("") || "GU"}
               </div>
               <ChevronDownIcon
-                className={`h-4 w-4 text-gray-600 transition-transform ${
+                className={`h-4 w-4 text-gray-600 dark:text-gray-400 transition-transform ${
                   showDropdown ? "rotate-180" : ""
                 }`}
               />
@@ -63,13 +63,13 @@ export default function Header() {
 
             {showDropdown && (
               <div
-                className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 animate-in fade-in zoom-in-95"
+                className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-100 animate-in fade-in zoom-in-95"
                 role="menu"
               >
                 <div className="p-2 space-y-1">
                   <button
                     onClick={() => (window.location.href = "/settings")}
-                    className="flex w-full items-center px-3 py-2 text-sm text-gray-700 hover:bg-medical-secondary/10 rounded-md transition-colors"
+                    className="flex w-full items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-400 hover:bg-medical-secondary/10 rounded-md transition-colors"
                     role="menuitem"
                   >
                     <Cog6ToothIcon className="h-5 w-5 mr-2 text-medical-primary" />
@@ -77,7 +77,7 @@ export default function Header() {
                   </button>
                   <button
                     onClick={() => (window.location.href = "/about")}
-                    className="flex w-full items-center px-3 py-2 text-sm text-gray-700 hover:bg-medical-secondary/10 rounded-md transition-colors"
+                    className="flex w-full items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-400 hover:bg-medical-secondary/10 rounded-md transition-colors"
                     role="menuitem"
                   >
                     <InformationCircleIcon className="h-5 w-5 mr-2 text-medical-primary" />

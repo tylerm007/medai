@@ -1,6 +1,6 @@
 // src/app/blood-sugar-readings/page.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePageTitle } from "@/context/PageTitleContext";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
@@ -8,41 +8,42 @@ import LoadingSpinner from "@/components/Auth/LoadingSpinner";
 import SearchInput from "@/components/Search/SearchInput";
 import { DataTable } from "@/components/DataTable/DataTable";
 import { AddReadingModal } from "@/components/BloodSugar/AddReadingModal";
-import { BloodSugarReading, mockData } from "@/types/bloodSugar";
+import { usePatients } from "@/hooks/usePatients";
+import { useBloodSugarReadings } from "@/hooks/useBloodSugarReadings";
 import { ColumnDef } from "@/components/DataTable/DataTable";
+import type { BloodSugarReading } from "@/types/bloodSugar";
+import { RefreshButton } from "@/components/RefreshButton";
 
 export default function BloodSugarReadingsPage() {
   const { setTitle } = usePageTitle();
-  const [readings, setReadings] = useState<BloodSugarReading[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [sortConfig, setSortConfig] = useState<{
-    key: keyof BloodSugarReading;
-    direction: "asc" | "desc";
-  }>({ key: "reading_date", direction: "desc" });
-  const [filter, setFilter] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const { patients } = usePatients();
+  const {
+    readings = [],
+    loading,
+    totalCount,
+    error,
+    currentPage,
+    handlePageChange,
+    searchInput,
+    handleSearch,
+    handleSort,
+    createReading,
+    refresh,
+    sortBy,
+    sortDirection,
+  } = useBloodSugarReadings(undefined, patients);
   const [showAddModal, setShowAddModal] = useState(false);
-  const itemsPerPage = 10;
 
   useEffect(() => {
-    loadData();
-  }, []);
+    setTitle("Blood Sugar Readings");
+  }, [setTitle]);
 
-  const loadData = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setReadings(mockData);
-      setLoading(false);
-    }, 1000);
-  };
-
-  const handleSort = (key: keyof BloodSugarReading) => {
-    setSortConfig((prev) => ({
-      key,
-      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
-    }));
-  };
+  const patientLookup = useMemo(() => {
+    return patients.reduce((acc: Record<number, string>, patient) => {
+      acc[patient.id] = patient.name;
+      return acc;
+    }, {});
+  }, [patients]);
 
   const columns: ColumnDef<BloodSugarReading>[] = [
     {
@@ -57,9 +58,9 @@ export default function BloodSugarReadingsPage() {
       cellRenderer: (row) => (
         <Link
           href={`/patient/${row.patient_id}`}
-          className="text-medical-primary hover:underline"
+          className="text-medical-primary dark:text-gray-400 hover:underline"
         >
-          {row.patient_id}
+          {patientLookup[row.patient_id]}
         </Link>
       ),
     },
@@ -100,38 +101,22 @@ export default function BloodSugarReadingsPage() {
     },
   ];
 
-  const filteredData = readings.filter(
-    (reading) =>
-      reading.patient_id.toLowerCase().includes(filter.toLowerCase()) ||
-      reading.notes.toLowerCase().includes(filter.toLowerCase())
-  );
-
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (sortConfig.direction === "asc") {
-      return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1;
+  const handleAddReading = async (
+    newReading: Omit<BloodSugarReading, "id">
+  ) => {
+    try {
+      await createReading(newReading);
+      setShowAddModal(false);
+    } catch (err) {
+      console.error("Failed to add reading:", err);
     }
-    return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1;
-  });
-
-  const paginatedData = sortedData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const handleAddReading = (newReading: Omit<BloodSugarReading, "id">) => {
-    const newEntry = {
-      ...newReading,
-      id: `BSR${String(mockData.length + 1).padStart(4, "0")}`,
-    };
-    mockData.unshift(newEntry);
-    setReadings([newEntry, ...readings]);
   };
 
   if (loading) return <LoadingSpinner />;
 
   return (
     <ProtectedRoute>
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full mx-auto">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
@@ -149,30 +134,12 @@ export default function BloodSugarReadingsPage() {
 
           <div className="flex gap-3 w-full sm:w-auto">
             <SearchInput
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
+              value={searchInput}
+              onChange={(e) => handleSearch(e.target.value)}
               placeholder="Search readings..."
               className="flex-1"
             />
-            <button
-              onClick={loadData}
-              className="px-4 py-2 border rounded-lg hover:bg-gray-50 flex items-center"
-            >
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-              Refresh
-            </button>
+            <RefreshButton onClick={refresh} className="flex items-center" />
             <button
               onClick={() => setShowAddModal(true)}
               className="px-4 py-2 bg-medical-primary text-white rounded-lg hover:bg-medical-primary-dark flex items-center"
@@ -201,13 +168,20 @@ export default function BloodSugarReadingsPage() {
         ) : (
           <DataTable<BloodSugarReading>
             columns={columns}
-            data={paginatedData}
-            sortConfig={sortConfig}
+            data={readings}
+            totalCount={totalCount}
+            sortConfig={
+              sortBy
+                ? {
+                    key: sortBy,
+                    direction: sortDirection || "desc",
+                  }
+                : undefined
+            }
             onSort={handleSort}
             currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-            totalItems={filteredData.length}
-            onPageChange={setCurrentPage}
+            itemsPerPage={10}
+            onPageChange={handlePageChange}
           />
         )}
 

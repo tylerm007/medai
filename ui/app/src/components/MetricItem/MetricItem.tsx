@@ -16,11 +16,11 @@ export default function MetricItem({
   };
 
   return (
-    <div className="bg-gray-50 p-3 rounded-lg">
-      <div className="text-xs text-gray-500 mb-1">{label}</div>
+    <div className="bg-gray-50 dark:bg-gray-600 p-3 rounded-lg">
+      <div className="text-xs text-gray-500 dark:text-gray-200 mb-1">{label}</div>
       <div className={`flex items-baseline ${statusColors[status]}`}>
-        <span className="text-lg font-semibold">{value}</span>
-        {unit && <span className="text-sm ml-1">{unit}</span>}
+        <span className="text-lg font-semibold dark:text-gray-200">{value}</span>
+        {unit && <span className="text-sm ml-1 dark:text-gray-200">{unit}</span>}
       </div>
     </div>
   );

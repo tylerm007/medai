@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import ClientLayout from "@/components/Layout/ClientLayout";
 import { PageTitleProvider } from "@/context/PageTitleContext";
 import Notifications from "@/components/Notifications";
+import { SettingsProvider } from "@/context/SettingsContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,13 +24,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="en" className={inter.className} suppressHydrationWarning>
       <body>
         <PageTitleProvider>
           <AuthProvider>
             <ClientLayout>
               <Notifications />
-              {children}
+              <SettingsProvider>{children}</SettingsProvider>
             </ClientLayout>
           </AuthProvider>
         </PageTitleProvider>

@@ -21,7 +21,7 @@ import { useAuth } from "@/context/AuthContext";
 export default function Sidebar() {
   const { logout } = useAuth();
   return (
-    <aside className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 overflow-y-auto">
+    <aside className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-lg z-50 overflow-y-auto">
       <div className="p-4">
         {/* Logo */}
         <div className="flex justify-center items-center mb-8">
@@ -38,11 +38,7 @@ export default function Sidebar() {
         <nav className="space-y-8">
           {/* Dashboard */}
           <div>
-            <SidebarItem
-              name="Patient"
-              icon={UserIcon}
-              href="/patient"
-            />
+            <SidebarItem name="Patient" icon={UserIcon} href="/patient" />
           </div>
           {/* Patient Management */}
           <SidebarSection title="Patient Management">
@@ -56,7 +52,11 @@ export default function Sidebar() {
               icon={ClipboardIcon}
               href="/blood-sugar-readings"
             />
-            <SidebarItem name="History" icon={ClockIcon} href="/history" />
+            <SidebarItem
+              name="History"
+              icon={ClockIcon}
+              href="/history-readings"
+            />
             <SidebarItem
               name="Patient Labs"
               icon={BeakerIcon}
@@ -79,15 +79,15 @@ export default function Sidebar() {
             <SidebarItem
               name="Contraindication"
               icon={ExclamationTriangleIcon}
-              href="/contraindication"
+              href="/contraindications"
             />
             <SidebarItem
               name="Drug Dosage"
               icon={AdjustmentsHorizontalIcon}
-              href="/drug-dosage"
+              href="/dosages"
             />
             <SidebarItem name="Drugs" icon={Squares2X2Icon} href="/drugs" />
-            <SidebarItem name="Drug Unit" icon={CubeIcon} href="/drug-unit" />
+            <SidebarItem name="Drug Unit" icon={CubeIcon} href="/drug-units" />
             <SidebarItem
               name="Insulin Rules"
               icon={ScaleIcon}
@@ -145,6 +145,7 @@ function SidebarItem({
   onClick,
 }: {
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
   href?: string;
   onClick?: () => void;
@@ -155,10 +156,10 @@ function SidebarItem({
     return (
       <button
         onClick={onClick}
-        className="flex w-full items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-medical-secondary/10 rounded-lg transition-colors group"
+        className="flex w-full items-center px-3 py-2 text-sm font-medium text-white-700 hover:bg-medical-secondary/10 rounded-lg transition-colors group"
       >
         <Icon className="h-5 w-5 mr-3 flex-shrink-0 text-medical-primary" />
-        <span className="truncate text-left">{name}</span>
+        <span className="truncate text-left dark:text-white">{name}</span>
       </button>
     );
   }
@@ -166,7 +167,7 @@ function SidebarItem({
   return (
     <a
       href={href}
-      className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-medical-secondary/10 rounded-lg transition-colors group"
+      className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-white hover:bg-medical-secondary/10 rounded-lg transition-colors group"
     >
       <Icon className="h-5 w-5 mr-3 flex-shrink-0 text-medical-primary" />
       <span className="truncate">{name}</span>

@@ -7,7 +7,7 @@ export const verifyToken = async (token: string) => {
       }
     );
     return response.ok;
-  } catch (error) {
+  } catch {
     return false;
   }
 };

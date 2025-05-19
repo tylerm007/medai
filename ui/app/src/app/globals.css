@@ -27,13 +27,13 @@ body {
 
 /* Chart tooltip styling */
 .chart-tooltip {
-  @apply bg-white border border-gray-200 rounded-lg shadow-lg p-3;
+  @apply bg-white dark:bg-gray-900 border border-gray-200 rounded-lg shadow-lg p-3;
 }
 
 .chart-tooltip h4 {
-  @apply font-semibold text-gray-800 mb-2;
+  @apply font-semibold text-gray-800 dark:text-white mb-2;
 }
 
 .chart-tooltip p {
-  @apply text-sm text-gray-600;
+  @apply text-sm text-gray-600 dark:text-gray-400;
 }

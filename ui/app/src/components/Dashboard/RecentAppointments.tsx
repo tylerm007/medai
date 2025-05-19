@@ -31,7 +31,7 @@ export default function RecentAppointments() {
   ];
 
   return (
-    <div className="bg-white rounded-xl">
+    <div className="bg-white dark:bg-gray-900 rounded-xl">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -57,7 +57,7 @@ export default function RecentAppointments() {
                         ? "bg-yellow-100 text-yellow-800"
                         : appointment.status === "In Progress"
                         ? "bg-blue-100 text-blue-800"
-                        : "bg-gray-100 text-gray-800"
+                        : "bg-gray-100 text-gray-800 dark:text-white"
                     }`}
                   >
                     {appointment.status}

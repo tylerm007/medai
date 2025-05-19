@@ -1,7 +1,7 @@
 // hooks/usePatients.ts
 import { useState, useEffect, useMemo } from "react";
 import { PatientService } from "@/lib/api/patientService";
-import type { Patient } from "@/lib/api/patientService";
+import type { Patient } from "@/types/patient";
 
 export const usePatients = (searchQuery = "") => {
   const [patients, setPatients] = useState<Patient[]>([]);

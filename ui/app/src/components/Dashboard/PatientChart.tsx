@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import type { Patient } from "@/lib/api/patientService";
+import type { Patient } from "@/types/patient";
 
 ChartJS.register(
   CategoryScale,
@@ -30,8 +30,20 @@ interface PatientChartProps {
 // src/components/Dashboard/PatientChart.tsx
 export default function PatientChart({ patients }: PatientChartProps) {
   // Month order for correct sorting
-  const monthsOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthsOrder = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const patientData = patients.reduce((acc, patient) => {
     const dateStr = patient.created_date;
@@ -39,7 +51,7 @@ export default function PatientChart({ patients }: PatientChartProps) {
 
     const isoDate = dateStr.replace(" ", "T");
     const date = new Date(isoDate);
-    
+
     if (isNaN(date.getTime())) {
       console.warn("Invalid date:", dateStr);
       return acc;
@@ -56,7 +68,7 @@ export default function PatientChart({ patients }: PatientChartProps) {
     datasets: [
       {
         label: "Patients Registered",
-        data: monthsOrder.map(month => patientData[month] || 0),
+        data: monthsOrder.map((month) => patientData[month] || 0),
         borderColor: "#1E3A8A",
         backgroundColor: "#60A5FA",
         tension: 0.4,
@@ -66,7 +78,7 @@ export default function PatientChart({ patients }: PatientChartProps) {
   };
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-sm">
+    <div className="p-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm">
       <Line
         data={chartData}
         options={{
@@ -84,20 +96,20 @@ export default function PatientChart({ patients }: PatientChartProps) {
           scales: {
             x: {
               grid: {
-                display: false
+                display: false,
               },
               ticks: {
-                autoSkip: false
-              }
+                autoSkip: false,
+              },
             },
             y: {
               beginAtZero: true,
               ticks: {
                 precision: 0,
-                stepSize: 1
-              }
-            }
-          }
+                stepSize: 1,
+              },
+            },
+          },
         }}
       />
     </div>
