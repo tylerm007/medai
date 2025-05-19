@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/lib/api/types";
 import type { Medication, PatientType, DrugType } from "@/types/medication";
 
 interface MedicationRequest {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any;
   columns: string[];
   sqltypes?: Record<string, number>;
@@ -41,7 +42,7 @@ export const MedicationService = {
       });
 
     if (response.data.code !== 0) throw new Error("API Error");
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
       dosage: parseFloat(item.dosage),

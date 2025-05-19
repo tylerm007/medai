@@ -5,6 +5,7 @@ import type { DrugType, PatientType } from "@/types/recommendation";
 interface AddRecommendationModalProps {
   isOpen: boolean;
   onClose: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSave: (recommendation: any) => void;
   drugTypes: DrugType[];
   patientTypes: PatientType[];
@@ -39,20 +40,24 @@ export const AddRecommendationModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
-        <h2 className="text-2xl font-bold mb-4">New Clinical Recommendation</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-gray-600 dark:bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-full max-w-2xl">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+          New Clinical Recommendation
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Patient Section */}
           <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-4">Patient Information</h3>
+            <h3 className="text-lg font-semibold mb-4 dark:text-white">
+              Patient Information
+            </h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Select Patient
                 </label>
                 <select
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                   value={formData.patient_id}
                   onChange={(e) =>
                     setFormData({ ...formData, patient_id: e.target.value })
@@ -72,14 +77,16 @@ export const AddRecommendationModal = ({
 
           {/* Medication Details */}
           <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-4">Medication Plan</h3>
+            <h3 className="text-lg font-semibold mb-4 dark:text-white">
+              Medication Plan
+            </h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Medication
                 </label>
                 <select
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                   value={formData.drug_id}
                   onChange={(e) =>
                     setFormData({ ...formData, drug_id: e.target.value })
@@ -96,13 +103,13 @@ export const AddRecommendationModal = ({
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Dosage
                   </label>
                   <input
                     type="number"
                     step="0.1"
-                    className="w-full p-2 border rounded-lg"
+                    className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                     value={formData.dosage}
                     onChange={(e) =>
                       setFormData({ ...formData, dosage: e.target.value })
@@ -111,9 +118,11 @@ export const AddRecommendationModal = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Unit</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Unit
+                  </label>
                   <select
-                    className="w-full p-2 border rounded-lg"
+                    className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                     value={formData.dosage_unit}
                     onChange={(e) =>
                       setFormData({ ...formData, dosage_unit: e.target.value })
@@ -130,16 +139,16 @@ export const AddRecommendationModal = ({
 
           {/* Timing Information */}
           <div className="pb-4">
-            <h3 className="text-lg font-semibold mb-4">
+            <h3 className="text-lg font-semibold mb-4 dark:text-white">
               Administration Schedule
             </h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Time of Day
                 </label>
                 <select
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                   value={formData.time_of_reading}
                   onChange={(e) =>
                     setFormData({
@@ -155,12 +164,12 @@ export const AddRecommendationModal = ({
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Start Date
                 </label>
                 <input
                   type="date"
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary dark:[&::-webkit-calendar-picker-indicator]:invert"
                   value={formData.recommendation_date}
                   onChange={(e) =>
                     setFormData({
@@ -179,7 +188,7 @@ export const AddRecommendationModal = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 text-gray-600 dark:text-gray-900 dark:bg-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
             >
               Cancel
             </button>

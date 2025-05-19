@@ -91,7 +91,7 @@ export default function LoginPage() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center"
+                className="w-12 h-12 dark:bg-gray-900/10 rounded-lg flex items-center justify-center"
               >
                 <Image
                   src={`/health-icons/icon-${i + 1}.svg`}
@@ -111,7 +111,7 @@ export default function LoginPage() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
-        className="w-full lg:w-1/2 bg-white flex items-center justify-center p-8"
+        className="w-full lg:w-1/2 bg-white dark:bg-gray-900 flex items-center justify-center p-8"
       >
         <div className="max-w-md w-full space-y-8">
           <div className="text-center space-y-4">
@@ -124,10 +124,10 @@ export default function LoginPage() {
               alt="Healthcare Logo"
             />
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-400">
                 Welcome to MedAI
               </h2>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Sign in to your personalized healthcare portal
               </p>
             </div>
@@ -135,7 +135,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Username
               </label>
               <div className="relative group">
@@ -151,7 +151,7 @@ export default function LoginPage() {
                 <input
                   {...register("username")}
                   type="text"
-                  className={`w-full pl-10 pr-3 py-3 rounded-lg border transition-all ${
+                  className={`w-full pl-10 pr-3 py-3 dark:bg-gray-900 dark:text-gray-300 rounded-lg border transition-all ${
                     errors.username
                       ? "border-red-300 focus:ring-red-500"
                       : "border-gray-300 focus:border-medical-primary focus:ring-medical-primary"
@@ -179,7 +179,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Password
               </label>
               <div className="relative group">
@@ -195,7 +195,7 @@ export default function LoginPage() {
                 <input
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
-                  className={`w-full pl-10 pr-10 py-3 rounded-lg border transition-all ${
+                  className={`w-full pl-10 pr-10 py-3 rounded-lg dark:bg-gray-900 dark:text-gray-300 border transition-all ${
                     errors.password
                       ? "border-red-300 focus:ring-red-500"
                       : "border-gray-300 focus:border-medical-primary focus:ring-medical-primary"

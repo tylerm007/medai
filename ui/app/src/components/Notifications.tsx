@@ -8,7 +8,7 @@ export default function Notifications() {
       position="top-right"
       toastOptions={{
         duration: 4000,
-        className: "!bg-white !text-gray-800 !shadow-lg !rounded-xl",
+        className: "!bg-white dark:bg-gray-900 !text-gray-800 dark:text-white !shadow-lg !rounded-xl",
         error: {
           iconTheme: {
             primary: "#EF4444",

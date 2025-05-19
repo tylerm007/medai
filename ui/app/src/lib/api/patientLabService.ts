@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/lib/api/types";
 import type { PatientLab } from "@/types/patientLab";
 
 interface LabRequest {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any;
   columns: string[];
   sqltypes?: Record<string, number>;
@@ -52,7 +53,7 @@ export const PatientLabService = {
       });
 
     if (response.data.code !== 0) throw new Error("API Error");
-
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
       id: parseInt(item.id),

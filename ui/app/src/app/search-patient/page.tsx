@@ -31,7 +31,7 @@ export default function SearchPatientPage() {
           className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4"
         >
           {/* Breadcrumb Navigation */}
-          <nav className="text-sm text-gray-600">
+          <nav className="text-sm text-gray-600 dark:text-gray-400">
             <ul className="flex space-x-2">
               <li>
                 <Link href="/patient" className="hover:underline text-blue-600">
@@ -39,7 +39,7 @@ export default function SearchPatientPage() {
                 </Link>                
               </li>
               <span className="mx-1">/</span>
-              <li className="font-medium text-gray-900">Patient Search</li>
+              <li className="font-medium text-gray-900 dark:text-gray-400">Patient Search</li>
             </ul>
           </nav>
 

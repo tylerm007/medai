@@ -27,7 +27,7 @@ export default function PatientDetail() {
     <ProtectedRoute>
       <div className="space-y-6">
         {/* Breadcrumb Navigation */}
-        <nav className="text-sm text-gray-600 mb-2">
+        <nav className="text-sm text-gray-600 dark:text-gray-400 mb-2">
           <ul className="flex space-x-2">
             <li>
               <Link href="/patient" className="hover:underline text-blue-600">
@@ -41,12 +41,12 @@ export default function PatientDetail() {
               </Link>
               <span className="mx-1">/</span>
             </li>
-            <li className="font-medium text-gray-900">Patient Details</li>
+            <li className="font-medium text-gray-900 dark:text-gray-400">Patient Details</li>
           </ul>
         </nav>
 
         {/* Patient Header */}
-        <div className="bg-white p-6 rounded-xl shadow grid grid-cols-1 md:grid-cols-4 gap-8 items-center">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow grid grid-cols-1 md:grid-cols-4 gap-8 items-center">
           {/* Left Box: Patient Image & Name */}
           <div className="col-span-1 flex flex-col items-center text-center md:border-r md:border-gray-300 md:pr-6 justify-center h-full">
             <div className="mb-4">
@@ -61,7 +61,7 @@ export default function PatientDetail() {
               />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-400">
                 {patient.name}
               </h1>
               <p className="text-gray-500 text-base mt-1">
@@ -121,18 +121,18 @@ export default function PatientDetail() {
         </div>
 
         {/* Patient Recommendations / Medications */}
-        <div className="bg-white p-6 rounded-xl shadow">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">
               Recommendations / Medications
             </h2>
-            <span className="text-gray-600">Total {patient.name} Visits</span>
+            <span className="text-gray-600 dark:text-gray-400">Total {patient.name} Visits</span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-gray-600 border-b">
+                <tr className="text-left text-gray-600 dark:text-gray-400 border-b">
                   <th className="pb-3">DOSE/mg</th>
                   <th className="pb-3">BreakFast</th>
                   <th className="pb-3">Lunch</th>
@@ -229,13 +229,13 @@ export default function PatientDetail() {
         </div>
 
         {/* Insulin Section */}
-        <div className="bg-white p-6 rounded-xl shadow mt-8">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow mt-8">
           <h2 className="text-xl font-semibold mb-4">Insulin</h2>
 
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-gray-600 border-b">
+                <tr className="text-left text-gray-600 dark:text-gray-400 border-b">
                   <th className="pb-3">Units</th>
                   <th className="pb-3">Before BreakFast</th>
                   <th className="pb-3">Before Lunch</th>
@@ -265,12 +265,12 @@ export default function PatientDetail() {
         </div>
 
         {/* Nutrition & Exercise Section */}
-        <div className="bg-white p-6 rounded-xl shadow mt-8">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow mt-8">
           <h2 className="text-xl font-semibold mb-4">Nutrition & Exercise</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-gray-600 border-b">
+                <tr className="text-left text-gray-600 dark:text-gray-400 border-b">
                   <th className="pb-3">Category</th>
                   <th className="pb-3">Recommendation</th>
                 </tr>
@@ -303,7 +303,7 @@ const InfoItem = ({
 }) => (
   <div className="flex flex-col justify-between items-start p-4 gap-y-3">
     <span className="text-gray-500">{label}</span>
-    <span className="font-semibold text-gray-900">{value || "-"}</span>
+    <span className="font-semibold text-gray-900 dark:text-gray-400">{value || "-"}</span>
   </div>
 );
 
@@ -318,7 +318,7 @@ const VitalItem = ({
   sub: string;
   status: "normal" | "abnormal";
 }) => (
-  <div className="bg-white p-6 rounded-xl shadow">
+  <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
     <h3 className="text-black text-base mb-2">{label}</h3>
     <div className="mb-2 flex flex-row items-baseline">
       <span className="text-3xl font-semibold">{value}</span>

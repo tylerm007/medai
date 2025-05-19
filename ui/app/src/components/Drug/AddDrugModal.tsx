@@ -33,18 +33,18 @@ export const AddDrugModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
-        <h2 className="text-2xl font-bold mb-4">New Drug</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-gray-600 dark:bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-full max-w-2xl">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">New Drug</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Drug Name
               </label>
               <input
                 type="text"
-                className="w-full p-2 border rounded-lg"
+                className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                 value={formData.drug_name}
                 onChange={(e) =>
                   setFormData({ ...formData, drug_name: e.target.value })
@@ -54,11 +54,11 @@ export const AddDrugModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Dosage</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Dosage</label>
               <input
                 type="number"
                 step="0.1"
-                className="w-full p-2 border rounded-lg"
+                className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                 value={formData.dosage}
                 onChange={(e) =>
                   setFormData({ ...formData, dosage: Number(e.target.value) })
@@ -68,11 +68,11 @@ export const AddDrugModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Dosage Unit
               </label>
               <select
-                className="w-full p-2 border rounded-lg"
+                className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                 value={formData.dosage_unit}
                 onChange={(e) =>
                   setFormData({ ...formData, dosage_unit: e.target.value })
@@ -86,11 +86,11 @@ export const AddDrugModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Drug Type
               </label>
               <select
-                className="w-full p-2 border rounded-lg"
+                className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                 value={formData.drug_type}
                 onChange={(e) =>
                   setFormData({ ...formData, drug_type: e.target.value })
@@ -104,12 +104,12 @@ export const AddDrugModal = ({
             </div>
 
             <div className="col-span-2">
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Manufacturer
               </label>
               <input
                 type="text"
-                className="w-full p-2 border rounded-lg"
+                className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                 value={formData.manufacturer}
                 onChange={(e) =>
                   setFormData({ ...formData, manufacturer: e.target.value })
@@ -119,11 +119,11 @@ export const AddDrugModal = ({
             </div>
 
             <div className="col-span-2">
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Side Effects
               </label>
               <textarea
-                className="w-full p-2 border rounded-lg"
+                className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                 value={formData.side_effects || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, side_effects: e.target.value })
@@ -137,7 +137,7 @@ export const AddDrugModal = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-gray-600 dark:text-gray-900 dark:bg-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
             >
               Cancel
             </button>

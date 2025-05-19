@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/lib/api/types";
 import type { BloodSugarReading } from "@/types/bloodSugar";
 
 interface BloodSugarRequest {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any;
   columns: string[];
   sqltypes?: Record<string, number>;
@@ -55,7 +56,7 @@ export const BloodSugarService = {
       });
 
     if (response.data.code !== 0) throw new Error("API Error");
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
       reading_value: parseFloat(item.reading_value),

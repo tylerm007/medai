@@ -16,7 +16,7 @@ export const usePatientLabs = (initialParams?: LabQueryParams) => {
   const { patients } = usePatients();
   const [labs, setLabs] = useState<PatientLab[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery] = useState<string>("");
   const [clientPage, setClientPage] = useState(1);
   const itemsPerPage = 10;
   const [loading, setLoading] = useState(true);
@@ -58,9 +58,12 @@ export const usePatientLabs = (initialParams?: LabQueryParams) => {
     fetchLabs();
   }, [params, patients]);
 
-  const handleSearch = (query: string) => {
-    // Implement search logic similar to previous hooks
-    // (You might need to modify the API to support search)
+  const handleSearch = (searchValue: string) => {
+    setParams((prev) => ({
+      ...prev,
+      search: searchValue,
+      page: 1, // Reset to first page when searching
+    }));
   };
 
   const handleSort = (column: string, direction: "asc" | "desc") => {

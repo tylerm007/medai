@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/lib/api/types";
 import type { PatientReadingHistory } from "@/types/patientReadingHistory";
 
 interface PatientReadingHistoryRequest {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any;
   columns: string[];
   sqltypes?: Record<string, number>;
@@ -63,7 +64,7 @@ export const PatientReadingHistoryService = {
       });
 
     if (response.data.code !== 0) throw new Error("API Error");
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
       // Parse numeric values if needed (assuming API returns strings)

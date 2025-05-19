@@ -10,6 +10,7 @@ import { DataTable, ColumnDef } from "@/components/DataTable/DataTable";
 import { AddDrugModal } from "@/components/Drug/AddDrugModal";
 import { useDrugs } from "@/hooks/useDrugs";
 import type { Drug } from "@/types/drug";
+import { RefreshButton } from "@/components/RefreshButton";
 
 export default function DrugsPage() {
   const { setTitle } = usePageTitle();
@@ -89,18 +90,24 @@ export default function DrugsPage() {
               placeholder="Search drugs..."
               className="flex-1"
             />
-            <button
-              onClick={refresh}
-              className="px-4 py-2 border rounded-lg hover:bg-gray-50 flex items-center"
-            >
-              {/* Refresh Icon */}
-              Refresh
-            </button>
+            <RefreshButton onClick={refresh} className="flex items-center" />
             <button
               onClick={() => setShowAddModal(true)}
               className="px-4 py-2 bg-medical-primary text-white rounded-lg hover:bg-medical-primary-dark flex items-center"
             >
-              {/* Plus Icon */}
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
               Add New Drug
             </button>
           </div>

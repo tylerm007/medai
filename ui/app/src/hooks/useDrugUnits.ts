@@ -18,7 +18,7 @@ export const useDrugUnits = (initialParams?: DrugUnitQueryParams) => {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [params, setParams] = useState<DrugUnitQueryParams>({
+  const [params] = useState<DrugUnitQueryParams>({
     page: 1,
     pageSize: 20,
     ...initialParams,

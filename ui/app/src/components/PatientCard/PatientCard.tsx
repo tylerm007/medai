@@ -6,7 +6,7 @@ import {
   ScaleIcon,
 } from "@heroicons/react/24/outline";
 import MetricItem from "@/components/MetricItem/MetricItem";
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function PatientCard({ patient }: { patient: any }) {
   const lastVisit = new Date(patient.created_date).toLocaleDateString();
   const bmi = (
@@ -19,7 +19,7 @@ export default function PatientCard({ patient }: { patient: any }) {
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       whileHover={{ scale: 1.02 }}
-      className="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-100"
+      className="group relative bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-100"
     >
       <Link href={`/patient/${patient.id}`} className="block p-6">
         {/* Status Indicator */}
@@ -41,22 +41,22 @@ export default function PatientCard({ patient }: { patient: any }) {
           </div>
 
           <div className="flex-1 space-y-2">
-            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-medical-primary transition-colors">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-400 group-hover:text-medical-primary transition-colors">
               {patient.name}
             </h3>
 
             <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="flex items-center space-x-2 text-gray-600">
+              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                 <DocumentTextIcon className="w-4 h-4" />
                 <span>{patient.medical_record_number}</span>
               </div>
 
-              <div className="flex items-center space-x-2 text-gray-600">
+              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                 <ScaleIcon className="w-4 h-4" />
                 <span>BMI: {bmi}</span>
               </div>
 
-              <div className="flex items-center space-x-2 text-gray-600">
+              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                 <CalendarIcon className="w-4 h-4" />
                 <span>{patient.age}yrs</span>
               </div>
@@ -71,7 +71,7 @@ export default function PatientCard({ patient }: { patient: any }) {
                 >
                   {patient.patient_sex === "M" ? "♂" : "♀"}
                 </span>
-                <span className="text-gray-600">
+                <span className="text-gray-600 dark:text-gray-400">
                   {patient.patient_sex === "M" ? "Male" : "Female"}
                 </span>
               </div>

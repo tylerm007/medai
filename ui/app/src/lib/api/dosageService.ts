@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/lib/api/types";
 import type { Dosage } from "@/types/dosage";
 
 interface DosageRequest {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any;
   columns: string[];
   sqltypes?: Record<string, number>;

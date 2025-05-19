@@ -8,6 +8,7 @@ import type {
 } from "@/types/recommendation";
 
 interface RecommendationRequest {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any;
   columns: string[];
   sqltypes?: Record<string, number>;
@@ -53,7 +54,7 @@ export const RecommendationService = {
       });
 
     if (response.data.code !== 0) throw new Error("API Error");
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
       dosage: parseFloat(item.dosage),

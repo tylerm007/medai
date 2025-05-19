@@ -12,6 +12,7 @@ import { usePatients } from "@/hooks/usePatients";
 import { usePatientReadingHistories } from "@/hooks/usePatientReadingHistories";
 import { ColumnDef } from "@/components/DataTable/DataTable";
 import type { PatientReadingHistory } from "@/types/patientReadingHistory";
+import { RefreshButton } from "@/components/RefreshButton";
 
 export default function HistoryReadingsPage() {
   const { setTitle } = usePageTitle();
@@ -48,7 +49,7 @@ export default function HistoryReadingsPage() {
     {
       key: "id",
       header: "History ID",
-      sortable: true,
+      sortable: true,      
     },
     {
       key: "patient_id",
@@ -57,7 +58,7 @@ export default function HistoryReadingsPage() {
       cellRenderer: (row) => (
         <Link
           href={`/patient/${row.patient_id}`}
-          className="text-medical-primary hover:underline"
+          className="text-medical-primary dark:text-gray-400 hover:underline"
         >
           {patientLookup[row.patient_id]}
         </Link>
@@ -75,7 +76,7 @@ export default function HistoryReadingsPage() {
       sortable: true,
       align: "right",
       cellRenderer: (row) => (
-        <span className="text-gray-700">{row.breakfast || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">{row.breakfast || "–"}</span>
       ),
     },
     {
@@ -84,7 +85,7 @@ export default function HistoryReadingsPage() {
       sortable: true,
       align: "right",
       cellRenderer: (row) => (
-        <span className="text-gray-700">{row.lunch || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">{row.lunch || "–"}</span>
       ),
     },
     {
@@ -93,7 +94,7 @@ export default function HistoryReadingsPage() {
       sortable: true,
       align: "right",
       cellRenderer: (row) => (
-        <span className="text-gray-700">{row.dinner || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">{row.dinner || "–"}</span>
       ),
     },
     {
@@ -102,7 +103,7 @@ export default function HistoryReadingsPage() {
       sortable: true,
       align: "right",
       cellRenderer: (row) => (
-        <span className="text-gray-700">{row.bedtime || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">{row.bedtime || "–"}</span>
       ),
     },
     {
@@ -150,25 +151,7 @@ export default function HistoryReadingsPage() {
               placeholder="Search histories..."
               className="flex-1"
             />
-            <button
-              onClick={refresh}
-              className="px-4 py-2 border rounded-lg hover:bg-gray-50 flex items-center"
-            >
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-              Refresh
-            </button>
+            <RefreshButton onClick={refresh} className="flex items-center" />
             <button
               onClick={() => setShowAddModal(true)}
               className="px-4 py-2 bg-medical-primary text-white rounded-lg hover:bg-medical-primary-dark flex items-center"

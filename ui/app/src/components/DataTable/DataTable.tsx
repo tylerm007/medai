@@ -58,7 +58,7 @@ export function DataTable<T>({
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-sm overflow-hidden ${className}`}
+      className={`bg-white dark:bg-gray-900 rounded-xl shadow-sm overflow-hidden ${className}`}
     >
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
@@ -67,7 +67,7 @@ export function DataTable<T>({
               {columns.map((column) => (
                 <th
                   key={column.key as string}
-                  className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${
+                  className={`px-6 py-3 text-xs font-medium text-gray-500 dark:bg-gray-600 dark:text-white uppercase tracking-wider ${
                     column.align === "right"
                       ? "text-right"
                       : column.align === "center"
@@ -112,7 +112,7 @@ export function DataTable<T>({
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200">
             {paginatedData.length === 0 ? (
               <tr>
                 <td
@@ -124,7 +124,10 @@ export function DataTable<T>({
               </tr>
             ) : (
               paginatedData.map((row, index) => (
-                <tr key={index} className="hover:bg-gray-50 transition-colors">
+                <tr
+                  key={index}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                >
                   {columns.map((column) => (
                     <td
                       key={column.key as string}
@@ -133,7 +136,7 @@ export function DataTable<T>({
                           ? "text-right"
                           : column.align === "center"
                           ? "text-center"
-                          : "text-gray-900"
+                          : "text-gray-900 dark:text-gray-400"
                       }`}
                     >
                       {column.cellRenderer
@@ -149,8 +152,8 @@ export function DataTable<T>({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
-        <div className="text-sm text-gray-700">
+      <div className="flex items-center justify-between py-4 border-t border-gray-200">
+        <div className="text-sm text-gray-700 dark:text-white">
           {total === 0 ? (
             "No results found"
           ) : (
@@ -163,20 +166,24 @@ export function DataTable<T>({
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={isFirstPage}
-            className={`px-3 py-1.5 border rounded-md text-sm ${
-              isFirstPage ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
+            className={`px-3 py-1.5 border dark:text-white rounded-md text-sm ${
+              isFirstPage
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-50 dark:hover:bg-gray-600"
             }`}
           >
             Previous
           </button>
-          <span className="px-3 py-1.5 text-sm">
+          <span className="px-3 py-1.5 text-sm dark:text-white">
             Page {Math.min(currentPage, totalPages)} of {totalPages}
           </span>
           <button
             disabled={isLastPage}
             onClick={() => onPageChange(currentPage + 1)}
-            className={`px-3 py-1.5 border rounded-md text-sm ${
-              isLastPage ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
+            className={`px-3 py-1.5 border dark:text-white rounded-md text-sm ${
+              isLastPage
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-50 dark:hover:bg-gray-600"
             }`}
           >
             Next

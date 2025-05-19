@@ -37,17 +37,40 @@ interface DashboardStats {
   };
 }
 
+interface StatsCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+  trend?: string;
+  trendPositive?: boolean;
+  color: string;
+}
+
+interface ConditionProgressProps {
+  label: string;
+  value: number;
+  color: string;
+  threshold: number;
+}
+
 // Stats Card Component
-function StatsCard({ title, value, icon, trend, trendPositive, color }: any) {
+function StatsCard({
+  title,
+  value,
+  icon,
+  trend,
+  trendPositive,
+  color,
+}: StatsCardProps) {
   return (
     <motion.div
-      className="bg-white p-6 rounded-2xl shadow-lg flex"
+      className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg dark:shadow-2xl flex"
       variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
     >
       <div className="flex items-center justify-between w-full">
         <div>
-          <p className="text-sm text-gray-500">{title}</p>
-          <p className="text-3xl font-bold mt-2">{value}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
+          <p className="text-3xl font-bold mt-2 dark:text-white">{value}</p>
         </div>
         <div className={`${color} p-3 rounded-lg`}>{icon}</div>
       </div>
@@ -196,10 +219,10 @@ export default function PatientPage() {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
               Patient Management
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
               Last login: {lastLogin || "Loading..."}
             </p>
           </div>
@@ -213,7 +236,7 @@ export default function PatientPage() {
 
               {/* Search Results Dropdown */}
               {debouncedSearchTerm && (
-                <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border rounded-lg shadow-lg max-h-96 overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-white dark:bg-gray-900 border rounded-lg shadow-lg max-h-96 overflow-y-auto">
                   {loading ? (
                     <div className="p-4 text-gray-500">Loading patients...</div>
                   ) : error ? (
@@ -227,13 +250,13 @@ export default function PatientPage() {
                       <Link
                         key={patient.id}
                         href={`/patient/${patient.id}`}
-                        className="flex items-center p-4 hover:bg-gray-50 border-b last:border-b-0 transition-colors"
+                        className="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-600 border-b last:border-b-0 transition-colors"
                       >
                         <div className="flex-1">
-                          <div className="font-medium text-gray-900">
+                          <div className="font-medium text-gray-900 dark:text-gray-400">
                             {patient.name}
-                            </div>
-                            <div className="text-sm text-gray-500">
+                          </div>
+                          <div className="text-sm text-gray-500">
                             MRN: {patient.medical_record_number} | Age:{" "}
                             {parseFloat(patient.age).toFixed(1)}
                           </div>
@@ -300,11 +323,11 @@ export default function PatientPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Demographic Card */}
           <motion.div
-            className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100"
+            className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg border border-gray-100"
             initial={{ scale: 0.95 }}
             animate={{ scale: 1 }}
           >
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-semibold mb-4 dark:text-white flex items-center gap-2">
               <HeartIcon className="h-6 w-6 text-red-500" />
               Health Conditions
             </h3>
@@ -338,12 +361,12 @@ export default function PatientPage() {
 
           {/* Age Distribution Card */}
           <motion.div
-            className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 lg:col-span-2"
+            className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg border border-gray-100 lg:col-span-2"
             initial={{ scale: 0.95 }}
             animate={{ scale: 1 }}
           >
             <div className="flex justify-between items-start mb-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
+              <h3 className="text-lg font-semibold flex items-center gap-2 dark:text-white">
                 <CalendarIcon className="h-6 w-6 text-green-500" />
                 Age Distribution
               </h3>
@@ -365,13 +388,15 @@ export default function PatientPage() {
 
         {/* Patient List Table */}
         <motion.div
-          className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
           <div className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Recent Patients</h3>
-            <div className="grid grid-cols-4 gap-4 font-medium text-gray-600 pb-2 border-b">
+            <h3 className="text-lg font-semibold mb-4 dark:text-white">
+              Recent Patients
+            </h3>
+            <div className="grid grid-cols-4 gap-4 font-medium text-gray-600 dark:text-gray-400 pb-2 border-b">
               <div>Name</div>
               <div>MRN</div>
               <div>Age</div>
@@ -381,13 +406,17 @@ export default function PatientPage() {
               <Link
                 key={patient.id}
                 href={`/patient/${patient.id}`}
-                className="grid grid-cols-4 gap-4 p-4 hover:bg-gray-50 border-b last:border-b-0 transition-colors"
+                className="grid grid-cols-4 gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-600 border-b last:border-b-0 transition-colors"
               >
-                <div className="font-medium text-gray-900">{patient.name}</div>
-                <div className="text-gray-600">
+                <div className="font-medium text-gray-900 dark:text-gray-400">
+                  {patient.name}
+                </div>
+                <div className="text-gray-900 dark:text-gray-400">
                   {patient.medical_record_number}
                 </div>
-                <div>{parseFloat(patient.age).toFixed(1)}</div>
+                <div className="text-gray-900 dark:text-gray-400">
+                  {parseFloat(patient.age).toFixed(1)}
+                </div>
                 <div>
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     Active
@@ -402,10 +431,10 @@ export default function PatientPage() {
   );
 }
 
-function ConditionProgress({ label, value, color }: any) {
+function ConditionProgress({ label, value, color }: ConditionProgressProps) {
   return (
     <div className="space-y-1">
-      <div className="flex justify-between text-sm font-medium">
+      <div className="flex justify-between text-sm font-medium dark:text-gray-400">
         <span>{label}</span>
         <span>{value.toFixed(1)}%</span>
       </div>

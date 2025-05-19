@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/lib/api/types";
 import type { InsulinRule } from "@/types/insulinRule";
 
 interface InsulinRuleRequest {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter?: any;
   columns: string[];
   sqltypes?: Record<string, number>;
