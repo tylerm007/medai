@@ -208,12 +208,15 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
         if method == 'POST':
             if data != None:
                 #this is an insert
+                sqltypes
                 sql_alchemy_row = api_clz()
                 row = DotDict(data)
                 for attr in api_attributes:
                     name = attr["name"]
                     if getattr(row, name) != None:
-                        setattr(sql_alchemy_row, name , row[name])
+                        value = convert_type(sqltypes, name, row[name])
+                        if value != None:
+                            setattr(sql_alchemy_row, name , value)
                 session.add(sql_alchemy_row)
                 result = sql_alchemy_row
                 #stmt = insert(api_clz).values(data)
@@ -238,6 +241,31 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
             
         return jsonify({"code":0,"message":f"{method}:True","data":result,"sqlTypes":None})   #{f"{method}":True})
     
+    def convert_type(sqltypes: dict, name:str, value: any) -> any:
+        # convert to the correct type
+        if len(sqltypes) == 0 or value == None or name not in sqltypes:
+            return value
+        if sqltypes[name] in [91] and not isinstance(value, str): #Date, TIMESTAMP, DATETIME
+            with contextlib.suppress(Exception):
+                my_date = float(value)/1000
+                value = date.fromtimestamp(my_date).strftime('%Y-%m-%d') # %H:%M:%S')
+        elif sqltypes[name] == 12: #VARCHAR
+            value = str(value)
+        elif sqltypes[name] == 4: #INTEGER
+            value = int(value)
+        elif sqltypes[name] == 3: #FLOAT
+            value = float(value)
+        elif sqltypes[name] == 5: #BIGINT
+            value = int(value)
+        elif sqltypes[name] == 2: #NUMERIC
+            value = float(value)
+        elif sqltypes[name] == 7: #REAL
+            value = float(value)
+        elif sqltypes[name] == 8: #DOUBLE   
+            value = float(value)
+        elif sqltypes[name] == 16: #BOOLEAN
+            value = bool(value)
+        return value
     def find_model(clz_name:str) -> any:
         clz_members = getMetaData()
         resources = clz_members.get("resources")

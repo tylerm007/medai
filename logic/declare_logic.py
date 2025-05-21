@@ -91,6 +91,10 @@ def declare_logic():
         
     def calculate_age(row: models.Patient, old_row: models.Patient, logic_row: LogicRow):
         birth_date = row.birth_date
+        if isinstance(birth_date, str):
+            birth_date = datetime.datetime.strptime(birth_date, "%Y-%m-%d").date()
+        elif isinstance(birth_date, datetime.datetime):
+            birth_date = birth_date.date()
         today = datetime.datetime.now()  # Get today's date
         age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
         return age
