@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MedAI Dashboard",
+  title: "Rightmetrics Dashboard",
   description: "Healthcare Analytics Platform",
 };
 
