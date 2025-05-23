@@ -38,15 +38,15 @@ export default function Sidebar() {
         <nav className="space-y-8">
           {/* Dashboard */}
           <div>
-            <SidebarItem name="Patient" icon={UserIcon} href="/patient" />
-          </div>
-          {/* Patient Management */}
-          <SidebarSection title="Patient Management">
             <SidebarItem
               name="Search Patient"
               icon={MagnifyingGlassIcon}
               href="/search-patient"
             />
+          </div>
+          {/* Patient Management */}
+          <SidebarSection title="Patient Management">
+            <SidebarItem name="Patient" icon={UserIcon} href="/patient" />
             <SidebarItem
               name="Blood Sugar Readings"
               icon={ClipboardIcon}

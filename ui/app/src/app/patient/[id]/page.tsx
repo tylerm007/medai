@@ -6,18 +6,171 @@ import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 import { usePageTitle } from "@/context/PageTitleContext";
 import { usePatient } from "@/hooks/usePatient";
 import LoadingSpinner from "@/components/Auth/LoadingSpinner";
+import {
+  formatBirthDate,
+  calculateAge,
+  formatCreatinine,
+  getReadingStatus,
+} from "@/lib/utils";
+
+import { usePatients } from "@/hooks/usePatients";
+import { useBloodSugarReadings } from "@/hooks/useBloodSugarReadings";
+import { useRecommendations } from "@/hooks/useRecommendations";
 
 export default function PatientDetail() {
   const { id } = useParams();
   const { setTitle } = usePageTitle();
+  const { patients } = usePatients();
+
+  const { readings = [] } = useBloodSugarReadings(undefined, patients);
+  const { recommendations, patientTypes, drugTypes } = useRecommendations();
+
+  console.log("recommendations", recommendations);
 
   const { patient, loading, error } = usePatient(Number(id));
 
-  console.log("patient", patient);
+  const patientDetails = patient
+    ? {
+        heightInMeters: patient.height / 100,
+        bmi:
+          patient.weight && patient.height
+            ? (patient.weight / (patient.height / 100) ** 2).toFixed(1)
+            : "-",
+        formattedBirthDate: formatBirthDate(patient.birth_date),
+      }
+    : null;
 
   useEffect(() => {
     if (patient) setTitle(patient.name);
   }, [patient, setTitle]);
+
+  const getLatestReadings = () => {
+    if (!readings || !id) return {};
+
+    // Explicitly type the Set as string
+    const seenTimes = new Set<string>();
+
+    const patientReadings = readings
+      .filter((reading) => reading.patient_id === Number(id))
+      .sort(
+        (a, b) =>
+          new Date(b.reading_date).getTime() -
+          new Date(a.reading_date).getTime()
+      );
+
+    const latestReadings: Record<string, string> = {};
+
+    patientReadings.forEach((reading) => {
+      // Convert numeric time_of_reading to string
+      const timeKey = reading.time_of_reading.toString();
+
+      if (!seenTimes.has(timeKey)) {
+        // Parse the string value from API to number, then format
+        latestReadings[timeKey] = Number(reading.reading_value).toFixed(0);
+        seenTimes.add(timeKey);
+      }
+    });
+
+    return latestReadings;
+  };
+
+  const latestReadings = getLatestReadings();
+
+  const getMedicationData = () => {
+    if (!recommendations || !drugTypes || !id) return [];
+
+    const drugMap = new Map(drugTypes.map((drug) => [drug.id, drug.drug_name]));
+
+    return recommendations
+      .filter(
+        (rec) => rec.patient_id === Number(id) && drugMap.has(rec.drug_id)
+      )
+      .map((rec) => ({
+        drugName: drugMap.get(rec.drug_id) || "Unknown Drug",
+        // Convert dosage to number first if it's a string
+        dosage: `${Number(rec.dosage).toFixed(0)} ${rec.dosage_unit}`,
+        time: rec.time_of_reading as "breakfast" | "lunch" | "dinner", // Add type assertion
+      }));
+  };
+
+  const groupMedications = () => {
+    const medications = getMedicationData();
+    const grouped: Record<
+      string,
+      {
+        breakfast?: string;
+        lunch?: string;
+        dinner?: string;
+        [key: string]: string | undefined; // Add index signature
+      }
+    > = {};
+
+    medications.forEach((med) => {
+      if (!grouped[med.drugName]) {
+        grouped[med.drugName] = {};
+      }
+      // Now TypeScript knows we can use string index
+      grouped[med.drugName][med.time] = med.dosage;
+    });
+
+    return Object.entries(grouped).map(([drug, times]) => ({
+      drug,
+      breakfast: times.breakfast || "-",
+      lunch: times.lunch || "-",
+      dinner: times.dinner || "-",
+    }));
+  };
+
+  const getInsulinData = () => {
+    if (!recommendations || !drugTypes || !id) return [];
+
+    const drugMap = new Map(drugTypes.map((drug) => [drug.id, drug.drug_name]));
+    const insulinDrugs = ["Glargine", "Lispro"];
+
+    return recommendations
+      .filter((rec) => {
+        const drugName = drugMap.get(rec.drug_id) || "";
+        return rec.patient_id === Number(id) && insulinDrugs.includes(drugName);
+      })
+      .map((rec) => ({
+        drugName: drugMap.get(rec.drug_id) || "Unknown Insulin",
+        dosage: `${Number(rec.dosage).toFixed(0)} ${rec.dosage_unit}`,
+        time: rec.time_of_reading as
+          | "breakfast"
+          | "lunch"
+          | "dinner"
+          | "bedtime",
+      }));
+  };
+
+  const groupInsulinData = () => {
+    const insulinMeds = getInsulinData();
+    const grouped: Record<
+      string,
+      {
+        breakfast?: string;
+        lunch?: string;
+        dinner?: string;
+        bedtime?: string;
+        [key: string]: string | undefined;
+      }
+    > = {};
+
+    insulinMeds.forEach((med) => {
+      if (!grouped[med.drugName]) {
+        grouped[med.drugName] = {};
+      }
+      grouped[med.drugName][med.time] = med.dosage;
+    });
+
+    return Object.entries(grouped).map(([drug, times]) => ({
+      drug,
+      breakfast: times.breakfast || "-",
+      lunch: times.lunch || "-",
+      dinner: times.dinner || "-",
+      bedtime: times.bedtime || "-",
+    }));
+  };
 
   if (loading) return <LoadingSpinner />;
   if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
@@ -28,21 +181,40 @@ export default function PatientDetail() {
       <div className="space-y-6">
         {/* Breadcrumb Navigation */}
         <nav className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-          <ul className="flex space-x-2">
-            <li>
-              <Link href="/patient" className="hover:underline text-blue-600">
-                Dashboard
+          <div className="flex justify-between items-center">
+            <ul className="flex space-x-2">
+              <li>
+                <Link href="/patient" className="hover:underline text-blue-600">
+                  Dashboard
+                </Link>
+                <span className="mx-1">/</span>
+              </li>
+              <li>
+                <Link href="/patient" className="hover:underline text-blue-600">
+                  Patient
+                </Link>
+                <span className="mx-1">/</span>
+              </li>
+              <li className="font-medium text-gray-900 dark:text-gray-400">
+                Patient Details
+              </li>
+            </ul>
+
+            <div className="flex gap-2">
+              <Link
+                href={`/patient/${id}/edit`}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+              >
+                Edit
               </Link>
-              <span className="mx-1">/</span>
-            </li>
-            <li>
-              <Link href="/patient" className="hover:underline text-blue-600">
-                Patient
+              <Link
+                href="/patient/create"
+                className="px-4 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors text-sm"
+              >
+                Add New Patient Data
               </Link>
-              <span className="mx-1">/</span>
-            </li>
-            <li className="font-medium text-gray-900 dark:text-gray-400">Patient Details</li>
-          </ul>
+            </div>
+          </div>
         </nav>
 
         {/* Patient Header */}
@@ -73,16 +245,32 @@ export default function PatientDetail() {
           {/* Right Box: Doctor Info & Patient Metadata */}
           <div className="col-span-3 space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <InfoItem label="First Name" value={patient.name.slice(0,7)} />
-              <InfoItem label="Last Name" value={patient.name.slice(8)} />
+              <InfoItem label="Name" value={patient.name} />
+              <InfoItem
+                label="Birth Date"
+                value={formatBirthDate(patient.birth_date)}
+              />
+              <InfoItem
+                label="Age"
+                value={calculateAge(patient.birth_date) ?? "-"}
+              />
+
               <InfoItem label="Weight" value={patient.weight} />
-
               <InfoItem label="Height" value={patient.height} />
-              <InfoItem label="BMI" value={"-"} />
-              <InfoItem label="HbA1c" value={"-"} />
+              <InfoItem label="BMI" value={patientDetails?.bmi} />
 
-              <InfoItem label="EGFR" value={"-"} />
-              <InfoItem label="Creatinine" value={"-"} />
+              <InfoItem label="HbA1c" value={patient.hba1c} />
+              <InfoItem
+                label="Creatinine"
+                value={formatCreatinine(
+                  parseFloat(patient.creatine_mg_dl as string)
+                )}
+              />
+              <InfoItem label="Duration" value={patient.duration} />
+
+              <InfoItem label="CAD" value={patient.cad} />
+              <InfoItem label="CKD" value={patient.ckd} />
+              <InfoItem label="HLD" value={patient.hld} />
             </div>
           </div>
         </div>
@@ -95,27 +283,43 @@ export default function PatientDetail() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <VitalItem
               label="Before Breakfast"
-              value="120"
+              value={latestReadings.breakfast || "-"}
               sub="mg/dL"
-              status="normal"
+              status={
+                latestReadings.breakfast
+                  ? getReadingStatus(parseFloat(latestReadings.breakfast))
+                  : "normal"
+              }
             />
             <VitalItem
               label="Before Lunch"
-              value="120"
+              value={latestReadings.lunch || "-"}
               sub="mg/dl"
-              status="abnormal"
+              status={
+                latestReadings.lunch
+                  ? getReadingStatus(parseFloat(latestReadings.lunch))
+                  : "normal"
+              }
             />
             <VitalItem
               label="Before Dinner"
-              value="97"
+              value={latestReadings.dinner || "-"}
               sub="mg/dl"
-              status="normal"
+              status={
+                latestReadings.dinner
+                  ? getReadingStatus(parseFloat(latestReadings.dinner))
+                  : "normal"
+              }
             />
             <VitalItem
               label="Before Bedtime"
-              value="85"
+              value={latestReadings.bedtime || "-"}
               sub="mg/dl"
-              status="normal"
+              status={
+                latestReadings.bedtime
+                  ? getReadingStatus(parseFloat(latestReadings.bedtime))
+                  : "normal"
+              }
             />
           </div>
         </div>
@@ -126,7 +330,9 @@ export default function PatientDetail() {
             <h2 className="text-xl font-semibold">
               Recommendations / Medications
             </h2>
-            <span className="text-gray-600 dark:text-gray-400">Total {patient.name} Visits</span>
+            <span className="text-gray-600 dark:text-gray-400">
+              Total {patient.name} Visits
+            </span>
           </div>
 
           <div className="overflow-x-auto">
@@ -140,72 +346,16 @@ export default function PatientDetail() {
                 </tr>
               </thead>
               <tbody>
-                {/* Medications Section */}
-                <tr className="border-b">
-                  <td className="py-4 font-medium">Metformin</td>
-                  <td>500 mg</td>
-                  <td>500 mg</td>
-                  <td>1000 mg</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-4 font-medium">Aspirin</td>
-                  <td>81 mg</td>
-                  <td>-</td>
-                  <td>-</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-4 font-medium">Atorvastatin</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>40 mg</td>
-                </tr>
+                {groupMedications().map((medication, index) => (
+                  <tr key={index} className="border-b">
+                    <td className="py-4 font-medium">{medication.drug}</td>
+                    <td>{medication.breakfast}</td>
+                    <td>{medication.lunch}</td>
+                    <td>{medication.dinner}</td>
+                  </tr>
+                ))}
 
-                {/* Chronic Conditions Status */}
-                <tr className="border-b">
-                  <td className="py-4 font-medium">Condition Monitor</td>
-                  <td colSpan={3}>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">CAD:</span>
-                        <span
-                          className={`px-2 py-1 rounded-full ${
-                            patient.cad
-                              ? "bg-red-100 text-red-800"
-                              : "bg-green-100 text-green-800"
-                          }`}
-                        >
-                          {patient.cad ? "Present" : "Absent"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">CKD:</span>
-                        <span
-                          className={`px-2 py-1 rounded-full ${
-                            patient.ckd
-                              ? "bg-red-100 text-red-800"
-                              : "bg-green-100 text-green-800"
-                          }`}
-                        >
-                          {patient.ckd ? "Present" : "Absent"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">HLD:</span>
-                        <span
-                          className={`px-2 py-1 rounded-full ${
-                            patient.hld
-                              ? "bg-red-100 text-red-800"
-                              : "bg-green-100 text-green-800"
-                          }`}
-                        >
-                          {patient.hld ? "Present" : "Absent"}
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-
-                {/* Key Metrics */}
+                {/* HbA1c Row - Keep if needed */}
                 <tr>
                   <td className="py-4 font-medium">HbA1c</td>
                   <td colSpan={3}>
@@ -244,21 +394,25 @@ export default function PatientDetail() {
                 </tr>
               </thead>
               <tbody>
-                {/* Example row, update with dynamic data if needed */}
-                <tr className="border-b">
-                  <td className="py-4 font-medium">Humalog</td>
-                  <td>10 units</td>
-                  <td>8 units</td>
-                  <td>6 units</td>
-                  <td>12 units</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-4 font-medium">Lantus</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>20 units</td>
-                </tr>
+                {groupInsulinData().map((insulin, index) => (
+                  <tr key={index} className="border-b">
+                    <td className="py-4 font-medium">{insulin.drug}</td>
+                    <td>{insulin.breakfast}</td>
+                    <td>{insulin.lunch}</td>
+                    <td>{insulin.dinner}</td>
+                    <td>{insulin.bedtime}</td>
+                  </tr>
+                ))}
+                {groupInsulinData().length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="pt-8 pb-4 text-center text-gray-500"
+                    >
+                      No insulin recommendations found
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -301,9 +455,11 @@ const InfoItem = ({
   label: string;
   value?: string | number;
 }) => (
-  <div className="flex flex-col justify-between items-start p-4 gap-y-3">
-    <span className="text-gray-500">{label}</span>
-    <span className="font-semibold text-gray-900 dark:text-gray-400">{value || "-"}</span>
+  <div className="flex flex-col justify-between items-start py-2 gap-y-2">
+    <span className="text-gray-900 font-semibold text-lg">{label}</span>
+    <span className="font-medium text-gray-600 dark:text-gray-400 text-base">
+      {value !== undefined && value !== null ? value : "-"}
+    </span>
   </div>
 );
 
