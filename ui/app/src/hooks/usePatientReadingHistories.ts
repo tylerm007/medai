@@ -145,6 +145,42 @@ export const usePatientReadingHistories = (
     }
   };
 
+  const updateHistory = async (
+    id: number,
+    updates: Partial<PatientReadingHistory>
+  ) => {
+    try {
+
+      if (updates.reading_date) {
+        const date = new Date(updates.reading_date);
+        if (isNaN(date.getTime())) {
+          throw new Error("Invalid date format");
+        }
+      }
+
+      const updated = await PatientReadingHistoryService.updateReadingHistory(
+        id,
+        updates
+      );
+
+      setAllHistories(prev => 
+      prev.map(history => 
+        history.id === id ? {
+          ...history,
+          ...updated,
+          reading_date: new Date(updated.reading_date).toISOString()
+        } : history
+      )
+    );
+    
+      return updated;
+    } catch (err) {
+      throw new Error(
+        err instanceof Error ? err.message : "Failed to update history"
+      );
+    }
+  };
+
   return {
     histories: filteredHistories,
     totalCount,
@@ -160,5 +196,6 @@ export const usePatientReadingHistories = (
     handleSort,
     createHistory,
     refresh: fetchHistories,
+    updateHistory,
   };
 };

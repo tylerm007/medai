@@ -31,6 +31,7 @@ export default function HistoryReadingsPage() {
     refresh,
     sortBy,
     sortDirection,
+    updateHistory,
   } = usePatientReadingHistories(undefined, patients);
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -49,7 +50,7 @@ export default function HistoryReadingsPage() {
     {
       key: "id",
       header: "History ID",
-      sortable: true,      
+      sortable: true,
     },
     {
       key: "patient_id",
@@ -68,15 +69,26 @@ export default function HistoryReadingsPage() {
       key: "reading_date",
       header: "Date",
       sortable: true,
-      cellRenderer: (row) => new Date(row.reading_date).toLocaleDateString(),
+      editable: true,
+      inputType: "date",
+      cellRenderer: (row) => {
+        const date = new Date(row.reading_date);
+        return `${
+          date.getUTCMonth() + 1
+        }/${date.getUTCDate()}/${date.getUTCFullYear()}`;
+      },
     },
     {
       key: "breakfast",
       header: "Breakfast (mg/dL)",
       sortable: true,
       align: "right",
+      editable: true,
+      inputType: "number",
       cellRenderer: (row) => (
-        <span className="text-gray-700 dark:text-gray-400">{row.breakfast || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">
+          {row.breakfast || "–"}
+        </span>
       ),
     },
     {
@@ -84,8 +96,12 @@ export default function HistoryReadingsPage() {
       header: "Lunch (mg/dL)",
       sortable: true,
       align: "right",
+      editable: true,
+      inputType: "number",
       cellRenderer: (row) => (
-        <span className="text-gray-700 dark:text-gray-400">{row.lunch || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">
+          {row.lunch || "–"}
+        </span>
       ),
     },
     {
@@ -93,8 +109,11 @@ export default function HistoryReadingsPage() {
       header: "Dinner (mg/dL)",
       sortable: true,
       align: "right",
+      editable: true,
       cellRenderer: (row) => (
-        <span className="text-gray-700 dark:text-gray-400">{row.dinner || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">
+          {row.dinner || "–"}
+        </span>
       ),
     },
     {
@@ -102,13 +121,17 @@ export default function HistoryReadingsPage() {
       header: "Bedtime (mg/dL)",
       sortable: true,
       align: "right",
+      editable: true,
       cellRenderer: (row) => (
-        <span className="text-gray-700 dark:text-gray-400">{row.bedtime || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">
+          {row.bedtime || "–"}
+        </span>
       ),
     },
     {
       key: "notes_for_day",
       header: "Daily Notes",
+      editable: true,
       cellRenderer: (row) => row.notes_for_day || "–",
     },
   ];
@@ -121,6 +144,33 @@ export default function HistoryReadingsPage() {
       setShowAddModal(false);
     } catch (err) {
       console.error("Failed to add history:", err);
+    }
+  };
+
+  const handleUpdateHistory = async (
+    id: number,
+    updates: Record<string, any>
+  ) => {
+    try {
+      // Convert dates to UTC format
+      const formattedUpdates = Object.entries(updates).reduce(
+        (acc, [key, value]) => {
+          if (key === "reading_date" && typeof value === "string") {
+            const date = new Date(value);
+            acc[key] = date.toISOString();
+          } else {
+            acc[key] = value;
+          }
+          return acc;
+        },
+        {} as Record<string, any>
+      );
+
+      await updateHistory(id, formattedUpdates);
+      await refresh();
+    } catch (err) {
+      console.error("Failed to update history:", err);
+      throw err;
     }
   };
 
@@ -194,6 +244,7 @@ export default function HistoryReadingsPage() {
             currentPage={currentPage}
             itemsPerPage={10}
             onPageChange={handlePageChange}
+            onUpdate={handleUpdateHistory}
           />
         )}
 

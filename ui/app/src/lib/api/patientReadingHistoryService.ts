@@ -82,12 +82,49 @@ export const PatientReadingHistoryService = {
     return { data: processedData, total };
   },
 
+  updateReadingHistory: async (
+    id: number,
+    updates: Partial<PatientReadingHistory>
+  ) => {
+    // Convert date strings to Oracle-friendly format
+    const formattedUpdates = Object.entries(updates).reduce((acc, [key, value]) => {
+      if (key === "reading_date" && value) {
+        acc[key] = new Date(value).toISOString().split('T')[0];
+      } else {
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
+    const payload = {
+      filter: { id },
+      data: formattedUpdates,
+      sqltypes: {
+        id: 4,
+        reading_date: 91, // Oracle DATE type code
+        breakfast: 6, // Oracle NUMBER type code
+        lunch: 6,
+        dinner: 6,
+        bedtime: 6,
+        notes_for_day: 12, // Oracle VARCHAR2 type code
+      },
+    };
+
+    const response = await apiClient.put<ApiResponse<PatientReadingHistory>>(
+      "/ReadingHistory/ReadingHistory",
+      payload
+    );
+
+    if (response.data.code !== 0) throw new Error("API Error");
+    return response.data.data;
+  },
+
   createReadingHistory: async (reading: Omit<PatientReadingHistory, "id">) => {
     const response = await apiClient.post<ApiResponse<PatientReadingHistory>>(
       "/ReadingHistory/ReadingHistory",
       reading
     );
-    
+
     if (response.data.code !== 0) throw new Error("API Error");
     return response.data.data;
   },
