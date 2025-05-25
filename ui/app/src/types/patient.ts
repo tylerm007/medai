@@ -1,4 +1,7 @@
 export interface Patient {
+  insulinData: any;
+  medications: any;
+  latestReadings: any;
   id: number;
   name: string;
   birth_date: string;

@@ -21,12 +21,8 @@ export default function PatientDetail() {
   const { id } = useParams();
   const { setTitle } = usePageTitle();
   const { patients } = usePatients();
-
   const { readings = [] } = useBloodSugarReadings(undefined, patients);
-  const { recommendations, patientTypes, drugTypes } = useRecommendations();
-
-  console.log("recommendations", recommendations);
-
+  const { recommendations, drugTypes } = useRecommendations();
   const { patient, loading, error } = usePatient(Number(id));
 
   const patientDetails = patient
@@ -200,18 +196,45 @@ export default function PatientDetail() {
               </li>
             </ul>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <Link
                 href={`/patient/${id}/edit`}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
               >
-                Edit
+                <svg
+                  className="w-5 h-5 group-hover:rotate-12 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  />
+                </svg>
+                <span>Edit Patient</span>
               </Link>
+
               <Link
                 href="/patient/create"
-                className="px-4 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors text-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
               >
-                Add New Patient Data
+                <svg
+                  className="w-5 h-5 group-hover:rotate-180 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                <span>New Patient</span>
               </Link>
             </div>
           </div>

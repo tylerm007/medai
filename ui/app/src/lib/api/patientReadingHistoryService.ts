@@ -87,6 +87,7 @@ export const PatientReadingHistoryService = {
       "/ReadingHistory/ReadingHistory",
       reading
     );
+    
     if (response.data.code !== 0) throw new Error("API Error");
     return response.data.data;
   },
