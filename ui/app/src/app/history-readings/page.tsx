@@ -72,10 +72,14 @@ export default function HistoryReadingsPage() {
       editable: true,
       inputType: "date",
       cellRenderer: (row) => {
-        const date = new Date(row.reading_date);
-        return `${
-          date.getUTCMonth() + 1
-        }/${date.getUTCDate()}/${date.getUTCFullYear()}`;
+        try {
+          const date = new Date(row.reading_date);
+          return `${
+            date.getMonth() + 1
+          }/${date.getDate()}/${date.getFullYear()}`;
+        } catch (e) {
+          return "Invalid Date";
+        }
       },
     },
     {

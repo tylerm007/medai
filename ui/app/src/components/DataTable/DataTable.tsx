@@ -43,9 +43,10 @@ const EditableCell = <T extends { id: number }>({
     try {
       await onUpdate(row.id, { [column.key as string]: inputValue });
     } catch (err) {
-      setInputValue(value); // Revert on error
+      setInputValue(value);
+    } finally {
+      setIsEditing(false);
     }
-    setIsEditing(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -75,9 +76,17 @@ const EditableCell = <T extends { id: number }>({
     column.inputType || typeof value === "number" ? "number" : "text";
 
   if (column.inputType === "date") {
+    // Parse incoming value as UTC date
     const date = new Date(value);
     const isValidDate = !isNaN(date.getTime());
-    const displayDate = isValidDate ? date.toISOString().split("T")[0] : "";
+
+    // Convert to YYYY-MM-DD format (local date display)
+    const displayDate = isValidDate
+      ? `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(
+          2,
+          "0"
+        )}-${String(date.getUTCDate()).padStart(2, "0")}`
+      : "";
 
     return (
       <input
@@ -85,15 +94,15 @@ const EditableCell = <T extends { id: number }>({
         type="date"
         value={displayDate}
         onChange={(e) => {
-          const newDate = new Date(e.target.value);
-          setInputValue(newDate.toISOString());
+          // Treat selected date as UTC
+          const [year, month, day] = e.target.value.split("-");
+          const utcDate = new Date(
+            Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day))
+          );
+          setInputValue(utcDate.toISOString());
         }}
         onBlur={handleSave}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleSave();
-          if (e.key === "Escape") setIsEditing(false);
-        }}
-        className="w-full px-2 py-1 border rounded"
+        onKeyDown={handleKeyDown}
       />
     );
   }

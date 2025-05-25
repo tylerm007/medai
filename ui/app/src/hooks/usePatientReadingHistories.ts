@@ -150,29 +150,17 @@ export const usePatientReadingHistories = (
     updates: Partial<PatientReadingHistory>
   ) => {
     try {
-
-      if (updates.reading_date) {
-        const date = new Date(updates.reading_date);
-        if (isNaN(date.getTime())) {
-          throw new Error("Invalid date format");
-        }
-      }
-
       const updated = await PatientReadingHistoryService.updateReadingHistory(
         id,
         updates
       );
-
-      setAllHistories(prev => 
-      prev.map(history => 
-        history.id === id ? {
-          ...history,
-          ...updated,
-          reading_date: new Date(updated.reading_date).toISOString()
-        } : history
-      )
-    );
-    
+      setAllHistories((prev) =>
+        prev.map((history) =>
+          history.id === id
+            ? { ...history, ...updated, reading_date: updated.reading_date }
+            : history
+        )
+      );
       return updated;
     } catch (err) {
       throw new Error(

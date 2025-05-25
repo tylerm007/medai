@@ -87,14 +87,15 @@ export const PatientReadingHistoryService = {
     updates: Partial<PatientReadingHistory>
   ) => {
     // Convert date strings to Oracle-friendly format
-    const formattedUpdates = Object.entries(updates).reduce((acc, [key, value]) => {
-      if (key === "reading_date" && value) {
-        acc[key] = new Date(value).toISOString().split('T')[0];
-      } else {
-        acc[key] = value;
-      }
-      return acc;
-    }, {} as Record<string, any>);
+    const formattedUpdates = Object.fromEntries(
+      Object.entries(updates).map(([key, value]) => {
+        if (key === "reading_date" && typeof value === "string") {
+          const date = new Date(value);
+          return [key, date.toISOString().split("T")[0]];
+        }
+        return [key, value];
+      })
+    );
 
     const payload = {
       filter: { id },
