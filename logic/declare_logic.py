@@ -79,7 +79,7 @@ def declare_logic():
     # api_utils.rules_report()
     def insert_reading_history(row: models.Reading, old_row: models.Reading, logic_row: LogicRow):
         from api.api_discovery.insert_history import insert_reading_history
-        insert_reading_history(row, old_row)
+        insert_reading_history(row, old_row, logic_row)
     
     def fn_recommend_insulin(row: models.Reading, old_row: models.Reading, logic_row: LogicRow):
         from api.api_discovery.recommend_drug import recommend_insulin_drug
@@ -107,17 +107,17 @@ def declare_logic():
     Rule.commit_row_event(on_class=models.Reading, calling=insert_reading_history)
     Rule.after_flush_row_event(on_class=models.ReadingHistory, calling=fn_recommend_drug)
     Rule.after_flush_row_event(on_class=models.Reading, calling=fn_recommend_insulin)
-    
+    #Rule.after_flush_row_event(on_class=models.Reading, calling=insert_reading_history)
     # ----- Constraints 
-    '''
+    Rule.constraint(validate=models.Reading, as_condition=lambda row: row.time_of_reading in ['breakfast','lunch','dinner','bedtime'], error_msg="Blood sugar time of reading must be one of breakfast, lunch, dinner, or bedtime not: {row.time_of_reading}")
     Rule.constraint(validate=models.Reading, as_condition=lambda row: row.reading_value <= 600, error_msg="Blood sugar before {row.time_of_reading} must be less than 600")
     Rule.constraint(validate=models.Reading, as_condition=lambda row: row.reading_value >= 20, error_msg="Blood sugar before {row.time_of_reading} must be greater than 20")
-    Rule.constraint(models.Patient, lambda row: row.creatine_mg_dl >= 0.2, error_msg="Creatine must be greater than 0.2")
-    Rule.constraint(models.Patient, lambda row: row.creatine_mg_dl <= 14, error_msg="Creatine must be less than 14")
+    Rule.constraint(validate=models.Patient, as_condition=lambda row: row.creatine_mg_dl >= 0.2, error_msg="Creatine must be greater than 0.2")
+    Rule.constraint(validate=models.Patient, as_condition=lambda row: row.creatine_mg_dl <= 14, error_msg="Creatine must be less than 14")
     Rule.constraint(validate=models.Patient, as_condition=lambda row: row.weight >= 20 and row.weight <= 300 , error_msg="Weight must be greater than 20 and less than 300")   
     Rule.constraint(validate=models.Patient, as_condition=lambda row: row.height >= 48 and row.height <= 84, error_msg="Height must be greater than 48 and less than 84")
     Rule.constraint(validate=models.Patient, as_condition=lambda row: row.hba1c >= 6 and row.hba1c <= 20, error_msg="Hba1c must be greater than 6 and less than 20")
     Rule.constraint(validate=models.Patient, as_condition=lambda row: row.duration >= 1 and row.duration <= 600, error_msg="Duration must be greater than 1 and less than 600")
-    '''
+    
     app_logger.debug("..logic/declare_logic.py (logic == rules + code)")
 

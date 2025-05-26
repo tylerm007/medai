@@ -43,7 +43,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.replace("/patient");
+      router.replace("/search-patient");
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -62,13 +62,13 @@ export default function LoginPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <Image
+            {/* <Image
               src="/medai_logo.png"
               alt="MedAI Logo"
               width={120}
               height={40}
               className="h-10 mb-8 w-auto"
-            />
+            /> */}
           </motion.div>
           <motion.div
             initial={{ y: 20, opacity: 0 }}

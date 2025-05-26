@@ -1,11 +1,11 @@
-// lib/api/apiClient.ts
+// lib/api/baseAPIClient.ts
 import axios from "axios";
 
-export const apiClient = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+export const baseAPIClient = axios.create({
+    baseURL: process.env.API_BASE_URL,
 });
 
-apiClient.interceptors.request.use((config) => {
+baseAPIClient.interceptors.request.use((config) => {
   if (typeof window === "undefined") return config;
 
   try {

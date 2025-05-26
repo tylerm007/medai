@@ -13,6 +13,7 @@ import { usePatientReadingHistories } from "@/hooks/usePatientReadingHistories";
 import { ColumnDef } from "@/components/DataTable/DataTable";
 import type { PatientReadingHistory } from "@/types/patientReadingHistory";
 import { RefreshButton } from "@/components/RefreshButton";
+import { toast } from "react-hot-toast";
 
 export default function HistoryReadingsPage() {
   const { setTitle } = usePageTitle();
@@ -31,6 +32,7 @@ export default function HistoryReadingsPage() {
     refresh,
     sortBy,
     sortDirection,
+    updateHistory,
   } = usePatientReadingHistories(undefined, patients);
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -49,7 +51,7 @@ export default function HistoryReadingsPage() {
     {
       key: "id",
       header: "History ID",
-      sortable: true,      
+      sortable: true,
     },
     {
       key: "patient_id",
@@ -68,15 +70,33 @@ export default function HistoryReadingsPage() {
       key: "reading_date",
       header: "Date",
       sortable: true,
-      cellRenderer: (row) => new Date(row.reading_date).toLocaleDateString(),
+      editable: true,
+      inputType: "date",
+      cellRenderer: (row) => {
+        try {
+          const date = new Date(row.reading_date);
+          // Show local date while storing UTC
+          return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+        } catch (e) {
+          return "Invalid Date";
+        }
+      },
     },
     {
       key: "breakfast",
       header: "Breakfast (mg/dL)",
       sortable: true,
       align: "right",
+      editable: true,
+      inputType: "number",
       cellRenderer: (row) => (
-        <span className="text-gray-700 dark:text-gray-400">{row.breakfast || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">
+          {row.breakfast || "–"}
+        </span>
       ),
     },
     {
@@ -84,8 +104,12 @@ export default function HistoryReadingsPage() {
       header: "Lunch (mg/dL)",
       sortable: true,
       align: "right",
+      editable: true,
+      inputType: "number",
       cellRenderer: (row) => (
-        <span className="text-gray-700 dark:text-gray-400">{row.lunch || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">
+          {row.lunch || "–"}
+        </span>
       ),
     },
     {
@@ -93,8 +117,11 @@ export default function HistoryReadingsPage() {
       header: "Dinner (mg/dL)",
       sortable: true,
       align: "right",
+      editable: true,
       cellRenderer: (row) => (
-        <span className="text-gray-700 dark:text-gray-400">{row.dinner || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">
+          {row.dinner || "–"}
+        </span>
       ),
     },
     {
@@ -102,13 +129,17 @@ export default function HistoryReadingsPage() {
       header: "Bedtime (mg/dL)",
       sortable: true,
       align: "right",
+      editable: true,
       cellRenderer: (row) => (
-        <span className="text-gray-700 dark:text-gray-400">{row.bedtime || "–"}</span>
+        <span className="text-gray-700 dark:text-gray-400">
+          {row.bedtime || "–"}
+        </span>
       ),
     },
     {
       key: "notes_for_day",
       header: "Daily Notes",
+      editable: true,
       cellRenderer: (row) => row.notes_for_day || "–",
     },
   ];
@@ -117,10 +148,69 @@ export default function HistoryReadingsPage() {
     newHistory: Omit<PatientReadingHistory, "id">
   ) => {
     try {
-      await createHistory(newHistory);
+      const created = await createHistory(newHistory);
+      await refresh();
+
+      // Format date directly from user input (already validated)
+      const [year, month, day] = newHistory.reading_date.split("-");
+      toast.success(
+        `📅 Reading for ${parseInt(month)}/${parseInt(
+          day
+        )}/${year} saved successfully!`,
+        {
+          icon: "✅",
+          position: "top-right",
+          style: {
+            background: "#f0fff4",
+            color: "#38a169",
+            padding: "16px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          },
+        }
+      );
       setShowAddModal(false);
     } catch (err) {
-      console.error("Failed to add history:", err);
+      toast.error(
+        `Failed to save reading: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`,
+        {
+          icon: "❌",
+          position: "top-right",
+          style: {
+            background: "#fff5f5",
+            color: "#e53e3e",
+          },
+        }
+      );
+    }
+  };
+
+  const handleUpdateHistory = async (
+    id: number,
+    updates: Record<string, any>
+  ) => {
+    try {
+      // Convert dates to UTC format
+      const formattedUpdates = Object.entries(updates).reduce(
+        (acc, [key, value]) => {
+          if (key === "reading_date") {
+            const date = new Date(value);
+            acc[key] = date.toISOString();
+          } else {
+            acc[key] = value;
+          }
+          return acc;
+        },
+        {} as Record<string, any>
+      );
+
+      await updateHistory(id, formattedUpdates);
+      await refresh();
+    } catch (err) {
+      console.error("Failed to update history:", err);
+      throw err;
     }
   };
 
@@ -194,6 +284,7 @@ export default function HistoryReadingsPage() {
             currentPage={currentPage}
             itemsPerPage={10}
             onPageChange={handlePageChange}
+            onUpdate={handleUpdateHistory}
           />
         )}
 

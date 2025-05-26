@@ -24,12 +24,12 @@ export default function Sidebar() {
     <aside className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-lg z-50 overflow-y-auto">
       <div className="p-4">
         {/* Logo */}
-        <div className="flex justify-center items-center mb-8">
+        <div className="flex justify-center items-center mb-8 pr-6 py-2">
           <Image
-            src="/medai_logo.png"
+            src="/sidebar_logo.png"
             alt="MedAI Logo"
-            width={90}
-            height={90}
+            width={250}
+            height={150}
             className="h-10 w-auto object-contain"
             priority
           />
@@ -38,15 +38,15 @@ export default function Sidebar() {
         <nav className="space-y-8">
           {/* Dashboard */}
           <div>
-            <SidebarItem name="Patient" icon={UserIcon} href="/patient" />
-          </div>
-          {/* Patient Management */}
-          <SidebarSection title="Patient Management">
             <SidebarItem
               name="Search Patient"
               icon={MagnifyingGlassIcon}
               href="/search-patient"
             />
+          </div>
+          {/* Patient Management */}
+          <SidebarSection title="Patient Management">
+            <SidebarItem name="Patient" icon={UserIcon} href="/patient" />
             <SidebarItem
               name="Blood Sugar Readings"
               icon={ClipboardIcon}

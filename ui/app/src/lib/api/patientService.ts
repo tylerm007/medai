@@ -2,6 +2,7 @@
 import { apiClient } from "@/lib/api/apiClient";
 import type { ApiResponse } from "@/lib/api/types";
 import type { Patient } from "@/types/patient";
+import { baseAPIClient } from "@/lib/api/baseAPIClient";
 
 const PATIENT_COLUMNS: (keyof Patient)[] = [
   "id",
@@ -56,5 +57,60 @@ export const PatientService = {
 
     if (!response.data.data?.[0]) throw new Error("Patient not found");
     return response.data.data[0];
+  },
+
+  updatePatient: async (
+    id: number,
+    updates: Partial<Patient>
+  ): Promise<Patient> => {
+    try {
+      const formattedUpdates = {
+        ...updates,
+        age: updates.age ? Number(updates.age).toFixed(1) : undefined,
+        hba1c: updates.hba1c ? Number(updates.hba1c).toFixed(2) : undefined,
+        creatine_mg_dl: updates.creatine_mg_dl
+          ? Number(updates.creatine_mg_dl).toFixed(4)
+          : undefined,
+      };
+
+      const payload = {
+        data: {
+          attributes: formattedUpdates,
+          type: "Patient",
+          id: id.toString(),
+        },
+      };      
+
+      const response = await baseAPIClient.patch<ApiResponse<Patient>>(
+        `http://ec2-54-145-40-116.compute-1.amazonaws.com:5656/api/Patient/${id}`,
+        payload
+      );
+
+      // Debugging log
+      console.log("Update response:", response.data);
+
+      if (response.data.code !== 0) {
+        throw new Error(
+          response.data.message || `API Error Code ${response.data.code}`
+        );
+      }
+
+      return {
+        ...response.data.data,
+        age: Number(response.data.data.age).toFixed(1),
+        hba1c: Number(response.data.data.hba1c).toFixed(1),
+        creatine_mg_dl: Number(response.data.data.creatine_mg_dl).toFixed(4),
+      };
+    } catch (error: any) {
+      // Enhanced error parsing
+      const errorMessage =
+        error.response?.data?.msg || error.message || "Unknown update error";
+      console.error("Update failed:", {
+        error: errorMessage,
+        payload: updates,
+        status: error.response?.status,
+      });
+      throw new Error(errorMessage);
+    }
   },
 };

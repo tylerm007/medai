@@ -145,6 +145,30 @@ export const usePatientReadingHistories = (
     }
   };
 
+  const updateHistory = async (
+    id: number,
+    updates: Partial<PatientReadingHistory>
+  ) => {
+    try {
+      const updated = await PatientReadingHistoryService.updateReadingHistory(
+        id,
+        updates
+      );
+      setAllHistories((prev) =>
+        prev.map((history) =>
+          history.id === id
+            ? { ...history, ...updated, reading_date: updated.reading_date }
+            : history
+        )
+      );
+      return updated;
+    } catch (err) {
+      throw new Error(
+        err instanceof Error ? err.message : "Failed to update history"
+      );
+    }
+  };
+
   return {
     histories: filteredHistories,
     totalCount,
@@ -160,5 +184,6 @@ export const usePatientReadingHistories = (
     handleSort,
     createHistory,
     refresh: fetchHistories,
+    updateHistory,
   };
 };

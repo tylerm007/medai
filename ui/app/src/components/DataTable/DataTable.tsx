@@ -1,7 +1,7 @@
 import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
-interface DataTableProps<T> {
+interface DataTableProps<T extends { id: number }> {
   columns: ColumnDef<T>[];
   data: T[];
   totalCount: number;
@@ -11,7 +11,132 @@ interface DataTableProps<T> {
   itemsPerPage: number;
   onPageChange: (page: number) => void;
   className?: string;
+  onUpdate?: (id: number, updates: Record<string, any>) => Promise<void>;
 }
+
+const EditableCell = <T extends { id: number }>({
+  value,
+  row,
+  column,
+  onUpdate,
+}: {
+  value: any;
+  row: T;
+  column: ColumnDef<T>;
+  onUpdate?: (id: number, updates: Record<string, any>) => Promise<void>;
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        // Convert to local date for display
+        const localDate = new Date(
+          date.getTime() - date.getTimezoneOffset() * 60000
+        );
+        setInputValue(localDate.toISOString().split("T")[0]);
+      }
+    } catch {
+      setInputValue("");
+    }
+  }, [value]);
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+
+    // Convert local date to UTC
+    const [year, month, day] = newValue.split("-");
+    const utcDate = new Date(
+      Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day))
+    );
+
+    // Update parent state immediately
+    if (onUpdate) {
+      onUpdate(row.id, { [column.key as string]: utcDate.toISOString() });
+    }
+  };
+
+  const handleSave = async () => {
+    if (!onUpdate) return;
+
+    try {
+      // Validate date format
+      if (column.inputType === "date") {
+        const date = new Date(inputValue);
+        if (isNaN(date.getTime())) {
+          throw new Error("Invalid date format");
+        }
+      }
+
+      await onUpdate(row.id, { [column.key as string]: inputValue });
+    } catch (err) {
+      console.error("Save error:", err);
+      setInputValue(value); // Revert to original value
+      setIsEditing(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleSave();
+    if (e.key === "Escape") {
+      setInputValue(value);
+      setIsEditing(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) inputRef.current.focus();
+  }, [isEditing]);
+
+  if (!isEditing) {
+    return (
+      <div
+        className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded"
+        onClick={() => setIsEditing(true)}
+      >
+        {column.cellRenderer ? column.cellRenderer(row) : value}
+      </div>
+    );
+  }
+
+  const inputType =
+    column.inputType || typeof value === "number" ? "number" : "text";
+
+  if (column.inputType === "date") {
+    // Get current date in local timezone (YYYY-MM-DD format)
+    const today = new Date();
+    const maxDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    return (
+      <input
+        ref={inputRef}
+        type="date"
+        value={inputValue}
+        onChange={handleDateChange}
+        onBlur={handleSave}
+        onKeyDown={(e) => e.key === "Enter" && handleSave()}
+        className="w-full px-2 py-1 border rounded"
+        max={maxDate}
+      />
+    );
+  }
+
+  return (
+    <input
+      ref={inputRef}
+      type={inputType}
+      className="w-full px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600"
+      value={inputValue}
+      onChange={(e) => setInputValue(e.target.value)}
+      onBlur={handleSave}
+      onKeyDown={handleKeyDown}
+    />
+  );
+};
 
 export interface ColumnDef<T> {
   key: keyof T;
@@ -20,6 +145,8 @@ export interface ColumnDef<T> {
   sortable?: boolean;
   cellRenderer?: (row: T) => ReactNode;
   minWidth?: number;
+  editable?: boolean;
+  inputType?: "text" | "number" | "date";
 }
 
 interface SortConfig {
@@ -27,7 +154,7 @@ interface SortConfig {
   direction: "asc" | "desc";
 }
 
-export function DataTable<T>({
+export function DataTable<T extends { id: number }>({
   columns,
   data = [],
   totalCount,
@@ -37,6 +164,7 @@ export function DataTable<T>({
   itemsPerPage,
   onPageChange,
   className = "",
+  onUpdate,
 }: DataTableProps<T>) {
   const total = totalCount;
   const totalPages = Math.ceil(total / itemsPerPage);
@@ -123,9 +251,9 @@ export function DataTable<T>({
                 </td>
               </tr>
             ) : (
-              paginatedData.map((row, index) => (
+              paginatedData.map((row) => (
                 <tr
-                  key={index}
+                  key={row.id}
                   className="hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
                 >
                   {columns.map((column) => (
@@ -139,9 +267,18 @@ export function DataTable<T>({
                           : "text-gray-900 dark:text-gray-400"
                       }`}
                     >
-                      {column.cellRenderer
-                        ? column.cellRenderer(row)
-                        : (row[column.key] as ReactNode)}
+                      {column.editable ? (
+                        <EditableCell
+                          value={row[column.key]}
+                          row={row}
+                          column={column}
+                          onUpdate={onUpdate}
+                        />
+                      ) : column.cellRenderer ? (
+                        column.cellRenderer(row)
+                      ) : (
+                        (row[column.key] as ReactNode)
+                      )}
                     </td>
                   ))}
                 </tr>
