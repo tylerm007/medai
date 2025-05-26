@@ -13,6 +13,7 @@ import { usePatientReadingHistories } from "@/hooks/usePatientReadingHistories";
 import { ColumnDef } from "@/components/DataTable/DataTable";
 import type { PatientReadingHistory } from "@/types/patientReadingHistory";
 import { RefreshButton } from "@/components/RefreshButton";
+import { toast } from "react-hot-toast";
 
 export default function HistoryReadingsPage() {
   const { setTitle } = usePageTitle();
@@ -74,9 +75,12 @@ export default function HistoryReadingsPage() {
       cellRenderer: (row) => {
         try {
           const date = new Date(row.reading_date);
-          return `${
-            date.getMonth() + 1
-          }/${date.getDate()}/${date.getFullYear()}`;
+          // Show local date while storing UTC
+          return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
         } catch (e) {
           return "Invalid Date";
         }
@@ -144,10 +148,42 @@ export default function HistoryReadingsPage() {
     newHistory: Omit<PatientReadingHistory, "id">
   ) => {
     try {
-      await createHistory(newHistory);
+      const created = await createHistory(newHistory);
+      await refresh();
+
+      // Format date directly from user input (already validated)
+      const [year, month, day] = newHistory.reading_date.split("-");
+      toast.success(
+        `📅 Reading for ${parseInt(month)}/${parseInt(
+          day
+        )}/${year} saved successfully!`,
+        {
+          icon: "✅",
+          position: "top-right",
+          style: {
+            background: "#f0fff4",
+            color: "#38a169",
+            padding: "16px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          },
+        }
+      );
       setShowAddModal(false);
     } catch (err) {
-      console.error("Failed to add history:", err);
+      toast.error(
+        `Failed to save reading: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`,
+        {
+          icon: "❌",
+          position: "top-right",
+          style: {
+            background: "#fff5f5",
+            color: "#e53e3e",
+          },
+        }
+      );
     }
   };
 
@@ -159,7 +195,7 @@ export default function HistoryReadingsPage() {
       // Convert dates to UTC format
       const formattedUpdates = Object.entries(updates).reduce(
         (acc, [key, value]) => {
-          if (key === "reading_date" && typeof value === "string") {
+          if (key === "reading_date") {
             const date = new Date(value);
             acc[key] = date.toISOString();
           } else {

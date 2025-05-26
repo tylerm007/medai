@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Patient } from "@/types/patient";
 import FormField from "@/components/FormField";
+import { PatientService } from "@/lib/api/patientService";
+import toast from "react-hot-toast";
 
 interface Reading {
   time: string;
@@ -23,14 +25,6 @@ interface Insulin {
   lunch: string;
   dinner: string;
   bedtime: string;
-}
-
-interface PatientFormProps {
-  initialData?: Patient & {
-    latestReadings?: Record<string, string>;
-    medications?: Medication[];
-    insulinData?: Insulin[];
-  };
 }
 
 export default function PatientForm({
@@ -79,31 +73,62 @@ export default function PatientForm({
     setError("");
 
     try {
-      const endpoint = initialData
-        ? `/api/patients/${initialData.id}`
-        : "/api/patients";
-      const method = initialData ? "PUT" : "POST";
+      if (!initialData?.id) throw new Error("Patient ID missing");
 
-      const response = await fetch(endpoint, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          readings,
-          medications,
-          insulinData,
-        }),
+      const { latestReadings, medications, insulinData, ...patientData } =
+        formData;
+
+      await PatientService.updatePatient(initialData.id, patientData);
+
+      // Success toast
+      toast.success("Patient updated successfully!", {
+        icon: "✅",
+        position: "top-right",
+        style: {
+          background: "#f0fff4",
+          color: "#38a169",
+          padding: "16px",
+          borderRadius: "8px",
+        },
       });
 
-      if (!response.ok) throw new Error("Failed to save patient");
-      router.push("/patient");
+      router.push(`/patient/${initialData.id}`);
       router.refresh();
     } catch (err: any) {
+      // Error toast
+      toast.error(`Update failed: ${err.message}`, {
+        icon: "❌",
+        position: "top-right",
+        style: {
+          background: "#fff5f5",
+          color: "#e53e3e",
+          padding: "16px",
+          borderRadius: "8px",
+        },
+      });
+
       setError(err.message);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    const validateForm = () => {
+      const errors = [];
+      if (!formData.name) errors.push("Name is required");
+      if (!formData.birth_date) errors.push("Birth date is required");
+      if (formData.weight && formData.weight < 0) errors.push("Invalid weight");
+
+      if (errors.length > 0) {
+        setError(errors.join(", "));
+      } else {
+        setError("");
+      }
+    };
+
+    validateForm();
+  }, [formData]);
 
   const handleChange = (field: keyof Patient, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -220,7 +245,12 @@ export default function PatientForm({
               type="number"
               step="0.1"
               value={formData.hba1c || ""}
-              onChange={(v) => handleChange("hba1c", Number(v))}
+              onChange={(v) => handleChange("hba1c", v)}
+              validate={(v) => {
+                const value = parseFloat(v);
+                if (value < 4 || value > 20) return "Must be between 4-20%";
+                return null;
+              }}
             />
             <FormField
               label="Creatinine (mg/dL)"

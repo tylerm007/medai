@@ -1,6 +1,6 @@
 // components/FormField.tsx
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
 interface FormFieldProps {
   label: string;
@@ -11,6 +11,7 @@ interface FormFieldProps {
   required?: boolean;
   step?: string;
   sub?: string;
+  validate?: (value: string) => string | null;
 }
 
 export default function FormField({
@@ -21,8 +22,19 @@ export default function FormField({
   required = false,
   options,
   step,
-  sub
+  sub,
+  validate,
 }: FormFieldProps) {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = (value: string) => {
+    if (validate) {
+      const errorMsg = validate(value);
+      setError(errorMsg);
+    }
+    props.onChange(value);
+  };
+  
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">

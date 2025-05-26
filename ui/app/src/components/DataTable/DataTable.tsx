@@ -26,25 +26,56 @@ const EditableCell = <T extends { id: number }>({
   onUpdate?: (id: number, updates: Record<string, any>) => Promise<void>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setInputValue(value);
+    try {
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        // Convert to local date for display
+        const localDate = new Date(
+          date.getTime() - date.getTimezoneOffset() * 60000
+        );
+        setInputValue(localDate.toISOString().split("T")[0]);
+      }
+    } catch {
+      setInputValue("");
+    }
   }, [value]);
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+
+    // Convert local date to UTC
+    const [year, month, day] = newValue.split("-");
+    const utcDate = new Date(
+      Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day))
+    );
+
+    // Update parent state immediately
+    if (onUpdate) {
+      onUpdate(row.id, { [column.key as string]: utcDate.toISOString() });
+    }
+  };
 
   const handleSave = async () => {
     if (!onUpdate) return;
-    if (inputValue === value) {
-      setIsEditing(false);
-      return;
-    }
 
     try {
+      // Validate date format
+      if (column.inputType === "date") {
+        const date = new Date(inputValue);
+        if (isNaN(date.getTime())) {
+          throw new Error("Invalid date format");
+        }
+      }
+
       await onUpdate(row.id, { [column.key as string]: inputValue });
     } catch (err) {
-      setInputValue(value);
-    } finally {
+      console.error("Save error:", err);
+      setInputValue(value); // Revert to original value
       setIsEditing(false);
     }
   };
@@ -76,33 +107,20 @@ const EditableCell = <T extends { id: number }>({
     column.inputType || typeof value === "number" ? "number" : "text";
 
   if (column.inputType === "date") {
-    // Parse incoming value as UTC date
-    const date = new Date(value);
-    const isValidDate = !isNaN(date.getTime());
-
-    // Convert to YYYY-MM-DD format (local date display)
-    const displayDate = isValidDate
-      ? `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(
-          2,
-          "0"
-        )}-${String(date.getUTCDate()).padStart(2, "0")}`
-      : "";
+    // Get current date in local timezone (YYYY-MM-DD format)
+    const today = new Date();
+    const maxDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
     return (
       <input
         ref={inputRef}
         type="date"
-        value={displayDate}
-        onChange={(e) => {
-          // Treat selected date as UTC
-          const [year, month, day] = e.target.value.split("-");
-          const utcDate = new Date(
-            Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day))
-          );
-          setInputValue(utcDate.toISOString());
-        }}
+        value={inputValue}
+        onChange={handleDateChange}
         onBlur={handleSave}
-        onKeyDown={handleKeyDown}
+        onKeyDown={(e) => e.key === "Enter" && handleSave()}
+        className="w-full px-2 py-1 border rounded"
+        max={maxDate}
       />
     );
   }

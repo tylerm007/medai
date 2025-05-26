@@ -7,6 +7,7 @@ import ClientLayout from "@/components/Layout/ClientLayout";
 import { PageTitleProvider } from "@/context/PageTitleContext";
 import Notifications from "@/components/Notifications";
 import { SettingsProvider } from "@/context/SettingsContext";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,7 +31,10 @@ export default function RootLayout({
           <AuthProvider>
             <ClientLayout>
               <Notifications />
-              <SettingsProvider>{children}</SettingsProvider>
+              <SettingsProvider>
+                {children}
+                <Toaster />
+              </SettingsProvider>
             </ClientLayout>
           </AuthProvider>
         </PageTitleProvider>

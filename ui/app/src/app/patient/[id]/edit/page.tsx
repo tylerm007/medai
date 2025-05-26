@@ -8,12 +8,6 @@ import { useRecommendations } from "@/hooks/useRecommendations";
 import { usePatients } from "@/hooks/usePatients";
 import LoadingSpinner from "@/components/Auth/LoadingSpinner";
 import { usePageTitle } from "@/context/PageTitleContext";
-import {
-  formatBirthDate,
-  calculateAge,
-  formatCreatinine,
-  getReadingStatus,
-} from "@/lib/utils";
 
 export default function EditPatient({
   params,

@@ -86,28 +86,36 @@ export const PatientReadingHistoryService = {
     id: number,
     updates: Partial<PatientReadingHistory>
   ) => {
-    // Convert date strings to Oracle-friendly format
-    const formattedUpdates = Object.fromEntries(
-      Object.entries(updates).map(([key, value]) => {
-        if (key === "reading_date" && typeof value === "string") {
-          const date = new Date(value);
-          return [key, date.toISOString().split("T")[0]];
-        }
-        return [key, value];
-      })
-    );
+    if (updates.reading_date) {
+      const date = new Date(updates.reading_date);
+      if (isNaN(date.getTime())) {
+        throw new Error("Invalid date format");
+      }
+      // Store full ISO string
+      updates.reading_date = date.toISOString();
+    }
+
+    let formattedDate = updates.reading_date;
+    if (updates.reading_date) {
+      const date = new Date(updates.reading_date);
+      if (isNaN(date.getTime())) {
+        throw new Error("Invalid date format");
+      }
+      // Convert to Oracle DATE format (YYYY-MM-DD)
+      formattedDate = date.toISOString().split("T")[0];
+    }
 
     const payload = {
       filter: { id },
-      data: formattedUpdates,
+      data: { ...updates, reading_date: formattedDate },
       sqltypes: {
         id: 4,
-        reading_date: 91, // Oracle DATE type code
-        breakfast: 6, // Oracle NUMBER type code
+        reading_date: 91,
+        breakfast: 6,
         lunch: 6,
         dinner: 6,
         bedtime: 6,
-        notes_for_day: 12, // Oracle VARCHAR2 type code
+        notes_for_day: 12,
       },
     };
 
@@ -121,12 +129,38 @@ export const PatientReadingHistoryService = {
   },
 
   createReadingHistory: async (reading: Omit<PatientReadingHistory, "id">) => {
+    const inputDate = new Date(reading.reading_date);
+    if (isNaN(inputDate.getTime())) {
+      throw new Error("Invalid date format in request");
+    }
+
+    // Convert to Oracle DATE format (YYYY-MM-DD)
+    const formattedDate = inputDate.toISOString().split("T")[0];
+
+    const payload = {
+      data: {
+        attributes: {
+          ...reading,
+          reading_date: formattedDate,
+        },
+        type: "ReadingHistory",
+      },
+    };
+
     const response = await apiClient.post<ApiResponse<PatientReadingHistory>>(
       "/ReadingHistory/ReadingHistory",
       reading
     );
 
     if (response.data.code !== 0) throw new Error("API Error");
-    return response.data.data;
+
+    return {
+      ...response.data.data,
+      // Ensure proper typing for numeric fields
+      breakfast: Number(response.data.data.breakfast),
+      lunch: Number(response.data.data.lunch),
+      dinner: Number(response.data.data.dinner),
+      bedtime: Number(response.data.data.bedtime),
+    };
   },
 };
