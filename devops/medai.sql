@@ -91,14 +91,15 @@ create table drug (
 	side_effects TEXT,
 	FOREIGN KEY (dosage_unit) REFERENCES drug_unit(unit_name)
 );
-INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Metformin', 2000, 'mg', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
-INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Glimepiride', 4, 'mg', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
-INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Tradjenta', 5, 'mg', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Metformin', 2000, 'unit', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Glimepiride', 4, 'unit', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Tradjenta', 5, 'unit', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
 INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Glargine', 20, 'unit', 'Injectable', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
 INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Lispro', 36, 'unit', 'Injectable', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
-INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Farxiga', 10, 'mg', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
-INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Ozempic', 0.5, 'mg', 'Injectable', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Farxiga', 10, 'unit', 'Oral', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
+INSERT INTO drug (drug_name, dosage, dosage_unit, drug_type, manufacturer, side_effects) VALUES ('Ozempic', 0.5, 'unit', 'Injectable', 'Merck', 'Nausea, vomiting, diarrhea, gas, weakness, indigestion, abdominal discomfort, headache, metallic taste, muscle pain, heartburn, stomach pain, rash, upper respiratory tract infection, low blood sugar');
 
+-- update drug set dosage_unit='unit' 
 create table patient_medication (
 	id SERIAL8 PRIMARY KEY,
 	patient_id BIGINT NOT NULL,
@@ -160,6 +161,21 @@ create table insulin_rules (
         lispro_before_breakfast INT,
         lispro_before_lunch INT,
         lispro_before_dinner INT
+);
+
+
+CREATE TABLE insulin (
+	id BIGSERIAL NOT NULL, 
+	patient_id BIGINT NOT NULL, 
+	drug_type INT NOT NULL DEFAULT 5, -- Lispro
+	reading_date DATE NOT NULL, 
+	breakfast NUMERIC(10,4), 
+	lunch NUMERIC(10,4), 
+	dinner NUMERIC(10,4), 
+	bedtime NUMERIC(10,4),
+	PRIMARY KEY (id),
+	FOREIGN KEY (drug_type)  REFERENCES "drug" ("id") ,
+	FOREIGN KEY (patient_id)  REFERENCES "patient" ("id") ON DELETE CASCADE
 );
 
 
