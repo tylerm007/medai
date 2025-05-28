@@ -138,21 +138,27 @@ export const PatientReadingHistoryService = {
     const formattedDate = inputDate.toISOString().split("T")[0];
 
     const payload = {
-      data: {
-        attributes: {
-          ...reading,
-          reading_date: formattedDate,
-        },
-        type: "ReadingHistory",
+      data: { ...reading, reading_date: formattedDate },
+      sqltypes: {
+        id: 4,
+        reading_date: 91,
+        breakfast: 6,
+        lunch: 6,
+        dinner: 6,
+        bedtime: 6,
+        notes_for_day: 12,
       },
     };
-
+    console.log("Creating Reading History:", JSON.stringify(payload));
     const response = await apiClient.post<ApiResponse<PatientReadingHistory>>(
       "/ReadingHistory/ReadingHistory",
-      reading
+      payload
     );
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      //console.error("POST Reading History API Error Details:" + response.data.message);
+      throw new Error("POST Reading History API Error - " + response.data.message);
+    }
 
     return {
       ...response.data.data,

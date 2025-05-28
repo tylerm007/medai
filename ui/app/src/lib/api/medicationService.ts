@@ -41,7 +41,9 @@ export const MedicationService = {
         throw error;
       });
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("Get Medications API Error = " + response.data.message);
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
@@ -83,16 +85,30 @@ export const MedicationService = {
       payload
     );
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("Get Drugs API Error = " + response.data.message);
+    }
     return response.data.data;
   },
 
   createMedication: async (medication: Omit<Medication, "id">) => {
+    const payload = {
+      data: medication,
+      sqltypes: {
+        id: 4,
+        dosage_unit: 12,
+        drug_id: 4,
+        patient_id: 4,
+        dosage: 8,
+      },
+    }
     const response = await apiClient.post<ApiResponse<Medication>>(
       "/PatientMedication/PatientMedication",
-      medication
+      payload
     );
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("Post Medications API Error = " + response.data.message);
+    }
     return response.data.data;
   },
 };

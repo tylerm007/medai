@@ -123,5 +123,18 @@ def declare_logic():
     Rule.constraint(validate=models.Patient, as_condition=lambda row: float(row.hba1c) >= 6 and float(row.hba1c) <= 20, error_msg="Hba1c must be greater than 6 and less than 20")
     Rule.constraint(validate=models.Patient, as_condition=lambda row: int(row.duration) >= 1 and int(row.duration) <= 600, error_msg="Duration must be greater than 1 and less than 600")
     
+    
+    Rule.constraint(validate=models.ReadingHistory, as_condition=lambda row: int(row.bedtime) <= 600, error_msg="Blood sugar bedtime {row.bedtime} must be less than 600")
+    Rule.constraint(validate=models.ReadingHistory, as_condition=lambda row: int(row.bedtime) >= 20, error_msg="Blood sugar bedtime {row.bedtime} must be greater than 20")
+
+    Rule.constraint(validate=models.ReadingHistory, as_condition=lambda row: int(row.lunch) <= 600, error_msg="Blood sugar lunch {row.lunch} must be less than 600")
+    Rule.constraint(validate=models.ReadingHistory, as_condition=lambda row: int(row.lunch) >= 20, error_msg="Blood sugar lunch {row.lunch} must be greater than 20")
+
+    Rule.constraint(validate=models.ReadingHistory, as_condition=lambda row: int(row.dinner) <= 600, error_msg="Blood sugar dinner {row.dinner} must be less than 600")
+    Rule.constraint(validate=models.ReadingHistory, as_condition=lambda row: int(row.dinner) >= 20, error_msg="Blood sugar dinner {row.dinner} must be greater than 20")
+
+    Rule.constraint(validate=models.ReadingHistory, as_condition=lambda row: int(row.breakfast) <= 600, error_msg="Blood sugar breakfast {row.breakfast} must be less than 600")
+    Rule.constraint(validate=models.ReadingHistory, as_condition=lambda row: int(row.breakfast) >= 20, error_msg="Blood sugar breakfast {row.breakfast} must be greater than 20")
+
     app_logger.debug("..logic/declare_logic.py (logic == rules + code)")
 

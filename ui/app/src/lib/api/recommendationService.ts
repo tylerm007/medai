@@ -53,7 +53,9 @@ export const RecommendationService = {
         throw error;
       });
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("GET Recommendations API Error - " + response.data.message);
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
@@ -95,16 +97,32 @@ export const RecommendationService = {
       payload
     );
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("GET DrugTypes API Error - " + response.data.message);
+    }
     return response.data.data;
   },
 
   createRecommendation: async (recommendation: Omit<Recommendation, "id">) => {
+    const payload = {
+      data: recommendation,
+      sqltypes: {
+        id: 4,  
+        dosage_unit: 12,
+        drug_id: 4,
+        patient_id: 4,
+        time_of_reading: 12,
+        dosage: 8,
+        recommendation_date: 12,
+      },
+    };
     const response = await apiClient.post<ApiResponse<Recommendation>>(
       "/Recommendation/Recommendation",
-      recommendation
+      payload
     );
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("POST Recommendations API Error - " + response.data.message);
+    }
     return response.data.data;
   },
 };

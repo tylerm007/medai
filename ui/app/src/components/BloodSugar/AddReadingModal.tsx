@@ -70,10 +70,10 @@ export function AddReadingModal({
                   setFormData({ ...formData, time_of_reading: e.target.value })
                 }
               >
-                <option value="Morning">Morning</option>
-                <option value="Afternoon">Afternoon</option>
-                <option value="Evening">Evening</option>
-                <option value="Night">Night</option>
+                <option value="breakfast">Morning</option>
+                <option value="lunch">Afternoon</option>
+                <option value="dinner">Evening</option>
+                <option value="bedtime">Bedtime</option>
               </select>
             </div>
 
