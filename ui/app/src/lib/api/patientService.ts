@@ -58,7 +58,56 @@ export const PatientService = {
     if (!response.data.data?.[0]) throw new Error("Patient not found");
     return response.data.data[0];
   },
-
+  
+  insertPatient: async (patient: Patient): Promise<Patient> => {
+    try {
+      const formattedPatient = {
+        ...patient,
+        //hba1c: patient.hba1c ? Number(patient.hba1c).toFixed(2) : undefined,
+        //creatine_mg_dl: patient.creatine_mg_dl
+        //  ? Number(patient.creatine_mg_dl).toFixed(4)
+        //  : undefined,
+      };
+      const payload = {
+        data: formattedPatient,
+        columns: PATIENT_COLUMNS,   
+        sqltypes: {
+          id: 4,
+          name: 12,
+          birth_date: 93,
+          weight: 8,
+          height: 8,
+          hba1c: 8,
+          duration: 8,
+        } 
+      };
+      const response = await apiClient.post<ApiResponse<Patient>>(
+        "/Patient/Patient",
+        payload
+      );
+      // Debugging log    
+      console.log("Insert Patient response:", response.data);
+      if (response.data.code !== 0) {
+        throw new Error(
+          response.data.message || `API Error Code ${response.data.code}`
+        );
+      }return {
+        ...response.data.data,
+        age: Number(response.data.data.age).toFixed(1),
+        hba1c: Number(response.data.data.hba1c).toFixed(1),
+        creatine_mg_dl: Number(response.data.data.creatine_mg_dl).toFixed(4),
+      };
+    } catch (error: any) {
+      // Enhanced error parsing
+      const errorMessage =
+        error.response?.data?.msg || error.message || "Unknown update error";
+      console.error("Insert failed:", {
+        error: errorMessage,
+        status: error.response?.status,
+      });
+      throw new Error(errorMessage);
+    }
+  },
   updatePatient: async (
     id: number,
     updates: Partial<Patient>

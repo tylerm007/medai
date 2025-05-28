@@ -73,15 +73,15 @@ export default function PatientForm({
     setError("");
 
     try {
-      if (!initialData?.id) throw new Error("Patient ID missing");
+      //if (!initialData?.id) throw new Error("Patient ID missing");
 
       const { latestReadings, medications, insulinData, ...patientData } =
         formData;
 
-      await PatientService.updatePatient(initialData.id, patientData);
+      await PatientService.insertPatient(initialData);
 
       // Success toast
-      toast.success("Patient updated successfully!", {
+      toast.success("Patient insert successfully!", {
         icon: "✅",
         position: "top-right",
         style: {
@@ -92,11 +92,11 @@ export default function PatientForm({
         },
       });
 
-      router.push(`/patient/${initialData.id}`);
+      router.push(`/patient`);
       router.refresh();
     } catch (err: any) {
       // Error toast
-      toast.error(`Update failed: ${err.message}`, {
+      toast.error(`Insert failed: ${err.message}`, {
         icon: "❌",
         position: "top-right",
         style: {
