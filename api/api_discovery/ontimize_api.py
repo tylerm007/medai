@@ -232,6 +232,7 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
         except Exception as ex:
             session.rollback()
             msg = f"{ex.message if hasattr(ex, 'message') else ex}"
+            app_logger.error(f"Error in {method} for {clz_name}: {msg}")
             return jsonify(
                 {"code": 1, "message": f"{msg}", "data": [], "sqlTypes": None}
             ) 
