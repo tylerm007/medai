@@ -74,15 +74,13 @@ export const PatientService = {
       };
 
       const payload = {
-        data: {
-          attributes: formattedUpdates,
-          type: "Patient",
-          id: id.toString(),
-        },
+        data: formattedUpdates,
+        filter: {'id':id.toString()},
+        sqltypes: {'id': 4}
       };      
 
-      const response = await baseAPIClient.patch<ApiResponse<Patient>>(
-        `http://ec2-54-145-40-116.compute-1.amazonaws.com:5656/api/Patient/${id}`,
+      const response = await apiClient.patch<ApiResponse<Patient>>(
+        `/Patient/Patient`,
         payload
       );
 
