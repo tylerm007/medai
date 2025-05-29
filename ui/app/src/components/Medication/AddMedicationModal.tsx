@@ -1,7 +1,7 @@
 // src/components/Medication/AddMedicationModal.tsx
 import { useState } from "react";
 import type { Medication, PatientType } from "@/types/medication";
-
+import { usePatients } from "@/hooks/usePatients";
 interface AddMedicationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,6 +15,7 @@ export function AddMedicationModal({
   onSave,
   patientTypes,
 }: AddMedicationModalProps) {
+  const { patients } = usePatients();
   const [form, setForm] = useState<Omit<Medication, "id">>({
     patient_id: 0,
     drug_id: 0,
@@ -38,20 +39,20 @@ export function AddMedicationModal({
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Patient</label>
             <select
-              required
-              className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
-              value={form.patient_id}
-              onChange={(e) =>
-                setForm({ ...form, patient_id: Number(e.target.value) })
-              }
-            >
-              <option value="">Select Patient</option>
-              {patientTypes.map((patient) => (
-                <option key={patient.id} value={patient.id}>
-                  {patient.name}
-                </option>
-              ))}
-            </select>
+                required
+                className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
+                value={form.patient_id}
+                onChange={(e) =>
+                  setForm({ ...form, patient_id: Number(e.target.value) })
+                }
+              >
+                <option value="">Select Patient</option>
+                {patients.map((patient) => (
+                  <option key={patient.id} value={patient.id}>
+                    {patient.name}
+                  </option>
+                ))}
+              </select>
           </div>
 
           <div>

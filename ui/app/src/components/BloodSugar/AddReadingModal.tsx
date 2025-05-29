@@ -1,7 +1,7 @@
 // src/components/BloodSugar/AddReadingModal.tsx
 import { useState } from "react";
 import { BloodSugarReading } from "@/types/bloodSugar";
-
+import { usePatients } from "@/hooks/usePatients";
 interface AddReadingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,6 +13,7 @@ export function AddReadingModal({
   onClose,
   onSave,
 }: AddReadingModalProps) {
+  const { patients } = usePatients();
   const [formData, setFormData] = useState<Omit<BloodSugarReading, "id">>({
     patient_id: 0,
     time_of_reading: "Morning",
@@ -43,18 +44,21 @@ export function AddReadingModal({
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Patient ID *
               </label>
-              <input
-                type="text"
+              <select
                 required
                 className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                 value={formData.patient_id}
                 onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    patient_id: Number(e.target.value),
-                  })
+                  setForm({ ...formData, patient_id: Number(e.target.value) })
                 }
-              />
+              >
+                <option value="">Select Patient</option>
+                {patients.map((patient) => (
+                  <option key={patient.id} value={patient.id}>
+                    {patient.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Time of Reading */}
