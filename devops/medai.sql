@@ -72,10 +72,10 @@ create table reading_history (
 	id SERIAL8 PRIMARY KEY,
 	patient_id BIGINT NOT NULL,
 	reading_date DATE NOT NULL, -- copy from reading
-	breakfast NUMERIC(10,4),
-	lunch NUMERIC(10,4),
-	dinner NUMERIC(10,4),
-	bedtime NUMERIC(10,4),
+	breakfast NUMERIC(10,4) DEFAULT 0, 
+	lunch NUMERIC(10,4) DEFAULT 0, 
+	dinner NUMERIC(10,4) DEFAULT 0, 
+	bedtime NUMERIC(10,4) DEFAULT 0, 
 	notes_for_day TEXT,
 	FOREIGN KEY (patient_id) REFERENCES patient(id) ON DELETE CASCADE
 );
@@ -169,10 +169,10 @@ CREATE TABLE insulin (
 	patient_id BIGINT NOT NULL, 
 	drug_type INT NOT NULL DEFAULT 5, -- Lispro
 	reading_date DATE NOT NULL, 
-	breakfast NUMERIC(10,4), 
-	lunch NUMERIC(10,4), 
-	dinner NUMERIC(10,4), 
-	bedtime NUMERIC(10,4),
+	breakfast NUMERIC(10,4) DEFAULT 0, 
+	lunch NUMERIC(10,4) DEFAULT 0, 
+	dinner NUMERIC(10,4) DEFAULT 0, 
+	bedtime NUMERIC(10,4) DEFAULT 0, 
 	PRIMARY KEY (id),
 	FOREIGN KEY (drug_type)  REFERENCES "drug" ("id") ,
 	FOREIGN KEY (patient_id)  REFERENCES "patient" ("id") ON DELETE CASCADE
