@@ -130,7 +130,7 @@ export const AddRecommendationModal = ({
                   >
                     <option value="mg">mg</option>
                     <option value="ml">ml</option>
-                    <option value="units">units</option>
+                    <option value="unit">units</option>
                   </select>
                 </div>
               </div>

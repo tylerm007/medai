@@ -2,7 +2,6 @@
 import { apiClient } from "@/lib/api/apiClient";
 import type { ApiResponse } from "@/lib/api/types";
 import type { BloodSugarReading } from "@/types/bloodSugar";
-import { time } from "console";
 
 interface BloodSugarRequest {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -6,6 +6,9 @@ import { Patient } from "@/types/patient";
 import FormField from "@/components/FormField";
 import { PatientService } from "@/lib/api/patientService";
 import toast from "react-hot-toast";
+//import { InsulinRuleService } from "@/lib/api/insulinRuleService";
+//import { MedicationService } from "@/lib/api/medicationService";
+//import { BloodSugarService } from "@/lib/api/bloodSugarService";
 
 interface Reading {
   time: string;
@@ -56,13 +59,13 @@ export default function PatientForm({
       }
 
       // Initialize medications
-      if (initialData.medications) {
-        setMedications(initialData.medications);
+      if (medications) {
+        setMedications(medications);
       }
 
       // Initialize insulin data
-      if (initialData.insulinData) {
-        setInsulinData(initialData.insulinData);
+      if (insulinData) {
+        setInsulinData(insulinData);
       }
     }
   }, [initialData]);
@@ -73,13 +76,19 @@ export default function PatientForm({
     setError("");
 
     try {
+      // Patient ID is not required - it is automatically generated on insert
+      // and returned in the response
       //if (!initialData?.id) throw new Error("Patient ID missing");
 
-      const { latestReadings, medications, insulinData, ...patientData } =
-        formData;
+      //const { latestReadings, medications, insulinData, ...patientData } =
+      //  formData;
 
-      await PatientService.insertPatient(initialData);
+      const response = await PatientService.insertPatient(initialData);
 
+      if (!response || !response.id) {
+        console.error("Failed to insert patient:", JSON.stringify(response));
+        throw new Error("Failed to insert patient");
+      }
       // Success toast
       toast.success("Patient insert successfully!", {
         icon: "✅",
@@ -94,7 +103,53 @@ export default function PatientForm({
 
       router.push(`/patient`);
       router.refresh();
-    } catch (err: any) {
+      // need to handle the other data sets and pass the patient ID from the response
+      /* 
+      readings.patient_id = response.id;
+      const bresponse = await BloodSugarService.createReading(
+        {
+          data: readings,
+          sqltypes: {
+            id: 4,
+        },
+        "/Reading/Reading"
+      );
+      if (bresponse.data.code !== 0) {
+        throw new Error(
+          bresponse.data.message || `API Error Code ${bresponse.data.code}`
+        );
+      }
+      */
+     //  medications.patient_id = response.id,
+      // await PatientService.createMedications(
+      //     data: medications
+      //     sqltypes: {
+      //       id: 4,
+      //       drug: 12,
+      //       breakfast: 8,
+      //       lunch: 8,
+      //       dinner: 8,
+      //       patient_id: 4,
+      //     }
+      //   }))  
+      // );
+       //insulinData.patient_id = response.id;
+      // await InsulinRuleService.createInsulinRule(
+      //   {
+      //   data: insulinData
+      //   sqltypes: {
+      //     id: 4,
+      //     drug: 12,  
+      //     breakfast: 8,
+      //     lunch: 8,
+      //     dinner: 8,
+      //     bedtime: 8,
+      //     patient_id: 4,
+      //   }    
+      //   }))
+      // );
+      
+    } catch (err: string | unknown) {
       // Error toast
       toast.error(`Insert failed: ${err.message}`, {
         icon: "❌",
@@ -116,9 +171,15 @@ export default function PatientForm({
   useEffect(() => {
     const validateForm = () => {
       const errors = [];
-      if (!formData.name) errors.push("Name is required");
-      if (!formData.birth_date) errors.push("Birth date is required");
-      if (formData.weight && formData.weight < 0) errors.push("Invalid weight");
+      if (!formData.name) {
+        errors.push("Name is required");
+      }
+      if (!formData.birth_date){
+        errors.push("Birth date is required");
+      }
+      if (formData.weight && formData.weight < 0) {
+        errors.push("Invalid weight");
+      }
 
       if (errors.length > 0) {
         setError(errors.join(", "));
@@ -130,7 +191,7 @@ export default function PatientForm({
     validateForm();
   }, [formData]);
 
-  const handleChange = (field: keyof Patient, value: any) => {
+  const handleChange = (field: keyof Patient, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 

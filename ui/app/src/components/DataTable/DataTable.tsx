@@ -11,7 +11,7 @@ interface DataTableProps<T extends { id: number }> {
   itemsPerPage: number;
   onPageChange: (page: number) => void;
   className?: string;
-  onUpdate?: (id: number, updates: Record<string, any>) => Promise<void>;
+  onUpdate?: (id: number, updates: Record<string, string | number | Date>) => Promise<void>;
 }
 
 const EditableCell = <T extends { id: number }>({
@@ -20,10 +20,11 @@ const EditableCell = <T extends { id: number }>({
   column,
   onUpdate,
 }: {
-  value: any;
+  value: string | number | Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   row: T;
   column: ColumnDef<T>;
-  onUpdate?: (id: number, updates: Record<string, any>) => Promise<void>;
+  onUpdate?: (id: number, updates: Record<string, string | number | Date>) => Promise<void>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");

@@ -2,7 +2,7 @@
 import { apiClient } from "@/lib/api/apiClient";
 import type { ApiResponse } from "@/lib/api/types";
 import type { Patient } from "@/types/patient";
-import { baseAPIClient } from "@/lib/api/baseAPIClient";
+//import { baseAPIClient } from "@/lib/api/baseAPIClient";
 
 const PATIENT_COLUMNS: (keyof Patient)[] = [
   "id",
@@ -39,7 +39,9 @@ export const PatientService = {
       }
     );
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("Get all Patients API Error - " + response.data.message);
+    }
     return response.data.data;
   },
 
@@ -55,7 +57,9 @@ export const PatientService = {
       }
     );
 
-    if (!response.data.data?.[0]) throw new Error("Patient not found");
+    if (!response.data.data?.[0]) {
+      throw new Error("Patient not found - " + id);
+    }
     return response.data.data[0];
   },
   
@@ -97,7 +101,7 @@ export const PatientService = {
         hba1c: Number(response.data.data.hba1c).toFixed(1),
         creatine_mg_dl: Number(response.data.data.creatine_mg_dl).toFixed(4),
       };
-    } catch (error: any) {
+    } catch (error: string | unknown) {
       // Enhanced error parsing
       const errorMessage =
         error.response?.data?.msg || error.message || "Unknown update error";
@@ -148,7 +152,7 @@ export const PatientService = {
         hba1c: Number(response.data.data.hba1c).toFixed(1),
         creatine_mg_dl: Number(response.data.data.creatine_mg_dl).toFixed(4),
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Enhanced error parsing
       const errorMessage =
         error.response?.data?.msg || error.message || "Unknown update error";
