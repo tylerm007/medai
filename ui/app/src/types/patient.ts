@@ -1,5 +1,5 @@
 export interface Patient {
-  insulinData: InsulinRule[];
+  insulinData: InsulinData[];
   medications: Medications[];
   latestReadings: Reading[];
   id: number;
@@ -20,13 +20,26 @@ export interface Patient {
 }
 
 export interface InsulinRule {
-  id: number;
-  patient_id: number;
+  blood_sugar_range: string;
+  blood_sugar_level: number;
+  glargine_before_dinner: number
+  lispro_before_breakfast: number;
+  lispro_before_lunch: number;
+  lispro_before_dinner: number;
 } 
 
+export interface InsulinData {
+  drug: string;
+  breakfast : string;
+  lunch: string;
+  dinner: string;
+  bedtime: string;
+}
 export interface Medications  {
-  id: number;
   patient_id: number;
+  drug_id: number;
+  dosage: number;
+  dosage_unit: string;
 }
 
 export interface Reading {

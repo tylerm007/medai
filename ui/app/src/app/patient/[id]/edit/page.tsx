@@ -62,13 +62,12 @@ export default function EditPatient({
 
   const groupMedications = () => {
     const medications = getMedicationData();
-    const grouped: Record<string, string> = {};
+    const grouped: Record<string, Record<string, string>> = {};
     medications.forEach((med) => {
       if (!grouped[med.drugName]){
         grouped[med.drugName] = {};
-        grouped[med.drugName][med.time] = med.dosage;
       }
-
+      grouped[med.drugName][med.time] = med.dosage;
     });
     return Object.entries(grouped).map(([drug, times]) => ({
       drug,
@@ -96,12 +95,13 @@ export default function EditPatient({
 
   const groupInsulinData = () => {
     const insulinMeds = getInsulinData();
-    const grouped: Record<string,  string> = {};
+    const grouped: Record<string,  Record<string,string>> = {};
     insulinMeds.forEach((med) => {
       if (!grouped[med.drugName]) {
         grouped[med.drugName] = {};
-        grouped[med.drugName][med.time] = med.dosage;
       }
+      grouped[med.drugName][med.time] = med.dosage;
+      
     });
     return Object.entries(grouped).map(([drug, times]) => ({
       drug,

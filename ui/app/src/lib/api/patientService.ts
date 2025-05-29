@@ -114,22 +114,34 @@ export const PatientService = {
   },
   updatePatient: async (
     id: number,
-    updates: Partial<Patient>
+    data: Partial<Patient>
   ): Promise<Patient> => {
     try {
-      const formattedUpdates = {
-        ...updates,
-        age: updates.age ? Number(updates.age).toFixed(1) : undefined,
-        hba1c: updates.hba1c ? Number(updates.hba1c).toFixed(2) : undefined,
-        creatine_mg_dl: updates.creatine_mg_dl
-          ? Number(updates.creatine_mg_dl).toFixed(4)
-          : undefined,
-      };
-
+      console.log("Updating patient with ID:", id, JSON.stringify(data));
+      //const formattedUpdates = {
+      //  ...data,
+        //age: updates.age ? Number(updates.age).toFixed(1) : undefined,  server side handles age
+        //hba1c: updates.hba1c ? Number(updates.hba1c).toFixed(2) : undefined,
+        //creatine_mg_dl: updates.creatine_mg_dl
+        //  ? Number(updates.creatine_mg_dl).toFixed(4)
+        //  : undefined,
+      //};
+      console.log("data updates:", {...id.data});
       const payload = {
-        data: formattedUpdates,
-        filter: {'id':id.toString()},
-        sqltypes: {'id': 4}
+        data: {...id.data}, // Use the provided updates or the formatted ones 
+        columns: PATIENT_COLUMNS,
+        filter: {id: id.id}, // Use the provided ID or the one from updates
+        sqltypes: {
+          id: 4,
+          name: 12,
+          birth_date: 93,
+          weight: 8,
+          height: 8,
+          hba1c: 8,
+          duration: 8,
+          hba1c: 8,
+          creatine_mg_dl: 8,
+        }
       };      
 
       const response = await apiClient.patch<ApiResponse<Patient>>(
@@ -138,11 +150,11 @@ export const PatientService = {
       );
 
       // Debugging log
-      console.log("Update response:", response.data);
+      console.log("Update Patient response:", response.data);
 
       if (response.data.code !== 0) {
         throw new Error(
-          response.data.message || `API Error Code ${response.data.code}`
+          response.data.message || `Patient Update API Error Code ${response.data.code}`
         );
       }
 
@@ -152,7 +164,8 @@ export const PatientService = {
         hba1c: Number(response.data.data.hba1c).toFixed(1),
         creatine_mg_dl: Number(response.data.data.creatine_mg_dl).toFixed(4),
       };
-    } catch (error: unknown) {
+    } catch (error: object | unknown) {
+      console.error("Update Patient Error:", error);
       // Enhanced error parsing
       const errorMessage =
         error.response?.data?.msg || error.message || "Unknown update error";

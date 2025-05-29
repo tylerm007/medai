@@ -6,6 +6,8 @@ import { Patient } from "@/types/patient";
 import FormField from "@/components/FormField";
 import { PatientService } from "@/lib/api/patientService";
 import toast from "react-hot-toast";
+import { init } from "next/dist/compiled/webpack/webpack";
+//import { init } from "next/dist/compiled/webpack/webpack";
 //import { InsulinRuleService } from "@/lib/api/insulinRuleService";
 //import { MedicationService } from "@/lib/api/medicationService";
 //import { BloodSugarService } from "@/lib/api/bloodSugarService";
@@ -22,7 +24,7 @@ interface Medication {
   dinner: string;
 }
 
-interface Insulin {
+interface InsulinData {
   drug: string;
   breakfast: string;
   lunch: string;
@@ -39,7 +41,7 @@ export default function PatientForm({
   const [formData, setFormData] = useState<Partial<Patient>>(initialData || {});
   const [readings, setReadings] = useState<Reading[]>([]);
   const [medications, setMedications] = useState<Medication[]>([]);
-  const [insulinData, setInsulinData] = useState<Insulin[]>([]);
+  const [insulinData, setInsulinData] = useState<InsulinData[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -80,10 +82,18 @@ export default function PatientForm({
       // and returned in the response
       //if (!initialData?.id) throw new Error("Patient ID missing");
 
-      //const { latestReadings, medications, insulinData, ...patientData } =
-      //  formData;
-
-      const response = await PatientService.insertPatient(initialData);
+      const { latestReadings, medications, insulinData, ...patientData } =  formData;
+      console.log("submit",latestReadings, medications, insulinData, patientData);
+      let response;
+      if (initialData?.id) {
+        // Update existing patient
+        response = await PatientService.updatePatient({
+          id: Number(initialData?.id),
+          data: patientData,
+        });
+      } else {    
+        response = await PatientService.insertPatient(initialData);
+      }
 
       if (!response || !response.id) {
         console.error("Failed to insert patient:", JSON.stringify(response));
