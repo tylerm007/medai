@@ -6,10 +6,13 @@ import { Patient } from "@/types/patient";
 import FormField from "@/components/FormField";
 import { PatientService } from "@/lib/api/patientService";
 import toast from "react-hot-toast";
+import { BloodSugarService } from "@/lib/api/bloodSugarService";
 
 interface Reading {
+  id?: number;
   time: string;
   value: string;
+  date: string;
 }
 
 interface Medication {
@@ -40,21 +43,22 @@ export default function PatientForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // Initialize blood sugar readings
+  useEffect(() => {
+    if (initialData?.latestReadings) {
+      const readingsArray = initialData.latestReadings.map(reading => ({
+        id: reading.id,
+        time: reading.time_of_reading,
+        value: reading.reading_value.toString(),
+        date: reading.reading_date
+      }));
+      setReadings(readingsArray);
+    }
+  }, [initialData]);
+
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
-
-      // Initialize blood sugar readings
-      if (initialData.latestReadings) {
-        const readingsArray = Object.entries(initialData.latestReadings).map(
-          ([time, value]) => ({
-            time,
-            value: String(value),
-          })
-        );
-        setReadings(readingsArray);
-      }
-
+      setFormData(initialData);    
       // Initialize medications
       if (initialData.medications) {
         setMedications(initialData.medications);
@@ -74,14 +78,32 @@ export default function PatientForm({
 
     try {
       if (!initialData?.id) throw new Error("Patient ID missing");
+      const patientId = initialData.id;
 
       const { latestReadings, medications, insulinData, ...patientData } =
         formData;
-
       await PatientService.updatePatient(initialData.id, patientData);
 
-      // Success toast
-      toast.success("Patient updated successfully!", {
+      await Promise.all(
+        readings.map(async (reading) => {
+          const payload = {
+            patient_id: patientId,
+            time_of_reading: reading.time,
+            reading_value: Number(reading.value),
+            reading_date:
+              reading.date || new Date().toISOString().split("T")[0],
+            notes: "",
+          };
+
+          if (reading.id) {
+            return BloodSugarService.updateReading(reading.id, payload);
+          } else {
+            return BloodSugarService.createReading(payload);
+          }
+        })
+      );
+
+      toast.success("Patient and readings updated successfully!", {
         icon: "✅",
         position: "top-right",
         style: {
@@ -92,22 +114,15 @@ export default function PatientForm({
         },
       });
 
-      router.push(`/patient/${initialData.id}`);
+      router.push(`/patient/${patientId}`);
       router.refresh();
     } catch (err: any) {
-      // Error toast
-      toast.error(`Update failed: ${err.message}`, {
-        icon: "❌",
-        position: "top-right",
-        style: {
-          background: "#fff5f5",
-          color: "#e53e3e",
-          padding: "16px",
-          borderRadius: "8px",
-        },
-      });
+      const errorMessage = err.message.includes("Network Error")
+        ? "Connection failed - check internet connection"
+        : err.message;
 
-      setError(err.message);
+      toast.error(`Update failed: ${errorMessage}`);
+      console.error("Submission error:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -134,10 +149,14 @@ export default function PatientForm({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleReadingChange = (time: string, value: string) => {
+  const handleReadingChange = (time: string, value: string, date: string) => {
     setReadings((prev) => [
       ...prev.filter((r) => r.time !== time),
-      { time, value },
+      {
+        ...(prev.find((r) => r.time === time) || { time }),
+        value,
+        date,
+      },
     ]);
   };
 
@@ -271,23 +290,23 @@ export default function PatientForm({
               <FormField
                 label="CAD"
                 type="select"
-                options={["Yes", "No"]}
-                value={formData.cad || ""}
-                onChange={(v) => handleChange("cad", v)}
+                options={["No", "Yes"]}
+                value={formData.cad === 1 ? "Yes" : "No"}
+                onChange={(v) => handleChange("cad", v === "Yes" ? 1 : 0)}
               />
               <FormField
                 label="CKD"
                 type="select"
-                options={["Yes", "No"]}
-                value={formData.ckd || ""}
-                onChange={(v) => handleChange("ckd", v)}
+                options={["No", "Yes"]}
+                value={formData.ckd === 1 ? "Yes" : "No"}
+                onChange={(v) => handleChange("ckd", v === "Yes" ? 1 : 0)}
               />
               <FormField
                 label="HLD"
                 type="select"
-                options={["Yes", "No"]}
-                value={formData.hld || ""}
-                onChange={(v) => handleChange("hld", v)}
+                options={["No", "Yes"]}
+                value={formData.hld === 1 ? "Yes" : "No"}
+                onChange={(v) => handleChange("hld", v === "Yes" ? 1 : 0)}
               />
             </div>
           </div>
@@ -298,16 +317,36 @@ export default function PatientForm({
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
         <h2 className="text-xl font-semibold mb-6">Blood Sugar Readings</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {["breakfast", "lunch", "dinner", "bedtime"].map((time) => (
-            <FormField
-              key={time}
-              label={`Before ${time.charAt(0).toUpperCase() + time.slice(1)}`}
-              type="number"
-              value={readings.find((r) => r.time === time)?.value || ""}
-              onChange={(v) => handleReadingChange(time, v)}
-              sub="mg/dL"
-            />
-          ))}
+          {["breakfast", "lunch", "dinner", "bedtime"].map((time) => {
+            const reading = readings.find((r) => r.time === time);
+            return (
+              <div key={time} className="space-y-2">
+                <FormField
+                  label={`Date for ${time}`}
+                  type="date"
+                  value={reading?.date || ""}
+                  onChange={(v) =>
+                    handleReadingChange(time, reading?.value || "", v)
+                  }
+                />
+                <FormField
+                  label={`Before ${
+                    time.charAt(0).toUpperCase() + time.slice(1)
+                  }`}
+                  type="number"
+                  value={reading?.value || ""}
+                  onChange={(v) =>
+                    handleReadingChange(
+                      time,
+                      v,
+                      reading?.date || new Date().toISOString().split("T")[0]
+                    )
+                  }
+                  sub="mg/dL"
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 

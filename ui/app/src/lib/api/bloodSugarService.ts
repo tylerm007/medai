@@ -2,6 +2,7 @@
 import { apiClient } from "@/lib/api/apiClient";
 import type { ApiResponse } from "@/lib/api/types";
 import type { BloodSugarReading } from "@/types/bloodSugar";
+import { baseAPIClient } from "./baseAPIClient";
 
 interface BloodSugarRequest {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,6 +69,30 @@ export const BloodSugarService = {
         : (page - 1) * pageSize + processedData.length;
 
     return { data: processedData, total };
+  },
+
+  updateReading: async (id: number, reading: Partial<BloodSugarReading>): Promise<BloodSugarReading> => {
+    const payload = {
+      data: {
+        attributes: {
+          patient_id: reading.patient_id,
+          time_of_reading: reading.time_of_reading,
+          reading_value: reading.reading_value,
+          reading_date: reading.reading_date,
+          notes: reading.notes
+        },
+        type: "Reading",
+        id: id.toString()
+      }
+    };
+
+    const response = await baseAPIClient.patch<ApiResponse<BloodSugarReading>>(
+      `http://ec2-54-145-40-116.compute-1.amazonaws.com:5656/api/Reading/${id}`,
+      payload
+    );
+
+    //if (response.data.code !== 0) throw new Error(response.data.message || "API Error");
+    return response.data.data;
   },
 
   createReading: async (reading: Omit<BloodSugarReading, "id">) => {

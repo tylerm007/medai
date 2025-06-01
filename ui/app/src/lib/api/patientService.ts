@@ -66,6 +66,24 @@ export const PatientService = {
     try {
       const formattedUpdates = {
         ...updates,
+        cad:
+          typeof updates.cad === "string"
+            ? updates.cad === "Yes"
+              ? 1
+              : 0
+            : updates.cad,
+        ckd:
+          typeof updates.ckd === "string"
+            ? updates.ckd === "Yes"
+              ? 1
+              : 0
+            : updates.ckd,
+        hld:
+          typeof updates.hld === "string"
+            ? updates.hld === "Yes"
+              ? 1
+              : 0
+            : updates.hld,
         age: updates.age ? Number(updates.age).toFixed(1) : undefined,
         hba1c: updates.hba1c ? Number(updates.hba1c).toFixed(2) : undefined,
         creatine_mg_dl: updates.creatine_mg_dl
@@ -79,7 +97,7 @@ export const PatientService = {
           type: "Patient",
           id: id.toString(),
         },
-      };      
+      };
 
       const response = await baseAPIClient.patch<ApiResponse<Patient>>(
         `http://ec2-54-145-40-116.compute-1.amazonaws.com:5656/api/Patient/${id}`,
@@ -89,18 +107,7 @@ export const PatientService = {
       // Debugging log
       console.log("Update response:", response.data);
 
-      if (response.data.code !== 0) {
-        throw new Error(
-          response.data.message || `API Error Code ${response.data.code}`
-        );
-      }
-
-      return {
-        ...response.data.data,
-        age: Number(response.data.data.age).toFixed(1),
-        hba1c: Number(response.data.data.hba1c).toFixed(1),
-        creatine_mg_dl: Number(response.data.data.creatine_mg_dl).toFixed(4),
-      };
+      return response.data.data;
     } catch (error: any) {
       // Enhanced error parsing
       const errorMessage =

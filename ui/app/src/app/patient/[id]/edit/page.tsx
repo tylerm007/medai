@@ -1,6 +1,6 @@
 // app/patient/[id]/edit/page.tsx
 "use client";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import PatientForm from "@/components/PatientForm";
 import { usePatient } from "@/hooks/usePatient";
 import { useBloodSugarReadings } from "@/hooks/useBloodSugarReadings";
@@ -8,44 +8,46 @@ import { useRecommendations } from "@/hooks/useRecommendations";
 import { usePatients } from "@/hooks/usePatients";
 import LoadingSpinner from "@/components/Auth/LoadingSpinner";
 import { usePageTitle } from "@/context/PageTitleContext";
+import { useParams } from "next/navigation";
 
-export default function EditPatient({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const resolvedParams = use(params);
-  const id = Number(resolvedParams.id);
+export default function EditPatient() {
+  const { id } = useParams(); // Get ID from route parameters
+  const numericId = Number(id);
 
   // Replicate EXACT PatientDetail data fetching pattern
   const { patients } = usePatients();
   const { readings = [] } = useBloodSugarReadings(undefined, patients);
   const { recommendations, drugTypes } = useRecommendations();
-  const { patient, loading, error } = usePatient(id);
+  const { patient, loading, error } = usePatient(numericId);
 
   const { setTitle } = usePageTitle();
 
   // 1:1 COPY from PatientDetail -------------------------------------------
   const getLatestReadings = () => {
-    if (!readings || !id) return {};
+    if (!readings || !numericId) return [];
     const seenTimes = new Set<string>();
-    const patientReadings = readings
-      .filter((reading) => reading.patient_id === id)
+
+    return readings
+      .filter((reading) => reading.patient_id === numericId)
       .sort(
         (a, b) =>
           new Date(b.reading_date).getTime() -
           new Date(a.reading_date).getTime()
-      );
-
-    const latestReadings: Record<string, string> = {};
-    patientReadings.forEach((reading) => {
-      const timeKey = reading.time_of_reading.toString();
-      if (!seenTimes.has(timeKey)) {
-        latestReadings[timeKey] = Number(reading.reading_value).toFixed(0);
-        seenTimes.add(timeKey);
-      }
-    });
-    return latestReadings;
+      )
+      .filter((reading) => {
+        const timeKey = reading.time_of_reading;
+        if (!seenTimes.has(timeKey)) {
+          seenTimes.add(timeKey);
+          return true;
+        }
+        return false;
+      })
+      .map((reading) => ({
+        id: reading.id,
+        time_of_reading: reading.time_of_reading,
+        reading_value: reading.reading_value,
+        reading_date: reading.reading_date,
+      }));
   };
 
   const getMedicationData = () => {
