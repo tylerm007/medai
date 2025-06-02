@@ -1,7 +1,7 @@
 // src/components/BloodSugar/AddReadingModal.tsx
 import { useState } from "react";
 import { BloodSugarReading } from "@/types/bloodSugar";
-
+import { usePatients } from "@/hooks/usePatients";
 interface AddReadingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,6 +13,7 @@ export function AddReadingModal({
   onClose,
   onSave,
 }: AddReadingModalProps) {
+  const { patients } = usePatients();
   const [formData, setFormData] = useState<Omit<BloodSugarReading, "id">>({
     patient_id: 0,
     time_of_reading: "Morning",
@@ -30,6 +31,11 @@ export function AddReadingModal({
     onClose();
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function setForm(arg0: { patient_id: number; time_of_reading: string; reading_value: number; reading_date: string; notes: string; }): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-gray-600 dark:bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-md">
@@ -43,18 +49,21 @@ export function AddReadingModal({
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Patient ID *
               </label>
-              <input
-                type="text"
+              <select
                 required
                 className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                 value={formData.patient_id}
                 onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    patient_id: Number(e.target.value),
-                  })
+                  setForm({ ...formData, patient_id: Number(e.target.value) })
                 }
-              />
+              >
+                <option value="">Select Patient</option>
+                {patients.map((patient) => (
+                  <option key={patient.id} value={patient.id}>
+                    {patient.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Time of Reading */}
@@ -70,10 +79,10 @@ export function AddReadingModal({
                   setFormData({ ...formData, time_of_reading: e.target.value })
                 }
               >
-                <option value="Morning">Morning</option>
-                <option value="Afternoon">Afternoon</option>
-                <option value="Evening">Evening</option>
-                <option value="Night">Night</option>
+                <option value="breakfast">Morning</option>
+                <option value="lunch">Afternoon</option>
+                <option value="dinner">Evening</option>
+                <option value="bedtime">Bedtime</option>
               </select>
             </div>
 

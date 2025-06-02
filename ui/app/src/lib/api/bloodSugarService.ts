@@ -45,9 +45,12 @@ export const BloodSugarService = {
     };
 
     const response = await apiClient
-      .post<ApiResponse<BloodSugarReading[]>>("/Reading/Reading", payload)
+      .post<ApiResponse<BloodSugarReading[]>>(
+        "/Reading/Reading"
+        , payload
+      )
       .catch((error) => {
-        console.error("API Error Details:", {
+        console.error("Blood Sugar Reading GET Error Details:", {
           url: error.config?.url,
           payload,
           status: error.response?.status,
@@ -56,7 +59,7 @@ export const BloodSugarService = {
         throw error;
       });
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) throw new Error("POST Reading API Error");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
@@ -96,11 +99,21 @@ export const BloodSugarService = {
   },
 
   createReading: async (reading: Omit<BloodSugarReading, "id">) => {
+    const payload = {
+      data: reading,
+      sqltypes: {id: 4,
+        time_of_reading: 12,
+        reading_date: 93, // Assuming date is in ISO format
+        reading_value: 8,
+        patient_id: 4,
+        notes: 12 },
+    };
+    console.log("Creating Blood Sugar Reading:", JSON.stringify(payload));
     const response = await apiClient.post<ApiResponse<BloodSugarReading>>(
       "/Reading/Reading",
-      reading
+      payload
     );
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) throw new Error("Blood Sugar Reading POST API Error");
     return response.data.data;
   },
 };

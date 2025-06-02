@@ -52,7 +52,9 @@ export const PatientLabService = {
         throw error;
       });
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("Patient Lab GET API Error -" + response.data.message);
+    }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
@@ -68,12 +70,19 @@ export const PatientLabService = {
     return { data: processedData, total };
   },
 
+  
   createLab: async (lab: Omit<PatientLab, "id">) => {
+    const payload = {
+      data: lab,
+      sqltypes: {}
+    
+    };
     const response = await apiClient.post<ApiResponse<PatientLab>>(
       "/PatientLab/PatientLab",
-      lab
+      payload
     );
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) throw new Error("Patient Lab POST API Error - " + response.data.message);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return response.data.data;
   },
 };

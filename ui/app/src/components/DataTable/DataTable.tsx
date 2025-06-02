@@ -11,7 +11,10 @@ interface DataTableProps<T extends { id: number }> {
   itemsPerPage: number;
   onPageChange: (page: number) => void;
   className?: string;
-  onUpdate?: (id: number, updates: Record<string, any>) => Promise<void>;
+  onUpdate?: (
+    id: number,
+    updates: Record<string, string | number | Date>
+  ) => Promise<void>;
 }
 
 const EditableCell = <T extends { id: number }>({
@@ -20,42 +23,51 @@ const EditableCell = <T extends { id: number }>({
   column,
   onUpdate,
 }: {
-  value: any;
+  value: string | number | Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   row: T;
   column: ColumnDef<T>;
-  onUpdate?: (id: number, updates: Record<string, any>) => Promise<void>;
+  onUpdate?: (
+    id: number,
+    updates: Record<string, string | number | Date>
+  ) => Promise<void>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    try {
-      const date = new Date(value);
-      if (!isNaN(date.getTime())) {
-        // Convert to local date for display
-        const localDate = new Date(
-          date.getTime() - date.getTimezoneOffset() * 60000
-        );
-        setInputValue(localDate.toISOString().split("T")[0]);
+  const toDisplayValue = (val: string | number | Date): string => {
+    if (column.inputType === "date") {
+      let date: Date;
+      if (val instanceof Date) {
+        date = val;
+      } else {
+        date = new Date(val);
       }
-    } catch {
-      setInputValue("");
+
+      if (!isNaN(date.getTime())) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
     }
-  }, [value]);
+    return String(val);
+  };
+
+  useEffect(() => {
+    setInputValue(toDisplayValue(value));
+  }, [value, column.inputType]);
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
 
-    // Convert local date to UTC
-    const [year, month, day] = newValue.split("-");
-    const utcDate = new Date(
-      Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day))
-    );
-
-    // Update parent state immediately
     if (onUpdate) {
+      const [year, month, day] = newValue.split("-");
+      const utcDate = new Date(
+        Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day))
+      );
       onUpdate(row.id, { [column.key as string]: utcDate.toISOString() });
     }
   };
@@ -64,18 +76,11 @@ const EditableCell = <T extends { id: number }>({
     if (!onUpdate) return;
 
     try {
-      // Validate date format
-      if (column.inputType === "date") {
-        const date = new Date(inputValue);
-        if (isNaN(date.getTime())) {
-          throw new Error("Invalid date format");
-        }
-      }
-
       await onUpdate(row.id, { [column.key as string]: inputValue });
+      setIsEditing(false);
     } catch (err) {
       console.error("Save error:", err);
-      setInputValue(value); // Revert to original value
+      setInputValue(toDisplayValue(value)); // Revert using safe conversion
       setIsEditing(false);
     }
   };
@@ -83,7 +88,7 @@ const EditableCell = <T extends { id: number }>({
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") handleSave();
     if (e.key === "Escape") {
-      setInputValue(value);
+      setInputValue(toDisplayValue(value)); // Revert using safe conversion
       setIsEditing(false);
     }
   };
@@ -98,7 +103,7 @@ const EditableCell = <T extends { id: number }>({
         className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded"
         onClick={() => setIsEditing(true)}
       >
-        {column.cellRenderer ? column.cellRenderer(row) : value}
+        {column.cellRenderer ? column.cellRenderer(row) : toDisplayValue(value)}
       </div>
     );
   }
@@ -109,7 +114,9 @@ const EditableCell = <T extends { id: number }>({
   if (column.inputType === "date") {
     // Get current date in local timezone (YYYY-MM-DD format)
     const today = new Date();
-    const maxDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const maxDate = `${today.getFullYear()}-${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
     return (
       <input
@@ -269,7 +276,7 @@ export function DataTable<T extends { id: number }>({
                     >
                       {column.editable ? (
                         <EditableCell
-                          value={row[column.key]}
+                          value={row[column.key] as string | number | Date}
                           row={row}
                           column={column}
                           onUpdate={onUpdate}

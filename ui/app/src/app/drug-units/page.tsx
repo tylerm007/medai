@@ -6,7 +6,7 @@ import { usePageTitle } from "@/context/PageTitleContext";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 import LoadingSpinner from "@/components/Auth/LoadingSpinner";
 import SearchInput from "@/components/Search/SearchInput";
-import { DataTable, ColumnDef } from "@/components/DataTable/DataTable";
+import { DataTableNoID, ColumnDef } from "@/components/DataTable/DataTableNoID";
 import { AddDrugUnitModal } from "@/components/DrugUnit/AddDrugUnitModal";
 import { useDrugUnits } from "@/hooks/useDrugUnits";
 import type { DrugUnit } from "@/types/drugUnit";
@@ -52,8 +52,9 @@ export default function DrugUnitsPage() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <ProtectedRoute>
-      <div className="w-full mx-auto">
+    <>
+      <ProtectedRoute>
+        <div className="w-full mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
             <nav className="mt-2 text-sm">
@@ -98,7 +99,7 @@ export default function DrugUnitsPage() {
         {error ? (
           <div className="bg-red-50 text-red-700 p-4 rounded-lg">{error}</div>
         ) : (
-          <DataTable<DrugUnit>
+          <DataTableNoID<DrugUnit>
             columns={columns}
             data={units}
             totalCount={totalCount}
@@ -107,13 +108,14 @@ export default function DrugUnitsPage() {
             onPageChange={handlePageChange}
           />
         )}
-
         <AddDrugUnitModal
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
           onSave={handleAddUnit}
         />
-      </div>
-    </ProtectedRoute>
+        </div>
+      </ProtectedRoute>
+    </>
   );
 }
+

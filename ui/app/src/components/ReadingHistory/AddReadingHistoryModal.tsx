@@ -1,7 +1,7 @@
 // src/components/ReadingHistory/AddHistoryModal.tsx
 import { useState } from "react";
 import type { PatientReadingHistory } from "@/types/patientReadingHistory";
-
+import { usePatients } from "@/hooks/usePatients";
 interface AddHistoryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,6 +13,7 @@ export function AddHistoryModal({
   onClose,
   onSave,
 }: AddHistoryModalProps) {
+  const { patients } = usePatients();
   const [formData, setFormData] = useState<Omit<PatientReadingHistory, "id">>({
     patient_id: 0,
     reading_date: new Date().toISOString().split("T")[0],
@@ -92,19 +93,24 @@ export function AddHistoryModal({
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Patient ID *
               </label>
-              <input
-                type="number"
+              <select
                 required
-                min="1"
                 className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
-                value={formData.patient_id || ""}
+                value={formData.patient_id}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
                     patient_id: Number(e.target.value),
                   })
                 }
-              />
+              >
+                <option value="">Select Patient</option>
+                {patients.map((patient) => (
+                  <option key={patient.id} value={patient.id}>
+                    {patient.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Meal Readings */}

@@ -82,6 +82,7 @@ export default function HistoryReadingsPage() {
             day: "2-digit",
           });
         } catch (e) {
+          console.error("Invalid date format:", row.reading_date, e);
           return "Invalid Date";
         }
       },
@@ -149,6 +150,9 @@ export default function HistoryReadingsPage() {
   ) => {
     try {
       const created = await createHistory(newHistory);
+      if (!created) {
+        throw new Error("Failed to create new reading history");
+      }
       await refresh();
 
       // Format date directly from user input (already validated)
@@ -189,7 +193,7 @@ export default function HistoryReadingsPage() {
 
   const handleUpdateHistory = async (
     id: number,
-    updates: Record<string, any>
+    updates: Record<string, string | number | Date>
   ) => {
     try {
       // Convert dates to UTC format
@@ -203,7 +207,7 @@ export default function HistoryReadingsPage() {
           }
           return acc;
         },
-        {} as Record<string, any>
+        {} as Record<string, string | number| Date>
       );
 
       await updateHistory(id, formattedUpdates);

@@ -130,7 +130,7 @@ export const AddRecommendationModal = ({
                   >
                     <option value="mg">mg</option>
                     <option value="ml">ml</option>
-                    <option value="units">units</option>
+                    <option value="unit">units</option>
                   </select>
                 </div>
               </div>
@@ -157,9 +157,9 @@ export const AddRecommendationModal = ({
                     })
                   }
                 >
-                  <option value="morning">Morning</option>
-                  <option value="afternoon">Afternoon</option>
-                  <option value="evening">Evening</option>
+                  <option value="breakfast">Breakfast</option>
+                  <option value="lunch">Lunch</option>
+                  <option value="dinner">Dinner</option>
                   <option value="bedtime">Bedtime</option>
                 </select>
               </div>

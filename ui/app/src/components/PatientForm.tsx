@@ -22,7 +22,7 @@ interface Medication {
   dinner: string;
 }
 
-interface Insulin {
+interface InsulinData {
   drug: string;
   breakfast: string;
   lunch: string;
@@ -39,18 +39,18 @@ export default function PatientForm({
   const [formData, setFormData] = useState<Partial<Patient>>(initialData || {});
   const [readings, setReadings] = useState<Reading[]>([]);
   const [medications, setMedications] = useState<Medication[]>([]);
-  const [insulinData, setInsulinData] = useState<Insulin[]>([]);
+  const [insulinData, setInsulinData] = useState<InsulinData[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   // Initialize blood sugar readings
   useEffect(() => {
     if (initialData?.latestReadings) {
-      const readingsArray = initialData.latestReadings.map(reading => ({
+      const readingsArray = initialData.latestReadings.map((reading) => ({
         id: reading.id,
         time: reading.time_of_reading,
         value: reading.reading_value.toString(),
-        date: reading.reading_date
+        date: reading.reading_date,
       }));
       setReadings(readingsArray);
     }
@@ -58,15 +58,16 @@ export default function PatientForm({
 
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);    
+      setFormData(initialData);
+      
       // Initialize medications
-      if (initialData.medications) {
-        setMedications(initialData.medications);
+      if (medications) {
+        setMedications(medications);
       }
 
       // Initialize insulin data
-      if (initialData.insulinData) {
-        setInsulinData(initialData.insulinData);
+      if (insulinData) {
+        setInsulinData(insulinData);
       }
     }
   }, [initialData]);
@@ -80,6 +81,7 @@ export default function PatientForm({
       if (!initialData?.id) throw new Error("Patient ID missing");
       const patientId = initialData.id;
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { latestReadings, medications, insulinData, ...patientData } =
         formData;
       await PatientService.updatePatient(initialData.id, patientData);
@@ -115,13 +117,8 @@ export default function PatientForm({
       });
 
       router.push(`/patient/${patientId}`);
-      router.refresh();
-    } catch (err: any) {
-      const errorMessage = err.message.includes("Network Error")
-        ? "Connection failed - check internet connection"
-        : err.message;
-
-      toast.error(`Update failed: ${errorMessage}`);
+      router.refresh();      
+    } catch (err) {
       console.error("Submission error:", err);
     } finally {
       setIsSubmitting(false);
@@ -131,9 +128,15 @@ export default function PatientForm({
   useEffect(() => {
     const validateForm = () => {
       const errors = [];
-      if (!formData.name) errors.push("Name is required");
-      if (!formData.birth_date) errors.push("Birth date is required");
-      if (formData.weight && formData.weight < 0) errors.push("Invalid weight");
+      if (!formData.name) {
+        errors.push("Name is required");
+      }
+      if (!formData.birth_date) {
+        errors.push("Birth date is required");
+      }
+      if (formData.weight && formData.weight < 0) {
+        errors.push("Invalid weight");
+      }
 
       if (errors.length > 0) {
         setError(errors.join(", "));
@@ -145,7 +148,7 @@ export default function PatientForm({
     validateForm();
   }, [formData]);
 
-  const handleChange = (field: keyof Patient, value: any) => {
+  const handleChange = (field: keyof Patient, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -353,7 +356,7 @@ export default function PatientForm({
       {/* Medications Section */}
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Medications</h2>
+          <h2 className="text-xl font-semibold">Recommendations / Medications</h2>
           <button
             type="button"
             onClick={addMedication}

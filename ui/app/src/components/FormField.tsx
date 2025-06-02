@@ -1,10 +1,9 @@
 // components/FormField.tsx
 "use client";
-import { ReactNode, useState } from "react";
 
 interface FormFieldProps {
   label: string;
-  value: any;
+  value: string | number| Date;
   onChange: (value: string) => void;
   type?: "text" | "number" | "select" | "date" | "email";
   options?: string[];
@@ -23,15 +22,8 @@ export default function FormField({
   options,
   step,
   sub,
-  validate,
 }: FormFieldProps) {
-  const [error, setError] = useState<string | null>(null);
-
-  const handleChange = (value: string) => {
-    if (validate) {
-      const errorMsg = validate(value);
-      setError(errorMsg);
-    }
+  const handleInputChange = (value: string) => {
     onChange(value);
   };
 
@@ -44,8 +36,8 @@ export default function FormField({
 
       {type === "select" ? (
         <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          value={value.toString()}
+          onChange={(e) => handleInputChange(e.target.value)}
           className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
           required={required}
         >
@@ -59,7 +51,7 @@ export default function FormField({
         <div className="relative">
           <input
             type={type}
-            value={value}
+            value={value instanceof Date ? value.toISOString().split('T')[0] : value}
             onChange={(e) => onChange(e.target.value)}
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
             required={required}

@@ -108,8 +108,8 @@ export const PatientService = {
       console.log("Update response:", response.data);
 
       return response.data.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      // Enhanced error parsing
       const errorMessage =
         error.response?.data?.msg || error.message || "Unknown update error";
       console.error("Update failed:", {

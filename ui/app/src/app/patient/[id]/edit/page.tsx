@@ -52,9 +52,10 @@ export default function EditPatient() {
 
   const getMedicationData = () => {
     if (!recommendations || !drugTypes || !id) return [];
+    const numericId = Number(id);
     const drugMap = new Map(drugTypes.map((drug) => [drug.id, drug.drug_name]));
     return recommendations
-      .filter((rec) => rec.patient_id === id && drugMap.has(rec.drug_id))
+      .filter((rec) => rec.patient_id === numericId && drugMap.has(rec.drug_id))
       .map((rec) => ({
         drugName: drugMap.get(rec.drug_id) || "Unknown Drug",
         dosage: `${Number(rec.dosage).toFixed(0)} ${rec.dosage_unit}`,
@@ -64,9 +65,11 @@ export default function EditPatient() {
 
   const groupMedications = () => {
     const medications = getMedicationData();
-    const grouped: Record<string, any> = {};
+    const grouped: Record<string, Record<string, string>> = {};
     medications.forEach((med) => {
-      if (!grouped[med.drugName]) grouped[med.drugName] = {};
+      if (!grouped[med.drugName]) {
+        grouped[med.drugName] = {};
+      }
       grouped[med.drugName][med.time] = med.dosage;
     });
     return Object.entries(grouped).map(([drug, times]) => ({
@@ -79,12 +82,13 @@ export default function EditPatient() {
 
   const getInsulinData = () => {
     if (!recommendations || !drugTypes || !id) return [];
+    const numericId = Number(id);
     const drugMap = new Map(drugTypes.map((drug) => [drug.id, drug.drug_name]));
     const insulinDrugs = ["Glargine", "Lispro"];
     return recommendations
       .filter((rec) => {
         const drugName = drugMap.get(rec.drug_id) || "";
-        return rec.patient_id === id && insulinDrugs.includes(drugName);
+        return rec.patient_id === numericId && insulinDrugs.includes(drugName);
       })
       .map((rec) => ({
         drugName: drugMap.get(rec.drug_id) || "Unknown Insulin",
@@ -95,9 +99,11 @@ export default function EditPatient() {
 
   const groupInsulinData = () => {
     const insulinMeds = getInsulinData();
-    const grouped: Record<string, any> = {};
+    const grouped: Record<string, Record<string, string>> = {};
     insulinMeds.forEach((med) => {
-      if (!grouped[med.drugName]) grouped[med.drugName] = {};
+      if (!grouped[med.drugName]) {
+        grouped[med.drugName] = {};
+      }
       grouped[med.drugName][med.time] = med.dosage;
     });
     return Object.entries(grouped).map(([drug, times]) => ({
@@ -111,7 +117,9 @@ export default function EditPatient() {
   // END of 1:1 COPY ------------------------------------------------------
 
   useEffect(() => {
-    if (patient) setTitle(`Editing ${patient.name}`);
+    if (patient) {
+      setTitle(`Editing ${patient.name}`);
+    }
   }, [patient, setTitle]);
 
   if (loading) return <LoadingSpinner />;
@@ -134,8 +142,8 @@ export default function EditPatient() {
       <h1 className="text-3xl font-bold mb-8 text-blue-600">
         Edit Patient Profile
       </h1>
-      {/* Pass ALL data through spread operator */}
-      <PatientForm initialData={formData} />
+      {/* eslint-disable @typescript-eslint/no-explicit-any */}
+      <PatientForm initialData={formData as any} />
     </div>
   );
 }

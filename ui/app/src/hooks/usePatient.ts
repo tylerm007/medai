@@ -29,7 +29,9 @@ export const usePatient = (id: number) => {
       }
     };
 
-    if (id && !isNaN(id)) fetchPatient();
+    if (id && !isNaN(id)) {
+      fetchPatient();
+    }
   }, [id]);
 
   return { patient, loading, error };
