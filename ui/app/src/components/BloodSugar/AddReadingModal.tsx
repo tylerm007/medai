@@ -31,6 +31,11 @@ export function AddReadingModal({
     onClose();
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function setForm(arg0: { patient_id: number; time_of_reading: string; reading_value: number; reading_date: string; notes: string; }): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-gray-600 dark:bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-md">

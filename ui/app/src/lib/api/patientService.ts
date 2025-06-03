@@ -101,7 +101,8 @@ export const PatientService = {
         hba1c: Number(response.data.data.hba1c).toFixed(1),
         creatine_mg_dl: Number(response.data.data.creatine_mg_dl).toFixed(4),
       };
-    } catch (error: string | unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       // Enhanced error parsing
       const errorMessage =
         error.response?.data?.msg || error.message || "Unknown update error";
@@ -114,23 +115,40 @@ export const PatientService = {
   },
   updatePatient: async (
     id: number,
-    data: Partial<Patient>
+    updates: Partial<Patient>
   ): Promise<Patient> => {
     try {
-      console.log("Updating patient with ID:", id, JSON.stringify(data));
-      //const formattedUpdates = {
-      //  ...data,
-        //age: updates.age ? Number(updates.age).toFixed(1) : undefined,  server side handles age
-        //hba1c: updates.hba1c ? Number(updates.hba1c).toFixed(2) : undefined,
-        //creatine_mg_dl: updates.creatine_mg_dl
-        //  ? Number(updates.creatine_mg_dl).toFixed(4)
-        //  : undefined,
-      //};
-      console.log("data updates:", {...id.data});
+      const formattedUpdates = {
+        ...updates,
+        cad:
+          typeof updates.cad === "string"
+            ? updates.cad === "Yes"
+              ? 1
+              : 0
+            : updates.cad,
+        ckd:
+          typeof updates.ckd === "string"
+            ? updates.ckd === "Yes"
+              ? 1
+              : 0
+            : updates.ckd,
+        hld:
+          typeof updates.hld === "string"
+            ? updates.hld === "Yes"
+              ? 1
+              : 0
+            : updates.hld,
+        age: updates.age ? Number(updates.age).toFixed(1) : undefined,
+        hba1c: updates.hba1c ? Number(updates.hba1c).toFixed(2) : undefined,
+        creatine_mg_dl: updates.creatine_mg_dl
+          ? Number(updates.creatine_mg_dl).toFixed(4)
+          : undefined,
+      };
+
       const payload = {
-        data: {...id.data}, // Use the provided updates or the formatted ones 
+        data: formattedUpdates, // Use the provided updates or the formatted ones 
         columns: PATIENT_COLUMNS,
-        filter: {id: id.id}, // Use the provided ID or the one from updates
+        filter: {id: id.toString()}, // Use the provided ID or the one from updates
         sqltypes: {
           id: 4,
           name: 12,
@@ -139,7 +157,6 @@ export const PatientService = {
           height: 8,
           hba1c: 8,
           duration: 8,
-          hba1c: 8,
           creatine_mg_dl: 8,
         }
       };      
@@ -164,7 +181,8 @@ export const PatientService = {
         hba1c: Number(response.data.data.hba1c).toFixed(1),
         creatine_mg_dl: Number(response.data.data.creatine_mg_dl).toFixed(4),
       };
-    } catch (error: object | unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("Update Patient Error:", error);
       // Enhanced error parsing
       const errorMessage =

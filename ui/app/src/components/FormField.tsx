@@ -1,6 +1,5 @@
 // components/FormField.tsx
 "use client";
-import { useState } from "react";
 
 interface FormFieldProps {
   label: string;
@@ -23,18 +22,11 @@ export default function FormField({
   options,
   step,
   sub,
-  validate,
 }: FormFieldProps) {
-  const [setError] = useState<string | null>(null);
-
   const handleInputChange = (value: string) => {
-    if (validate) {
-      const errorMsg = validate(value);
-      setError(errorMsg);
-    }
     onChange(value);
   };
-  
+
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -44,7 +36,7 @@ export default function FormField({
 
       {type === "select" ? (
         <select
-          value={value}
+          value={value.toString()}
           onChange={(e) => handleInputChange(e.target.value)}
           className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
           required={required}
@@ -59,7 +51,7 @@ export default function FormField({
         <div className="relative">
           <input
             type={type}
-            value={value}
+            value={value instanceof Date ? value.toISOString().split('T')[0] : value}
             onChange={(e) => onChange(e.target.value)}
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
             required={required}

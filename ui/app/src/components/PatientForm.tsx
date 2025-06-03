@@ -6,15 +6,13 @@ import { Patient } from "@/types/patient";
 import FormField from "@/components/FormField";
 import { PatientService } from "@/lib/api/patientService";
 import toast from "react-hot-toast";
-import { init } from "next/dist/compiled/webpack/webpack";
-//import { init } from "next/dist/compiled/webpack/webpack";
-//import { InsulinRuleService } from "@/lib/api/insulinRuleService";
-//import { MedicationService } from "@/lib/api/medicationService";
-//import { BloodSugarService } from "@/lib/api/bloodSugarService";
+import { BloodSugarService } from "@/lib/api/bloodSugarService";
 
 interface Reading {
+  id?: number;
   time: string;
   value: string;
+  date: string;
 }
 
 interface Medication {
@@ -45,21 +43,23 @@ export default function PatientForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // Initialize blood sugar readings
+  useEffect(() => {
+    if (initialData?.latestReadings) {
+      const readingsArray = initialData.latestReadings.map((reading) => ({
+        id: reading.id,
+        time: reading.time_of_reading,
+        value: reading.reading_value.toString(),
+        date: reading.reading_date,
+      }));
+      setReadings(readingsArray);
+    }
+  }, [initialData]);
+
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
-
-      // Initialize blood sugar readings
-      if (initialData.latestReadings) {
-        const readingsArray = Object.entries(initialData.latestReadings).map(
-          ([time, value]) => ({
-            time,
-            value: String(value),
-          })
-        );
-        setReadings(readingsArray);
-      }
-
+      
       // Initialize medications
       if (medications) {
         setMedications(medications);
@@ -78,29 +78,34 @@ export default function PatientForm({
     setError("");
 
     try {
-      // Patient ID is not required - it is automatically generated on insert
-      // and returned in the response
-      //if (!initialData?.id) throw new Error("Patient ID missing");
+      if (!initialData?.id) throw new Error("Patient ID missing");
+      const patientId = initialData.id;
 
-      const { latestReadings, medications, insulinData, ...patientData } =  formData;
-      console.log("submit",latestReadings, medications, insulinData, patientData);
-      let response;
-      if (initialData?.id) {
-        // Update existing patient
-        response = await PatientService.updatePatient({
-          id: Number(initialData?.id),
-          data: patientData,
-        });
-      } else {    
-        response = await PatientService.insertPatient(initialData);
-      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { latestReadings, medications, insulinData, ...patientData } =
+        formData;
+      await PatientService.updatePatient(initialData.id, patientData);
 
-      if (!response || !response.id) {
-        console.error("Failed to insert patient:", JSON.stringify(response));
-        throw new Error("Failed to insert patient");
-      }
-      // Success toast
-      toast.success("Patient insert successfully!", {
+      await Promise.all(
+        readings.map(async (reading) => {
+          const payload = {
+            patient_id: patientId,
+            time_of_reading: reading.time,
+            reading_value: Number(reading.value),
+            reading_date:
+              reading.date || new Date().toISOString().split("T")[0],
+            notes: "",
+          };
+
+          if (reading.id) {
+            return BloodSugarService.updateReading(reading.id, payload);
+          } else {
+            return BloodSugarService.createReading(payload);
+          }
+        })
+      );
+
+      toast.success("Patient and readings updated successfully!", {
         icon: "✅",
         position: "top-right",
         style: {
@@ -111,68 +116,10 @@ export default function PatientForm({
         },
       });
 
-      router.push(`/patient`);
-      router.refresh();
-      // need to handle the other data sets and pass the patient ID from the response
-      /* 
-      readings.patient_id = response.id;
-      const bresponse = await BloodSugarService.createReading(
-        {
-          data: readings,
-          sqltypes: {
-            id: 4,
-        },
-        "/Reading/Reading"
-      );
-      if (bresponse.data.code !== 0) {
-        throw new Error(
-          bresponse.data.message || `API Error Code ${bresponse.data.code}`
-        );
-      }
-      */
-     //  medications.patient_id = response.id,
-      // await PatientService.createMedications(
-      //     data: medications
-      //     sqltypes: {
-      //       id: 4,
-      //       drug: 12,
-      //       breakfast: 8,
-      //       lunch: 8,
-      //       dinner: 8,
-      //       patient_id: 4,
-      //     }
-      //   }))  
-      // );
-       //insulinData.patient_id = response.id;
-      // await InsulinRuleService.createInsulinRule(
-      //   {
-      //   data: insulinData
-      //   sqltypes: {
-      //     id: 4,
-      //     drug: 12,  
-      //     breakfast: 8,
-      //     lunch: 8,
-      //     dinner: 8,
-      //     bedtime: 8,
-      //     patient_id: 4,
-      //   }    
-      //   }))
-      // );
-      
-    } catch (err: string | unknown) {
-      // Error toast
-      toast.error(`Insert failed: ${err.message}`, {
-        icon: "❌",
-        position: "top-right",
-        style: {
-          background: "#fff5f5",
-          color: "#e53e3e",
-          padding: "16px",
-          borderRadius: "8px",
-        },
-      });
-
-      setError(err.message);
+      router.push(`/patient/${patientId}`);
+      router.refresh();      
+    } catch (err) {
+      console.error("Submission error:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -184,7 +131,7 @@ export default function PatientForm({
       if (!formData.name) {
         errors.push("Name is required");
       }
-      if (!formData.birth_date){
+      if (!formData.birth_date) {
         errors.push("Birth date is required");
       }
       if (formData.weight && formData.weight < 0) {
@@ -205,10 +152,14 @@ export default function PatientForm({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleReadingChange = (time: string, value: string) => {
+  const handleReadingChange = (time: string, value: string, date: string) => {
     setReadings((prev) => [
       ...prev.filter((r) => r.time !== time),
-      { time, value },
+      {
+        ...(prev.find((r) => r.time === time) || { time }),
+        value,
+        date,
+      },
     ]);
   };
 
@@ -342,23 +293,23 @@ export default function PatientForm({
               <FormField
                 label="CAD"
                 type="select"
-                options={["Yes", "No"]}
-                value={formData.cad || ""}
-                onChange={(v) => handleChange("cad", v)}
+                options={["No", "Yes"]}
+                value={formData.cad === 1 ? "Yes" : "No"}
+                onChange={(v) => handleChange("cad", v === "Yes" ? 1 : 0)}
               />
               <FormField
                 label="CKD"
                 type="select"
-                options={["Yes", "No"]}
-                value={formData.ckd || ""}
-                onChange={(v) => handleChange("ckd", v)}
+                options={["No", "Yes"]}
+                value={formData.ckd === 1 ? "Yes" : "No"}
+                onChange={(v) => handleChange("ckd", v === "Yes" ? 1 : 0)}
               />
               <FormField
                 label="HLD"
                 type="select"
-                options={["Yes", "No"]}
-                value={formData.hld || ""}
-                onChange={(v) => handleChange("hld", v)}
+                options={["No", "Yes"]}
+                value={formData.hld === 1 ? "Yes" : "No"}
+                onChange={(v) => handleChange("hld", v === "Yes" ? 1 : 0)}
               />
             </div>
           </div>
@@ -369,23 +320,43 @@ export default function PatientForm({
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
         <h2 className="text-xl font-semibold mb-6">Blood Sugar Readings</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {["breakfast", "lunch", "dinner", "bedtime"].map((time) => (
-            <FormField
-              key={time}
-              label={`Before ${time.charAt(0).toUpperCase() + time.slice(1)}`}
-              type="number"
-              value={readings.find((r) => r.time === time)?.value || ""}
-              onChange={(v) => handleReadingChange(time, v)}
-              sub="mg/dL"
-            />
-          ))}
+          {["breakfast", "lunch", "dinner", "bedtime"].map((time) => {
+            const reading = readings.find((r) => r.time === time);
+            return (
+              <div key={time} className="space-y-2">
+                <FormField
+                  label={`Date for ${time}`}
+                  type="date"
+                  value={reading?.date || ""}
+                  onChange={(v) =>
+                    handleReadingChange(time, reading?.value || "", v)
+                  }
+                />
+                <FormField
+                  label={`Before ${
+                    time.charAt(0).toUpperCase() + time.slice(1)
+                  }`}
+                  type="number"
+                  value={reading?.value || ""}
+                  onChange={(v) =>
+                    handleReadingChange(
+                      time,
+                      v,
+                      reading?.date || new Date().toISOString().split("T")[0]
+                    )
+                  }
+                  sub="mg/dL"
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Medications Section */}
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Medications</h2>
+          <h2 className="text-xl font-semibold">Recommendations / Medications</h2>
           <button
             type="button"
             onClick={addMedication}

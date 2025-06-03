@@ -12,8 +12,7 @@ interface AddMedicationModalProps {
 export function AddMedicationModal({
   isOpen,
   onClose,
-  onSave,
-  patientTypes,
+  onSave,  
 }: AddMedicationModalProps) {
   const { patients } = usePatients();
   const [form, setForm] = useState<Omit<Medication, "id">>({
