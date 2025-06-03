@@ -95,7 +95,7 @@ export const PatientService = {
           response.data.message || `API Error Code ${response.data.code}`
         );
       }
-      const patient_id = response.data.data.id; // Assuming the API returns the new ID
+      //const patient_id = response.data.data.id; // Assuming the API returns the new ID
       // insert blood sugar data if available
       // insert insulin data if available
       // insert medication data if available

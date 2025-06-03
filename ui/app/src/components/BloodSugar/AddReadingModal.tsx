@@ -16,17 +16,21 @@ export function AddReadingModal({
   const { patients } = usePatients();
   const [formData, setFormData] = useState<Omit<BloodSugarReading, "id">>({
     patient_id: 0,
-    time_of_reading: "morning",
+    time_of_reading: "breakfast",
     reading_value: 0,
     reading_date: new Date().toISOString().split("T")[0],
     notes: "",
   });
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.patient_id || !formData.reading_date) return;
+    if (!formData.patient_id || !formData.reading_date) {
+      return;
+    }
     onSave(formData);
     onClose();
   };

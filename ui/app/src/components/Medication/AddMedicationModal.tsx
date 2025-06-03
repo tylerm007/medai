@@ -93,6 +93,7 @@ export function AddMedicationModal({
                 <option value="mg">mg</option>
                 <option value="ml">ml</option>
                 <option value="tablet">tablet</option>
+                <option value="unit">unit</option>
               </select>
             </div>
           </div>

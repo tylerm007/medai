@@ -23,7 +23,7 @@ export const AddRecommendationModal = ({
     drug_id: "",
     dosage: "",
     dosage_unit: "mg",
-    time_of_reading: "morning",
+    time_of_reading: "breakfast",
     recommendation_date: new Date().toISOString().split("T")[0],
   });
 
@@ -37,7 +37,9 @@ export const AddRecommendationModal = ({
     });
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-gray-600 dark:bg-opacity-50 flex items-center justify-center p-4 z-50">

@@ -88,10 +88,10 @@ export default function PatientForm({
         const payload = {
           ...formData,
           hba1c: formData.hba1c ? Number(formData.hba1c).toFixed(2) : undefined,
-          creatine_mg_dl: formData.creatine_mg_dl
-            ? Number(formData.creatine_mg_dl).toFixed(4)
-            : undefined,
-          age: undefined, // Age is not needed for insert
+          //creatine_mg_dl: formData.creatine_mg_dl
+          // ? Number(formData.creatine_mg_dl).toFixed(4)
+          //  : undefined,
+          //age: undefined, // Age is not needed for insert
           cad: formData.cad || 0,
           ckd: formData.ckd || 0,
           hld: formData.hld || 0,
@@ -313,7 +313,9 @@ export default function PatientForm({
               onChange={(v) => handleChange("hba1c", v)}
               validate={(v) => {
                 const value = parseFloat(v);
-                if (value < 4 || value > 20) return "Must be between 4-20%";
+                if (value < 4 || value > 20) {
+                  return "Must be between 4-20%";
+                }
                 return null;
               }}
             />

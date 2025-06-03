@@ -5,7 +5,7 @@ export interface Patient {
   id: number;
   name: string;
   birth_date: string;
-  age: string;
+  age: string; // Age can be undefined if birth_date is not available
   weight: number;
   height: number;
   hba1c: string;
