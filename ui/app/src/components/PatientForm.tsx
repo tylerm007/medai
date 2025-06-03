@@ -78,12 +78,48 @@ export default function PatientForm({
     setError("");
 
     try {
-      if (!initialData?.id) throw new Error("Patient ID missing");
-      const patientId = initialData.id;
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { latestReadings, medications, insulinData, ...patientData } =
         formData;
+      if (!initialData?.id) {
+        //throw new Error("Patient ID missing " + JSON.stringify(initialData));
+        //console.log(medications, insulinData, readings);
+        // Prepare payload for new patient
+        const payload = {
+          ...formData,
+          hba1c: formData.hba1c ? Number(formData.hba1c).toFixed(2) : undefined,
+          creatine_mg_dl: formData.creatine_mg_dl
+            ? Number(formData.creatine_mg_dl).toFixed(4)
+            : undefined,
+          age: undefined, // Age is not needed for insert
+          cad: formData.cad || 0,
+          ckd: formData.ckd || 0,
+          hld: formData.hld || 0,
+          duration: formData.duration || 0,
+          medications,
+          insulinData,
+          readings,
+        };
+        console.log("Inserting new patient with payload:", payload);
+        // Insert new patient using the payload
+        const newPatient = await PatientService.insertPatient(payload as Patient);
+        // Optionally update formData with new patient data (e.g., id)
+        setFormData(newPatient);
+        toast.success("Patient created successfully! inserted", {
+          icon: "✅",
+          position: "top-right",
+          style: {
+            background: "#f0fff4",
+            color: "#38a169",
+            padding: "16px",
+            borderRadius: "8px",
+          },
+        });
+        return newPatient;
+      };
+      const patientId = initialData?.id || undefined;
+
+    
       await PatientService.updatePatient(initialData.id, patientData);
 
       await Promise.all(
@@ -100,7 +136,14 @@ export default function PatientForm({
           if (reading.id) {
             return BloodSugarService.updateReading(reading.id, payload);
           } else {
-            return BloodSugarService.createReading(payload);
+            const payloadNew = {
+              time_of_reading: reading.time,
+              reading_value: Number(reading.value),
+              reading_date:
+                reading.date || new Date().toISOString().split("T")[0],
+              notes: "",
+            };
+            return BloodSugarService.createReading(payloadNew);
           }
         })
       );

@@ -162,10 +162,18 @@ export default function PatientPage() {
           const weightKg = p.weight * 0.453592;
           const bmi = weightKg / (heightM * heightM);
 
-          if (parseFloat(p.hba1c) > 9) acc.highHbA1c++;
-          if (parseFloat(p.creatine_mg_dl) > 1.2) acc.elevatedCreatinine++;
-          if (p.duration > 120) acc.longDiabetesDuration++; // 120 months = 10 years
-          if (bmi > 30) acc.obesePatients++;
+          if (parseFloat(p.hba1c) > 9) {
+            acc.highHbA1c++;
+          }
+          if (parseFloat(p.creatine_mg_dl) > 1.2) {
+            acc.elevatedCreatinine++;
+          }
+          if (p.duration > 120) {
+            acc.longDiabetesDuration++; // 120 months = 10 years
+          }
+          if (bmi > 30) {
+            acc.obesePatients++;
+          }
 
           return acc;
         },

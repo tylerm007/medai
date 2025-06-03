@@ -229,6 +229,12 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
         try:        
             session.commit()
             session.flush()
+            if clz_name == "Patient" and method == "POST":
+                # special case for Patient with Readings
+                patient_id = getattr(sql_alchemy_row,"id", None)
+                if patient_id is not None and "readings" in data and len(data["readings"]) > 0:
+                    insertReading(data, patient_id=patient_id)
+                    #insertInsulin(data)
         except Exception as ex:
             session.rollback()
             msg = f"{ex.message if hasattr(ex, 'message') else ex}"
@@ -237,7 +243,18 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
                 {"code": 1, "message": f"{msg}", "data": [], "sqlTypes": None}
             ) 
             
-        return jsonify({"code":0,"message":f"{method}:True","data":result,"sqlTypes":None})   #{f"{method}":True})
+        return jsonify({"code":0,"message":f"{method}:True","data":result,"sqlTypes":None}) 
+
+    def insertReading(data, patient_id):
+        for reading in data["readings"] : 
+            reading_row = models.Reading()
+            reading_row.patient_id = patient_id
+            reading_row.reading_value = int(reading["value"]) if "value" in reading and reading["value"] is not None else 0
+            reading_row.time_of_reading = reading["time"]
+            reading_row.reading_date = reading["date"]
+            session.add(reading_row)
+            session.commit()
+            session.flush()  #{f"{method}":True})
     
     def find_model(clz_name:str) -> any:
         clz_members = getMetaData()

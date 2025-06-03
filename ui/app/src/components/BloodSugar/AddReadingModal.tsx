@@ -16,7 +16,7 @@ export function AddReadingModal({
   const { patients } = usePatients();
   const [formData, setFormData] = useState<Omit<BloodSugarReading, "id">>({
     patient_id: 0,
-    time_of_reading: "Morning",
+    time_of_reading: "morning",
     reading_value: 0,
     reading_date: new Date().toISOString().split("T")[0],
     notes: "",
@@ -32,9 +32,9 @@ export function AddReadingModal({
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function setForm(arg0: { patient_id: number; time_of_reading: string; reading_value: number; reading_date: string; notes: string; }): void {
-    throw new Error("Function not implemented.");
-  }
+  //(arg0: { patient_id: number; time_of_reading: string; reading_value: number; reading_date: string; notes: string; }): void {
+  //  throw new Error("Function not implemented.");
+  //}
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-gray-600 dark:bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -54,7 +54,7 @@ export function AddReadingModal({
                 className="w-full px-3 py-2 dark:bg-gray-900 dark:text-gray-300 border rounded-lg focus:ring-2 focus:ring-medical-primary focus:border-medical-primary"
                 value={formData.patient_id}
                 onChange={(e) =>
-                  setForm({ ...formData, patient_id: Number(e.target.value) })
+                  setFormData({ ...formData, patient_id: Number(e.target.value) })
                 }
               >
                 <option value="">Select Patient</option>

@@ -92,7 +92,7 @@ class Patient(Base):  # type: ignore
     ckd = Column(Integer)
     cad = Column(Integer)
     hld = Column(Integer)
-    patient_sex = Column(String(1), server_default=text("'M'::character varying"))
+    patient_sex = Column(String(1), server_default=text('M'))
     creatine_mg_dl = Column(Numeric(10, 4))
     medical_record_number = Column(String(256))
     created_date = Column(DateTime, server_default=text("now()"))

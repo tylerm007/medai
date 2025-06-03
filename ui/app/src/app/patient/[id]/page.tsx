@@ -37,11 +37,15 @@ export default function PatientDetail() {
     : null;
 
   useEffect(() => {
-    if (patient) setTitle(patient.name);
+    if (patient) {
+      setTitle(patient.name);
+    }
   }, [patient, setTitle]);
 
   const getLatestReadings = () => {
-    if (!readings || !id) return {};
+    if (!readings || !id) {
+      return {};
+    }
 
     // Explicitly type the Set as string
     const seenTimes = new Set<string>();
@@ -73,7 +77,9 @@ export default function PatientDetail() {
   const latestReadings = getLatestReadings();
 
   const getMedicationData = () => {
-    if (!recommendations || !drugTypes || !id) return [];
+    if (!recommendations || !drugTypes || !id) {
+      return [];
+    }
 
     const drugMap = new Map(drugTypes.map((drug) => [drug.id, drug.drug_name]));
 
@@ -118,7 +124,9 @@ export default function PatientDetail() {
   };
 
   const getInsulinData = () => {
-    if (!recommendations || !drugTypes || !id) return [];
+    if (!recommendations || !drugTypes || !id) {
+      return [];
+    }
 
     const drugMap = new Map(drugTypes.map((drug) => [drug.id, drug.drug_name]));
     const insulinDrugs = ["Glargine", "Lispro"];

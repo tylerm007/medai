@@ -67,10 +67,8 @@ export const PatientService = {
     try {
       const formattedPatient = {
         ...patient,
-        //hba1c: patient.hba1c ? Number(patient.hba1c).toFixed(2) : undefined,
-        //creatine_mg_dl: patient.creatine_mg_dl
-        //  ? Number(patient.creatine_mg_dl).toFixed(4)
-        //  : undefined,
+        hba1c: patient.hba1c ? Number(patient.hba1c).toFixed(2) : undefined,
+        creatine_mg_dl: patient.creatine_mg_dl ? Number(patient.creatine_mg_dl).toFixed(4)  : undefined,
       };
       const payload = {
         data: formattedPatient,
@@ -79,10 +77,11 @@ export const PatientService = {
           id: 4,
           name: 12,
           birth_date: 93,
-          weight: 8,
-          height: 8,
-          hba1c: 8,
-          duration: 8,
+          weight: 5,
+          height: 5,
+          hba1c: 3,
+          creatine_mg_dl: 3,
+          duration: 5,
         } 
       };
       const response = await apiClient.post<ApiResponse<Patient>>(
@@ -95,7 +94,12 @@ export const PatientService = {
         throw new Error(
           response.data.message || `API Error Code ${response.data.code}`
         );
-      }return {
+      }
+      const patient_id = response.data.data.id; // Assuming the API returns the new ID
+      // insert blood sugar data if available
+      // insert insulin data if available
+      // insert medication data if available
+      return {
         ...response.data.data,
         age: Number(response.data.data.age).toFixed(1),
         hba1c: Number(response.data.data.hba1c).toFixed(1),
@@ -164,7 +168,15 @@ export const PatientService = {
       const response = await apiClient.patch<ApiResponse<Patient>>(
         `/Patient/Patient`,
         payload
-      );
+      ).catch((error) => {
+        console.error("Patient Update Error Details:", {
+          url: error.config?.url,
+          payload,
+          status: error.response?.status,
+          response: error.response?.data,
+        });
+        throw error;
+      });
 
       // Debugging log
       console.log("Update Patient response:", response.data);
@@ -177,7 +189,7 @@ export const PatientService = {
 
       return {
         ...response.data.data,
-        age: Number(response.data.data.age).toFixed(1),
+        //age: Number(response.data.data.age).toFixed(1), -- derived by rules
         hba1c: Number(response.data.data.hba1c).toFixed(1),
         creatine_mg_dl: Number(response.data.data.creatine_mg_dl).toFixed(4),
       };

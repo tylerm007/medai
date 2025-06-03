@@ -24,7 +24,9 @@ export default function EditPatient() {
 
   // 1:1 COPY from PatientDetail -------------------------------------------
   const getLatestReadings = () => {
-    if (!readings || !numericId) return [];
+    if (!readings || !numericId) {
+      return [];
+    }
     const seenTimes = new Set<string>();
 
     return readings
@@ -51,7 +53,9 @@ export default function EditPatient() {
   };
 
   const getMedicationData = () => {
-    if (!recommendations || !drugTypes || !id) return [];
+    if (!recommendations || !drugTypes || !id) {
+      return [];
+    }
     const numericId = Number(id);
     const drugMap = new Map(drugTypes.map((drug) => [drug.id, drug.drug_name]));
     return recommendations
@@ -81,7 +85,9 @@ export default function EditPatient() {
   };
 
   const getInsulinData = () => {
-    if (!recommendations || !drugTypes || !id) return [];
+    if (!recommendations || !drugTypes || !id) {
+      return [];
+    }
     const numericId = Number(id);
     const drugMap = new Map(drugTypes.map((drug) => [drug.id, drug.drug_name]));
     const insulinDrugs = ["Glargine", "Lispro"];
