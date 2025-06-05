@@ -7,6 +7,7 @@ import FormField from "@/components/FormField";
 import { PatientService } from "@/lib/api/patientService";
 import toast from "react-hot-toast";
 import { BloodSugarService } from "@/lib/api/bloodSugarService";
+import { read } from "fs";
 
 interface Reading {
   id?: number;
@@ -59,7 +60,7 @@ export default function PatientForm({
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
-      
+
       // Initialize medications
       if (medications) {
         setMedications(medications);
@@ -78,28 +79,28 @@ export default function PatientForm({
     setError("");
 
     try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { latestReadings, medications, insulinData, ...patientData } =
         formData;
+      console.log(medications, insulinData, readings);
+
+      const payload = {
+        ...formData,
+        hba1c: formData.hba1c ? Number(formData.hba1c).toFixed(2) : undefined,
+        //creatine_mg_dl: formData.creatine_mg_dl
+        // ? Number(formData.creatine_mg_dl).toFixed(4)
+        //  : undefined,
+        //age: undefined, // Age is not needed for insert
+        cad: formData.cad || 0,
+        ckd: formData.ckd || 0,
+        hld: formData.hld || 0,
+        duration: formData.duration || 0,
+        medications,
+        insulinData,
+        readings,
+      };
       if (!initialData?.id) {
         //throw new Error("Patient ID missing " + JSON.stringify(initialData));
-        //console.log(medications, insulinData, readings);
-        // Prepare payload for new patient
-        const payload = {
-          ...formData,
-          hba1c: formData.hba1c ? Number(formData.hba1c).toFixed(2) : undefined,
-          //creatine_mg_dl: formData.creatine_mg_dl
-          // ? Number(formData.creatine_mg_dl).toFixed(4)
-          //  : undefined,
-          //age: undefined, // Age is not needed for insert
-          cad: formData.cad || 0,
-          ckd: formData.ckd || 0,
-          hld: formData.hld || 0,
-          duration: formData.duration || 0,
-          medications,
-          insulinData,
-          readings,
-        };
         console.log("Inserting new patient with payload:", payload);
         // Insert new patient using the payload
         const newPatient = await PatientService.insertPatient(payload as Patient);
@@ -116,51 +117,55 @@ export default function PatientForm({
           },
         });
         return newPatient;
-      };
-      const patientId = initialData?.id || undefined;
+      } else {
+        console.log("Updating existing patient with payload:", payload);
+        const patientId = initialData?.id || undefined;
 
-    
-      await PatientService.updatePatient(initialData.id, patientData);
 
-      await Promise.all(
-        readings.map(async (reading) => {
-          const payload = {
-            patient_id: patientId,
-            time_of_reading: reading.time,
-            reading_value: Number(reading.value),
-            reading_date:
-              reading.date || new Date().toISOString().split("T")[0],
-            notes: "",
-          };
-
-          if (reading.id) {
-            return BloodSugarService.updateReading(reading.id, payload);
-          } else {
-            const payloadNew = {
+        await PatientService.updatePatient(patientId, payload as Patient);
+        /*
+        await Promise.all(
+          readings.map(async (reading) => {
+            const payload = {
+              patient_id: patientId,
               time_of_reading: reading.time,
               reading_value: Number(reading.value),
               reading_date:
                 reading.date || new Date().toISOString().split("T")[0],
               notes: "",
             };
-            return BloodSugarService.createReading(payloadNew);
-          }
-        })
-      );
+  
+            if (reading.id) {
+              return BloodSugarService.updateReading(reading.id, payload);
+            } else {
+              const payloadNew = {
+                time_of_reading: reading.time,
+                reading_value: Number(reading.value),
+                reading_date:
+                  reading.date || new Date().toISOString().split("T")[0],
+                notes: "",
+              };
+              return BloodSugarService.createReading(payloadNew);
+            }
+          })
+        
+        );
+        */
 
-      toast.success("Patient and readings updated successfully!", {
-        icon: "✅",
-        position: "top-right",
-        style: {
-          background: "#f0fff4",
-          color: "#38a169",
-          padding: "16px",
-          borderRadius: "8px",
-        },
-      });
+        toast.success("Patient updated successfully!", {
+          icon: "✅",
+          position: "top-right",
+          style: {
+            background: "#f0fff4",
+            color: "#38a169",
+            padding: "16px",
+            borderRadius: "8px",
+          },
+        });
 
-      router.push(`/patient/${patientId}`);
-      router.refresh();      
+        router.push(`/patient/${patientId}`);
+        router.refresh();
+      }
     } catch (err) {
       console.error("Submission error:", err);
     } finally {
@@ -378,9 +383,8 @@ export default function PatientForm({
                   }
                 />
                 <FormField
-                  label={`Before ${
-                    time.charAt(0).toUpperCase() + time.slice(1)
-                  }`}
+                  label={`Before ${time.charAt(0).toUpperCase() + time.slice(1)
+                    }`}
                   type="number"
                   value={reading?.value || ""}
                   onChange={(v) =>
@@ -514,7 +518,7 @@ export default function PatientForm({
               setInsulinData((prev) => [
                 ...prev,
                 {
-                  drug: "",
+                  drug: "Lispro",
                   breakfast: "",
                   lunch: "",
                   dinner: "",

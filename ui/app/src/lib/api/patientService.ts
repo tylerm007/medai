@@ -96,9 +96,7 @@ export const PatientService = {
         );
       }
       //const patient_id = response.data.data.id; // Assuming the API returns the new ID
-      // insert blood sugar data if available
-      // insert insulin data if available
-      // insert medication data if available
+
       return {
         ...response.data.data,
         age: Number(response.data.data.age).toFixed(1),
@@ -118,8 +116,8 @@ export const PatientService = {
     }
   },
   updatePatient: async (
-    id: number,
-    updates: Partial<Patient>
+    id: number | undefined,
+    updates: Patient & { id?: number } // Allow updates to include ID
   ): Promise<Patient> => {
     try {
       const formattedUpdates = {
@@ -142,7 +140,7 @@ export const PatientService = {
               ? 1
               : 0
             : updates.hld,
-        age: updates.age ? Number(updates.age).toFixed(1) : undefined,
+        //age: updates.age ? Number(updates.age).toFixed(1) : undefined,
         hba1c: updates.hba1c ? Number(updates.hba1c).toFixed(2) : undefined,
         creatine_mg_dl: updates.creatine_mg_dl
           ? Number(updates.creatine_mg_dl).toFixed(4)
