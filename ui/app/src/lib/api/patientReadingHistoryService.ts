@@ -63,7 +63,9 @@ export const PatientReadingHistoryService = {
         throw error;
       });
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("API Error");
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedData = response.data.data.map((item: any) => ({
       ...item,
@@ -124,7 +126,9 @@ export const PatientReadingHistoryService = {
       payload
     );
 
-    if (response.data.code !== 0) throw new Error("API Error");
+    if (response.data.code !== 0) {
+      throw new Error("API Error");
+    }
     return response.data.data;
   },
 
@@ -133,7 +137,7 @@ export const PatientReadingHistoryService = {
     if (isNaN(inputDate.getTime())) {
       throw new Error("Invalid date format in request");
     }
-
+    console.log("Input Reading Date:", reading);
     // Convert to Oracle DATE format (YYYY-MM-DD)
     const formattedDate = inputDate.toISOString().split("T")[0];
 

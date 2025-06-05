@@ -42,12 +42,16 @@ def insert_reading_history(row: models.Reading, old_row: models.Reading, logic_r
     else:
         app_logger.warning(f"Unknown time_of_reading: {row.time_of_reading} for patient_id: {row.patient_id}")
         return
+    try:
+        if ins_upd_dlt == 'ins':
+            logic_row.insert(reason="insert reading history", row=reading_history)
+        elif ins_upd_dlt == 'upd':
+            logic_row.update(reason="update reading history", row=reading_history)
+        #session.add(reading_history)
+    
+        #session.commit()
+    except Exception as e:
+        app_logger.error(f"Error committing reading history: {e}")
 
-    #if ins_upd_dlt == 'ins':
-    #    logic_row.insert(reason="insert reading history", row=reading_history)
-    #elif ins_upd_dlt == 'upd':
-    #    logic_row.update(reason="update reading history", row=reading_history)
-    session.add(reading_history)
-    session.commit()
     app_logger.info("insert_reading_history")
     

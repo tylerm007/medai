@@ -88,7 +88,7 @@ export const useBloodSugarReadings = (
           .toLowerCase();
 
         return [
-          reading.id.toString(),
+          reading.id?.toString(),
           reading.patient_id.toString(),
           patientName,
           reading.time_of_reading?.toLowerCase(),

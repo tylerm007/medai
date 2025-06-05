@@ -77,7 +77,9 @@ export const usePatientReadingHistories = (
 
   useEffect(() => {
     const filterHistories = () => {
-      if (!searchQuery) return allHistories;
+      if (!searchQuery) {
+        return allHistories;
+      }
 
       const lowerQuery = searchQuery.toLowerCase().trim();
 
@@ -93,7 +95,7 @@ export const usePatientReadingHistories = (
 
         return [
           history.id.toString(),
-          history.patient_id.toString(),
+          history.patient_id?.toString(),
           patientName,
           formattedDate,
           history.breakfast?.toString(),

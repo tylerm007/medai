@@ -252,8 +252,10 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
             return jsonify(
                 {"code": 1, "message": f"{msg}", "data": [], "sqlTypes": None}
             ) 
-            
-        return jsonify({"code":0,"message":f"{method}:True","data":result,"sqlTypes":None}) 
+        #ows = rows_to_dict(result=result, api_clz=api_clz, attributes=api_attributes)
+        rows = result.to_dict() if isinstance(result, safrs.SAFRSBase) else result
+        rows["id"] = getattr(result, "id", None) if hasattr(result, "id") else None
+        return jsonify({"code":0,"message":f"{method}:True","data":rows,"sqlTypes":None}) 
 
     def insertInsulin(data, patient_id):
         insulin_date = insulin["date"] if "date" in insulin and insulin["date"] is not None else date.today().strftime('%Y-%m-%d')
