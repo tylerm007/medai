@@ -6,8 +6,8 @@ import { Patient } from "@/types/patient";
 import FormField from "@/components/FormField";
 import { PatientService } from "@/lib/api/patientService";
 import toast from "react-hot-toast";
-import { BloodSugarService } from "@/lib/api/bloodSugarService";
-import { read } from "fs";
+//import { BloodSugarService } from "@/lib/api/bloodSugarService";
+//import { read } from "fs";
 
 interface Reading {
   id?: number;
@@ -119,7 +119,7 @@ export default function PatientForm({
         return newPatient;
       } else {
         console.log("Updating existing patient with payload:", payload);
-        const patientId = initialData?.id || undefined;
+        const patientId = initialData.id;
 
 
         await PatientService.updatePatient(patientId, payload as Patient);

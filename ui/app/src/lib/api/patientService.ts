@@ -116,8 +116,8 @@ export const PatientService = {
     }
   },
   updatePatient: async (
-    id: number | undefined,
-    updates: Patient & { id?: number } // Allow updates to include ID
+    id: number,
+    updates: Patient & { id: number } // Allow updates to include ID
   ): Promise<Patient> => {
     try {
       const formattedUpdates = {
