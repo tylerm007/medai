@@ -229,12 +229,22 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
         try:        
             session.commit()
             session.flush()
-            if clz_name == "Patient" and method == "POST":
+            if clz_name == "Patient" and method in ["POST","PATCH"]:
                 # special case for Patient with Readings
                 patient_id = getattr(sql_alchemy_row,"id", None)
+                
                 if patient_id is not None and "readings" in data and len(data["readings"]) > 0:
-                    insertReading(data, patient_id=patient_id)
-                    #insertInsulin(data)
+                    insertReading(data["readings"], patient_id=patient_id)
+                    
+                if patient_id is not None and "latestReadings" in data and len(data["latestReadings"]) > 0:
+                    updateReading(data["LatestReadings"], patient_id=patient_id)
+                    
+                if patient_id is not None and "medications" in data and len(data["medications"]) > 0:
+                    insertMedication(data, patient_id=patient_id)
+                    
+                if patient_id is not None and "insulinData" in data and len(data["insulinData"]) > 0:
+                    insertInsulin(data, patient_id=patient_id)
+                
         except Exception as ex:
             session.rollback()
             msg = f"{ex.message if hasattr(ex, 'message') else ex}"
@@ -245,16 +255,100 @@ def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_deco
             
         return jsonify({"code":0,"message":f"{method}:True","data":result,"sqlTypes":None}) 
 
-    def insertReading(data, patient_id):
-        for reading in data["readings"] : 
+    def insertInsulin(data, patient_id):
+        insulin_date = insulin["date"] if "date" in insulin and insulin["date"] is not None else date.today().strftime('%Y-%m-%d')
+        updateRow = session.query(models.Insulin).filter(models.Insulin.patient_id == patient_id and models.Insulin.reading_date == insulin_date).one_or_none()
+        for insulin in data["insulinData"] : 
+            row = models.Insulin() if updateRow is None else updateRow
+            row.patient_id = patient_id
+            row.drug_type = insulin["drug_type"] if "drug_type" in insulin and insulin["drug_type"] is not None else ''
+            row.reading_date = insulin_date
+            row.breakfast = insulin["breakfast"] if "breakfast" in insulin and insulin["breakfast"] is not None else 0
+            row.lunch = insulin["lunch"] if "lunch" in insulin and insulin["lunch"] is not None else 0
+            row.dinner = insulin["dinner"] if "dinner" in insulin and insulin["dinner"] is not None else 0
+            row.bedtime = insulin["bedtime"] if "bedtime" in insulin and insulin["bedtime"] is not None else 0
+            session.add(row)
+            try:
+                session.commit()
+                session.flush()  
+            except Exception as ex:
+                app_logger.error(f"Error inserting insulin for patient {patient_id}: {ex}")
+        
+    def insertMedication(data, patient_id):
+        for medication in data["medications"] : 
+            recommendation_date = medication["date"].split(" ")[0] if "date" in medication and medication["date"] is not None else date.today().strftime('%Y-%m-%d')
+            drug = medication["drug"] if "drug" in medication and medication["drug"] is not None else 0  
+            drug_id = getDrugId(drug)         
+            
+            for time_of_reading in ['breakfast', 'lunch', 'dinner']:
+                value = medication.get(time_of_reading, "-")
+                if value == "-":
+                    continue
+                updateRow = session.query(models.Recommendation).filter(
+                    models.Recommendation.patient_id == patient_id,
+                    models.Recommendation.recommendation_date == recommendation_date,
+                    models.Recommendation.drug_id == drug_id,
+                    models.Recommendation.time_of_reading == time_of_reading
+                ).one_or_none()
+    
+                row = models.Recommendation() if updateRow is None else updateRow
+                row.patient_id = patient_id
+                row.recommendation_date = recommendation_date
+                setattr(row, "time_of_reading", time_of_reading)
+                row.dosage = int(value.split(" ")[0])
+                row.drug_id = drug_id
+                #row.drug = drug
+                row.dosage_unit = value.split(" ")[1] if len(value) > 1 else 'unit'
+                session.add(row)
+                try:
+                    session.commit()
+                    session.flush()  
+                except Exception as ex:
+                    app_logger.error(f"Error inserting recommendation for patient {patient_id}: {ex}")
+            
+    def getDrugId(drug) -> int:   
+        if drug == "Lispro":
+            return 5 #TODO - get drug id from database, hardcoded for now
+        elif drug == "Farxiga":
+            return 6
+        elif drug == "Metformin":
+            return 1
+        elif drug == "Glimepiride":
+            return 2
+        elif  drug == "Ozempic":
+            return 7
+        elif drug == "Tradjenta":
+            return 3
+        elif drug == "Glargine":
+            return 4
+        return 0 #TODO - get drug id from database, hardcoded for now
+    
+    def updateReading(readings, patient_id):
+        for reading in readings : 
+            reading_row = models.Reading()
+            reading_row.patient_id = patient_id
+            reading_row.reading_value = int(reading["reading_value"]) if "reading_value" in reading and reading["reading_value"] is not None else 0
+            reading_row.time_of_reading = reading["time_of_reading"]
+            reading_row.reading_date = reading["reading_date"] if "reading_date" in reading and reading["reading_date"] is not None else date.today().strftime('%Y-%m-%d')
+            session.add(reading_row)
+            try:
+                session.commit()
+                session.flush()  #{f"{method}":True})
+            except Exception as ex:
+                app_logger.error(f"Error inserting reading for patient {patient_id}: {ex}")
+    def insertReading(readings, patient_id):
+        for reading in readings : 
             reading_row = models.Reading()
             reading_row.patient_id = patient_id
             reading_row.reading_value = int(reading["value"]) if "value" in reading and reading["value"] is not None else 0
             reading_row.time_of_reading = reading["time"]
-            reading_row.reading_date = reading["date"]
+            reading_row.reading_date = reading["date"] if "date" in reading and reading["date"] is not None else date.today().strftime('%Y-%m-%d')
             session.add(reading_row)
-            session.commit()
-            session.flush()  #{f"{method}":True})
+            try:
+                session.commit()
+                session.flush()  #{f"{method}":True})
+            except Exception as ex:
+                app_logger.error(f"Error inserting reading for patient {patient_id}: {ex}")
     
     def find_model(clz_name:str) -> any:
         clz_members = getMetaData()

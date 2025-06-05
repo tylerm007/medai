@@ -85,9 +85,10 @@ def declare_logic():
         from api.api_discovery.recommend_drug import recommend_insulin_drug
         recommend_insulin_drug(row, old_row, logic_row)
         
-    def fn_recommend_drug(row: models.Reading, old_row: models.Reading, logic_row: LogicRow):
+    def fn_recommend_drug(row: models.ReadingHistory, old_row: models.ReadingHistory, logic_row: LogicRow):
         from api.api_discovery.recommend_drug import recommend_drug
-        recommend_drug(row, old_row,logic_row)
+        if row.breakfast is not None and row.lunch is not None and row.dinner is not None and row.bedtime is not None:
+            recommend_drug(row, old_row,logic_row)
         
     def calculate_age(row: models.Patient, old_row: models.Patient, logic_row: LogicRow):
         if isinstance(row.birth_date, datetime.date):
@@ -108,10 +109,10 @@ def declare_logic():
     
     Rule.copy(derive=models.Dosage.drug_name, from_parent=models.Drug.drug_name)
     Rule.copy(derive=models.Dosage.drug_type, from_parent=models.Drug.drug_type)
-    Rule.commit_row_event(on_class=models.Reading, calling=insert_reading_history)
+    #Rule.commit_row_event(on_class=models.Reading, calling=insert_reading_history)
     Rule.after_flush_row_event(on_class=models.ReadingHistory, calling=fn_recommend_drug)
-    Rule.after_flush_row_event(on_class=models.Reading, calling=fn_recommend_insulin)
-    #Rule.after_flush_row_event(on_class=models.Reading, calling=insert_reading_history)
+    Rule.commit_row_event(on_class=models.Reading, calling=fn_recommend_insulin)
+    Rule.after_flush_row_event(on_class=models.Reading, calling=insert_reading_history)
     # ----- Constraints 
     Rule.constraint(validate=models.Reading, as_condition=lambda row: row.time_of_reading in ['breakfast','lunch','dinner','bedtime'], error_msg="Blood sugar time of reading must be one of breakfast, lunch, dinner, or bedtime not: {row.time_of_reading}")
     Rule.constraint(validate=models.Reading, as_condition=lambda row: int(row.reading_value) <= 600, error_msg="Blood sugar before {row.time_of_reading} must be less than 600")
@@ -120,7 +121,7 @@ def declare_logic():
     Rule.constraint(validate=models.Patient, as_condition=lambda row: float(row.creatine_mg_dl) <= 14, error_msg="Creatine must be less than 14")
     Rule.constraint(validate=models.Patient, as_condition=lambda row: int(row.weight) >= 20 and int(row.weight) <= 300 , error_msg="Weight must be greater than 20 and less than 300")   
     Rule.constraint(validate=models.Patient, as_condition=lambda row: int(row.height) >= 48 and int(row.height) <= 84, error_msg="Height must be greater than 48 and less than 84")
-    Rule.constraint(validate=models.Patient, as_condition=lambda row: float(row.hba1c) >= 6 and float(row.hba1c) <= 20, error_msg="Hba1c must be greater than 6 and less than 20")
+    Rule.constraint(validate=models.Patient, as_condition=lambda row: float(row.hba1c) >= 5 and float(row.hba1c) <= 20, error_msg="Hba1c must be greater than 5 and less than 20")
     Rule.constraint(validate=models.Patient, as_condition=lambda row: int(row.duration) >= 1 and int(row.duration) <= 600, error_msg="Duration must be greater than 1 and less than 600")
     
     

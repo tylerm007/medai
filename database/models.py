@@ -103,6 +103,7 @@ class Patient(Base):  # type: ignore
     PatientLabList : Mapped[List["PatientLab"]] = relationship(back_populates="patient")
     ReadingList : Mapped[List["Reading"]] = relationship(back_populates="patient")
     ReadingHistoryList : Mapped[List["ReadingHistory"]] = relationship(back_populates="patient")
+    InsulinList : Mapped[List["Insulin"]] = relationship(back_populates="patient")
     PatientMedicationList : Mapped[List["PatientMedication"]] = relationship(back_populates="patient")
     RecommendationList : Mapped[List["Recommendation"]] = relationship(back_populates="patient")
 
@@ -127,6 +128,7 @@ class Drug(Base):  # type: ignore
     ContraindicationList : Mapped[List["Contraindication"]] = relationship(foreign_keys='[Contraindication.drug_id_1]', back_populates="drug")
     ContraindicationList1 : Mapped[List["Contraindication"]] = relationship(foreign_keys='[Contraindication.drug_id_2]', back_populates="drug1")
     DosageList : Mapped[List["Dosage"]] = relationship(back_populates="drug")
+    InsulinList : Mapped[List["Insulin"]] = relationship(back_populates="drug")
     PatientMedicationList : Mapped[List["PatientMedication"]] = relationship(back_populates="drug")
     RecommendationList : Mapped[List["Recommendation"]] = relationship(back_populates="drug")
 
@@ -228,6 +230,27 @@ class Dosage(Base):  # type: ignore
     # parent relationships (access parent)
     drug_unit : Mapped["DrugUnit"] = relationship(back_populates=("DosageList"))
     drug : Mapped["Drug"] = relationship(back_populates=("DosageList"))
+
+    # child relationships (access children)
+
+
+
+class Insulin(Base):  # type: ignore
+    __tablename__ = 'insulin'
+    _s_collection_name = 'Insulin'  # type: ignore
+
+    id = Column(BigInteger, Sequence('insulin_id_seq'), primary_key=True)
+    patient_id = Column(ForeignKey('patient.id', ondelete='CASCADE'), nullable=False)
+    drug_type = Column(ForeignKey('drug.id'), server_default=text("5"), nullable=False)
+    reading_date = Column(Date, nullable=False)
+    breakfast = Column(Numeric(10, 4))
+    lunch = Column(Numeric(10, 4))
+    dinner = Column(Numeric(10, 4))
+    bedtime = Column(Numeric(10, 4))
+
+    # parent relationships (access parent)
+    drug : Mapped["Drug"] = relationship(back_populates=("InsulinList"))
+    patient : Mapped["Patient"] = relationship(back_populates=("InsulinList"))
 
     # child relationships (access children)
 

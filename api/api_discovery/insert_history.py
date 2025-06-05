@@ -10,7 +10,8 @@ session = db.session
 app_logger = logging.getLogger("api_logic_server_app")
 
 def add_service(app, api, project_dir, swagger_host: str, PORT: str, method_decorators = []):
-    pass
+    if method_decorators is None:
+        method_decorators = []
 
 def insert_reading_history(row: models.Reading, old_row: models.Reading, logic_row: LogicRow):
     # Insert a new ReadingHistory record
@@ -18,8 +19,8 @@ def insert_reading_history(row: models.Reading, old_row: models.Reading, logic_r
     import datetime
     ins_upd_dlt = 'upd'
     try:
-        date = row.reading_date.strftime('%Y-%m-%d') if row.reading_date else datetime.datetime.now().strftime('%Y-%m-%d')
-        reading_history = session.query(models.ReadingHistory).filter(models.ReadingHistory.patient_id == row.patient_id and models.ReadingHistory.reading_date == date).one_or_none()
+        date = row.reading_date if row.reading_date is not None else None
+        reading_history = session.query(models.ReadingHistory).filter(models.ReadingHistory.patient_id == row.patient_id , models.ReadingHistory.reading_date == date).one_or_none()
     except Exception as e:
         reading_history = None
         app_logger.error(f"Error querying reading history: {e}")
@@ -30,21 +31,23 @@ def insert_reading_history(row: models.Reading, old_row: models.Reading, logic_r
         reading_history.reading_date = row.reading_date
         ins_upd_dlt = 'ins'
     # Only change the reading value if he current value is 0.0
-    if row.time_of_reading == 'breakfast' and reading_history.breakfast == 0.0:
+    if row.time_of_reading == 'breakfast' and reading_history.breakfast is None:
         reading_history.breakfast = row.reading_value
-    elif row.time_of_reading == 'lunch' and reading_history.lunch == 0.0:
+    elif row.time_of_reading == 'lunch' and reading_history.lunch is None:
         reading_history.lunch = row.reading_value
-    elif row.time_of_reading ==  'dinner' and reading_history.dinner == 0.0:
+    elif row.time_of_reading ==  'dinner' and reading_history.dinner is None:
         reading_history.dinner = row.reading_value
-    elif row.time_of_reading == 'bedtime' and reading_history.bedtime == 0.0:
+    elif row.time_of_reading == 'bedtime' and reading_history.bedtime is None:
         reading_history.bedtime = row.reading_value   
     else:
         app_logger.warning(f"Unknown time_of_reading: {row.time_of_reading} for patient_id: {row.patient_id}")
         return
 
-    if ins_upd_dlt == 'ins':
-        logic_row.insert(reason="insert reading history", row=reading_history)
-    elif ins_upd_dlt == 'upd':
-        logic_row.update(reason="update reading history", row=reading_history)
+    #if ins_upd_dlt == 'ins':
+    #    logic_row.insert(reason="insert reading history", row=reading_history)
+    #elif ins_upd_dlt == 'upd':
+    #    logic_row.update(reason="update reading history", row=reading_history)
+    session.add(reading_history)
+    session.commit()
     app_logger.info("insert_reading_history")
     

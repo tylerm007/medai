@@ -1,19 +1,36 @@
 
 The following rules have been activated
- - 2025-04-23 13:56:33,592 - logic_logger - DEBUG
-Rule Bank[0x106e443e0] (loaded 2025-04-23 13:56:27.413027)		##   - 2025-04-23 13:56:33,592 - logic_logger - INFO
-Mapped Class[Contraindication] rules:		##   - 2025-04-23 13:56:33,593 - logic_logger - INFO
-  Constraint Function: None 		##   - 2025-04-23 13:56:33,593 - logic_logger - INFO
-Mapped Class[Patient] rules:		##   - 2025-04-23 13:56:33,593 - logic_logger - INFO
-  Derive <class 'database.models.Patient'>.age as Formula (1): <function>		##   - 2025-04-23 13:56:33,593 - logic_logger - INFO
-  Constraint Function: None 		##   - 2025-04-23 13:56:33,593 - logic_logger - INFO
-Mapped Class[Dosage] rules:		##   - 2025-04-23 13:56:33,594 - logic_logger - INFO
-  Derive <class 'database.models.Dosage'>.drug_name as Copy(drug.drug_name)		##   - 2025-04-23 13:56:33,594 - logic_logger - INFO
-  Derive <class 'database.models.Dosage'>.drug_type as Copy(drug.drug_type)		##   - 2025-04-23 13:56:33,594 - logic_logger - INFO
-Mapped Class[Reading] rules:		##   - 2025-04-23 13:56:33,594 - logic_logger - INFO
-  RowEvent Reading.insert_reading_history() 		##   - 2025-04-23 13:56:33,594 - logic_logger - INFO
-  RowEvent Reading.fn_recommend_insulin() 		##   - 2025-04-23 13:56:33,594 - logic_logger - INFO
-Mapped Class[ReadingHistory] rules:		##   - 2025-04-23 13:56:33,594 - logic_logger - INFO
-  RowEvent ReadingHistory.fn_recommend_drug() 		##   - 2025-04-23 13:56:33,594 - logic_logger - INFO
-Logic Bank - 14 rules loaded - 2025-04-23 13:56:33,594 - logic_logger - INFO
-Logic Bank - 14 rules loaded - 2025-04-23 13:56:33,594 - logic_logger - INFO
+ - 2025-06-05 08:49:06,305 - logic_logger - DEBUG
+Rule Bank[0x104e476b0] (loaded 2025-06-05 08:49:02.542951)		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+Mapped Class[Contraindication] rules:		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+Mapped Class[Patient] rules:		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Derive <class 'database.models.Patient'>.age as Formula (1): <function>		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+Mapped Class[Dosage] rules:		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Derive <class 'database.models.Dosage'>.drug_name as Copy(drug.drug_name)		##   - 2025-06-05 08:49:06,305 - logic_logger - INFO
+  Derive <class 'database.models.Dosage'>.drug_type as Copy(drug.drug_type)		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+Mapped Class[ReadingHistory] rules:		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  RowEvent ReadingHistory.fn_recommend_drug() 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+Mapped Class[Reading] rules:		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  RowEvent Reading.fn_recommend_insulin() 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  RowEvent Reading.insert_reading_history() 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,306 - logic_logger - INFO
+  Constraint Function: None 		##   - 2025-06-05 08:49:06,307 - logic_logger - INFO
+Logic Bank - 31 rules loaded - 2025-06-05 08:49:06,307 - logic_logger - INFO
+Logic Bank - 31 rules loaded - 2025-06-05 08:49:06,307 - logic_logger - INFO

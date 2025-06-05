@@ -4,8 +4,8 @@ import test_utils
 import json
 import datetime
 
-patient_id = 525
-days_to_add = 30
+patient_id = 522
+days_to_add = 3
 # Implement Behave Tests -- your code goes here
 
 @given('Existing Patients Readings')
